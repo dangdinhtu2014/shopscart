@@ -37,9 +37,9 @@ if( ! function_exists( 'nv_search_product' ) )
 
 		if( $cataid == 0 ) $cataid = $catid;
 		if( $price1_temp == '' ) $price1 = -1;
-		else $price1 = floatval( $price1_temp );
+		else  $price1 = floatval( $price1_temp );
 		if( $price2_temp == '' ) $price2 = -1;
-		else $price2 = floatval( $price2_temp );
+		else  $price2 = floatval( $price2_temp );
 
 		if( file_exists( NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $mod_file . '/block.search.tpl' ) )
 		{

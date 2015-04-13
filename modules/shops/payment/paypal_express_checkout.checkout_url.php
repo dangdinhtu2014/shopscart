@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @Project NUKEVIET 3.0
  * @Author VINADES., JSC (contact@vinades.vn)
@@ -6,10 +7,10 @@
  * @Createdate Dec 29, 2010  10:42:00 PM
  */
 
-if ( ! defined( 'NV_IS_MOD_SHOPS' ) ) die( 'Stop!!!' );
+if( ! defined( 'NV_IS_MOD_SHOPS' ) ) die( 'Stop!!!' );
 
 // Gọi thư viện PayPal SDK
-require_once( NV_ROOTDIR . '/includes/class/PayPal/PPBootStrap.php');
+require_once ( NV_ROOTDIR . '/includes/class/PayPal/PPBootStrap.php' );
 
 // Thông tin cấu hình gian hàng
 foreach( $payment_config as $ckey => $cval )
@@ -23,7 +24,7 @@ $config = array(
 	"acct1.UserName" => $payment_config['apiusername'],
 	"acct1.Password" => $payment_config['apipassword'],
 	"acct1.Signature" => $payment_config['signature'],
-);
+	);
 
 // Đường dẫn trả về
 $returnUrl = NV_MY_DOMAIN . NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&order_id=' . $order_id . '&payment=' . $payment . '&checksum=' . md5( $order_id . $payment . $global_config['sitekey'] . session_id() ) . '&getexpresscheckoutdetails=1';
@@ -33,35 +34,35 @@ $cancelUrl = NV_MY_DOMAIN . NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . 
 if( $nv_Request->isset_request( "getexpresscheckoutdetails", "get" ) )
 {
 	/*
-	 * GetExpressCheckout API
-	 */
-	
+	* GetExpressCheckout API
+	*/
+
 	$token = nv_htmlspecialchars( $nv_Request->get_string( "token", "get", "" ) );
-	
+
 	$getExpressCheckoutDetailsRequest = new GetExpressCheckoutDetailsRequestType( $token );
 
 	$getExpressCheckoutReq = new GetExpressCheckoutDetailsReq();
 	$getExpressCheckoutReq->GetExpressCheckoutDetailsRequest = $getExpressCheckoutDetailsRequest;
 
 	$paypalService = new PayPalAPIInterfaceServiceService( $config );
-	
+
 	try
 	{
-		$getECResponse = $paypalService->GetExpressCheckoutDetails($getExpressCheckoutReq);
+		$getECResponse = $paypalService->GetExpressCheckoutDetails( $getExpressCheckoutReq );
 	}
-	catch( Exception $ex )
+	catch ( exception $ex )
 	{
 		redict_link( $ex->getMessage(), $lang_module['cart_back'], $cancelUrl );
 	}
-	
+
 	if( isset( $getECResponse ) )
 	{
-		if( $getECResponse->Ack == 'Success')
+		if( $getECResponse->Ack == 'Success' )
 		{
 			// Trích xuất thông tin
 			$responseDetails = $getECResponse->GetExpressCheckoutDetailsResponseDetails;
 			$payerInfo = $responseDetails->PayerInfo;
-			
+
 			$payer = $payerInfo->Payer;
 			$payerID = $payerInfo->PayerID;
 			$payer_name = $payerInfo->PayerName;
@@ -75,9 +76,9 @@ if( $nv_Request->isset_request( "getexpresscheckoutdetails", "get" ) )
 			$stateOrProvince = $address->StateOrProvince;
 			$postalCode = $address->PostalCode;
 			$countryCode = $address->CountryName;
-			
+
 			$PaymentDetails = $responseDetails->PaymentDetails[0]->OrderTotal;
-			
+
 			$PayerData = array(
 				"token" => $token,
 				"id" => $payerID,
@@ -93,12 +94,12 @@ if( $nv_Request->isset_request( "getexpresscheckoutdetails", "get" ) )
 				"amount" => $PaymentDetails->value,
 				"currency" => $PaymentDetails->currencyID,
 				"order_id" => $order_id,
-			);
-			
+				);
+
 			$nv_Request->set_Session( $module_data . "_payerdata_paypal", serialize( $PayerData ) );
-			
+
 			$doExpressURL = NV_MY_DOMAIN . NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=complete&payment=" . $payment . "&paycomplete&token=" . $token . "&payerid=" . $payerID;
-			
+
 			header( "Location:" . $doExpressURL );
 			exit();
 		}
@@ -107,18 +108,18 @@ if( $nv_Request->isset_request( "getexpresscheckoutdetails", "get" ) )
 			redict_link( $getECResponse->Errors[0]->ShortMessage . "<br />" . $getECResponse->Errors[0]->LongMessage, $lang_module['cart_back'], $cancelUrl );
 		}
 	}
-	
+
 	redict_link( "Unknow Error!!!", $lang_module['cart_back'], $cancelUrl );
 }
 
 /*
- * SetExpressCheckout API
- */
+* SetExpressCheckout API
+*/
 
 $currencyCode = 'USD'; // Đơn vị tiền tệ
-$shippingTotal = new BasicAmountType($currencyCode, 0); // Phí vận chuyển (0)
-$handlingTotal = new BasicAmountType($currencyCode, 0); // Phí xử lý
-$insuranceTotal = new BasicAmountType($currencyCode, 0); // Phí bảo hiểm
+$shippingTotal = new BasicAmountType( $currencyCode, 0 ); // Phí vận chuyển (0)
+$handlingTotal = new BasicAmountType( $currencyCode, 0 ); // Phí xử lý
+$insuranceTotal = new BasicAmountType( $currencyCode, 0 ); // Phí bảo hiểm
 
 // Thông tin người nhận
 $address = new AddressType();
@@ -155,24 +156,24 @@ if( ! empty( $arrayid ) )
 {
 	$templistid = implode( ',', $arrayid );
 
-	$sql = 'SELECT t1.id, t1.listcatid, t1.' . NV_LANG_DATA . '_title, t1.money_unit FROM ' . $db_config['prefix'] . '_' . $module_data . '_rows AS t1 LEFT JOIN ' . $db_config['prefix'] . '_' . $module_data . '_units AS t2 ON t1.product_unit = t2.id WHERE t1.id IN (' . $templistid . ') AND t1.status =1';
+	$sql = 'SELECT t1.id, t1.listcatid, t1.' . NV_LANG_DATA . '_title, t1.money_unit FROM ' . TABLE_SHOPS_NAME . '_rows AS t1 LEFT JOIN ' . TABLE_SHOPS_NAME . '_units AS t2 ON t1.product_unit = t2.id WHERE t1.id IN (' . $templistid . ') AND t1.status =1';
 
 	$result = $db->query( $sql );
 	while( list( $id, $listcatid, $title, $money_unit ) = $result->fetch( 3 ) )
 	{
 		$itemAmount = nv_currency_conversion( $temppro[$id]['price'], $money_unit, 'USD' );
-		$itemAmount = new BasicAmountType($currencyCode, $itemAmount['sale'] );	
-		
+		$itemAmount = new BasicAmountType( $currencyCode, $itemAmount['sale'] );
+
 		$itemTotalValue += $itemAmount->value;
-		
+
 		$itemDetails = new PaymentDetailsItemType();
 		$itemDetails->Name = $title;
 		$itemDetails->Amount = $itemAmount;
 		$itemDetails->Quantity = $temppro[$id]['num'];
 		$itemDetails->ItemCategory = "Digital";
-		$itemDetails->Tax = new BasicAmountType($currencyCode, 0);	
-		
-		$paymentDetails->PaymentDetailsItem[$i] = $itemDetails;	
+		$itemDetails->Tax = new BasicAmountType( $currencyCode, 0 );
+
+		$paymentDetails->PaymentDetailsItem[$i] = $itemDetails;
 	}
 }
 
@@ -181,9 +182,9 @@ $orderTotalValue = $shippingTotal->value + $handlingTotal->value + $insuranceTot
 
 // Thông tin thanh toán chi tiết
 $paymentDetails->ShipToAddress = $address;
-$paymentDetails->ItemTotal = new BasicAmountType($currencyCode, $itemTotalValue);
-$paymentDetails->TaxTotal = new BasicAmountType($currencyCode, $taxTotalValue);
-$paymentDetails->OrderTotal = new BasicAmountType($currencyCode, $orderTotalValue);
+$paymentDetails->ItemTotal = new BasicAmountType( $currencyCode, $itemTotalValue );
+$paymentDetails->TaxTotal = new BasicAmountType( $currencyCode, $taxTotalValue );
+$paymentDetails->OrderTotal = new BasicAmountType( $currencyCode, $orderTotalValue );
 $paymentDetails->PaymentAction = $payment_config['paymentaction'];
 $paymentDetails->HandlingTotal = $handlingTotal;
 $paymentDetails->InsuranceTotal = $insuranceTotal;
@@ -214,14 +215,14 @@ try
 {
 	$setECResponse = $paypalService->SetExpressCheckout( $setECReq );
 }
-catch( Exception $ex )
+catch ( exception $ex )
 {
 	redict_link( $ex->getMessage(), $lang_module['cart_back'], $cancelUrl );
 }
 
 if( isset( $setECResponse ) )
 {
-	if( $setECResponse->Ack == 'Success')
+	if( $setECResponse->Ack == 'Success' )
 	{
 		$token = $setECResponse->Token;
 

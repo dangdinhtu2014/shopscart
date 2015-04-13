@@ -48,10 +48,12 @@ $array_search = array(
 	'title' => $lang_module['search_title'],
 	'bodytext' => $lang_module['search_bodytext'],
 	'author' => $lang_module['search_author'],
-	'admin_id' => $lang_module['search_admin']
-);
+	'admin_id' => $lang_module['search_admin'] );
 $array_in_rows = array( 'title', 'bodytext' );
-$array_in_ordername = array( 'title', 'publtime', 'exptime' );
+$array_in_ordername = array(
+	'title',
+	'publtime',
+	'exptime' );
 
 if( ! in_array( $stype, array_keys( $array_search ) ) )
 {
@@ -63,7 +65,7 @@ if( ! in_array( $ordername, array_keys( $array_in_ordername ) ) )
 	$ordername = 'id';
 }
 
-$from = $db_config['prefix'] . '_' . $module_data . '_rows AS a LEFT JOIN ' . NV_USERS_GLOBALTABLE . ' AS b ON a.user_id=b.userid';
+$from = TABLE_SHOPS_NAME . '_rows AS a LEFT JOIN ' . NV_USERS_GLOBALTABLE . ' AS b ON a.user_id=b.userid';
 
 $page = $nv_Request->get_int( 'page', 'get', 1 );
 $checkss = $nv_Request->get_string( 'checkss', 'get', '' );
@@ -169,8 +171,7 @@ foreach( $array_search as $key => $val )
 	$xtpl->assign( 'STYPE', array(
 		'key' => $key,
 		'title' => $val,
-		'selected' => ( $key == $stype ) ? ' selected="selected"' : ''
-	) );
+		'selected' => ( $key == $stype ) ? ' selected="selected"' : '' ) );
 	$xtpl->parse( 'main.stype' );
 }
 
@@ -181,8 +182,7 @@ while( $i <= 1000 )
 	$xtpl->assign( 'PER_PAGE', array(
 		'key' => $i,
 		'title' => $i,
-		'selected' => ( $i == $per_page ) ? ' selected="selected"' : ''
-	) );
+		'selected' => ( $i == $per_page ) ? ' selected="selected"' : '' ) );
 	$xtpl->parse( 'main.per_page' );
 	$i = $i + 5;
 }
@@ -226,16 +226,16 @@ while( list( $id, $listcatid, $admin_id, $homeimgfile, $homeimgthumb, $title, $a
 	}
 
 	// Xac dinh anh nho
-	if( $homeimgthumb == 1 )//image thumb
+	if( $homeimgthumb == 1 ) //image thumb
 	{
 		$thumb = NV_BASE_SITEURL . NV_FILES_DIR . '/' . $module_name . '/' . $homeimgfile;
 		$imghome = NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module_name . '/' . $homeimgfile;
 	}
-	elseif( $homeimgthumb == 2 )//image file
+	elseif( $homeimgthumb == 2 ) //image file
 	{
 		$imghome = $thumb = NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module_name . '/' . $homeimgfile;
 	}
-	elseif( $homeimgthumb == 3 )//image url
+	elseif( $homeimgthumb == 3 ) //image url
 	{
 		$imghome = $thumb = $homeimgfile;
 	}
@@ -262,8 +262,7 @@ while( list( $id, $listcatid, $admin_id, $homeimgfile, $homeimgthumb, $title, $a
 		'thumb' => $thumb,
 		'imghome' => $imghome,
 		'link_edit' => nv_link_edit_page( $id ),
-		'link_delete' => nv_link_delete_page( $id )
-	) );
+		'link_delete' => nv_link_delete_page( $id ) ) );
 	$xtpl->parse( 'main.loop' );
 
 	++$a;
@@ -273,8 +272,7 @@ $array_list_action = array(
 	'delete' => $lang_global['delete'],
 	'publtime' => $lang_module['publtime'],
 	'exptime' => $lang_module['exptime'],
-	'addtoblock' => $lang_module['addtoblock']
-);
+	'addtoblock' => $lang_module['addtoblock'] );
 
 while( list( $catid_i, $title_i ) = each( $array_list_action ) )
 {

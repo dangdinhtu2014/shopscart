@@ -18,7 +18,7 @@ list( $groupid, $parentid, $title ) = $db->query( "SELECT groupid, parentid, " .
 if( $groupid > 0 )
 {
 	$delallcheckss = $nv_Request->get_string( 'delallcheckss', 'post', "" );
-	
+
 	$check_parentid = $db->query( "SELECT count(*) FROM " . $db_config['prefix'] . "_" . $module_data . "_group WHERE parentid=" . $groupid )->fetchColumn();
 
 	if( intval( $check_parentid ) > 0 )
@@ -140,7 +140,7 @@ if( $groupid > 0 )
 	{
 		$sql = "DELETE FROM " . $db_config['prefix'] . "_" . $module_data . "_items_group WHERE group_id=" . $groupid;
 		$db->exec( $sql );
-		
+
 		$sql = "DELETE FROM " . $db_config['prefix'] . "_" . $module_data . "_group WHERE groupid=" . $groupid;
 		if( $db->exec( $sql ) )
 		{

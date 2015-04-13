@@ -12,7 +12,12 @@ if( ! defined( 'NV_IS_FILE_ADMIN' ) ) die( 'Stop!!!' );
 
 $page_title = $lang_module['sources'];
 $table_name = $db_config['prefix'] . "_" . $module_data . "_sources";
-list( $rowcontent['sourceid'], $title, $link, $logo, $error ) = array( 0, "", "http://", "", "" );
+list( $rowcontent['sourceid'], $title, $link, $logo, $error ) = array(
+	0,
+	"",
+	"http://",
+	"",
+	"" );
 $rowcontent = array(
 	'sourceid' => 0,
 	'link' => '',
@@ -20,8 +25,7 @@ $rowcontent = array(
 	'weight' => 0,
 	'add_time' => 0,
 	'edit_time' => 0,
-	'title' => ''
-);
+	'title' => '' );
 
 $savecat = $nv_Request->get_int( 'savecat', 'post', 0 );
 if( ! empty( $savecat ) )

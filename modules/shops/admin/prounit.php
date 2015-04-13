@@ -86,8 +86,7 @@ else
 		$data = array(
 			"id" => $data_old['id'],
 			"title" => $data_old[NV_LANG_DATA . '_title'],
-			"note" => $data_old[NV_LANG_DATA . '_note']
-		);
+			"note" => $data_old[NV_LANG_DATA . '_note'] );
 	}
 }
 

@@ -114,8 +114,7 @@ if( ! function_exists( 'nv_pro_group' ) )
 					"keywords" => $row['keywords'],
 					"groups_view" => $row['groups_view'],
 					"lev" => $row['lev'],
-					"numpro" => $row['numpro']
-				);
+					"numpro" => $row['numpro'] );
 			}
 		}
 
@@ -129,8 +128,8 @@ if( ! function_exists( 'nv_pro_group' ) )
 		}
 
 		$xtpl = new XTemplate( "block.group.tpl", NV_ROOTDIR . "/themes/" . $block_theme . "/modules/" . $mod_file );
-		$array_cat =  array();
-		
+		$array_cat = array();
+
 		$array_cat = GetCatidInChild( $catid );
 		$contents_temp_none = $contents_temp_chid = "";
 

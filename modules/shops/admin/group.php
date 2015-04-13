@@ -12,11 +12,20 @@ if( ! defined( 'NV_IS_FILE_ADMIN' ) ) die( 'Stop!!!' );
 
 $page_title = $lang_module['group'];
 
-$table_name = $db_config['prefix'] . '_' . $module_data . '_group';
+$table_name = TABLE_SHOPS_NAME . '_group';
 $error = $admins = '';
 $savegroup = 0;
 $data = array();
-list( $data['groupid'], $data['parentid'], $data['title'], $data['alias'], $data['description'], $data['keywords'], $data['cateid'], $data['numpro'], $data['image'] ) = array( 0, 0, '', '', '', '', 0, 0, '' );
+list( $data['groupid'], $data['parentid'], $data['title'], $data['alias'], $data['description'], $data['keywords'], $data['cateid'], $data['numpro'], $data['image'] ) = array(
+	0,
+	0,
+	'',
+	'',
+	'',
+	'',
+	0,
+	0,
+	'' );
 
 $savegroup = $nv_Request->get_int( 'savegroup', 'post', 0 );
 
@@ -88,7 +97,7 @@ if( ! empty( $savegroup ) )
 		$subgroupid = '';
 
 		$sql = "INSERT INTO " . $table_name . " (parentid,cateid, image,  weight, sort, lev, viewgroup, numsubgroup, subgroupid, inhome, add_time, edit_time, numpro, in_order " . $listfield . " )
- 			VALUES (" . $data['parentid'] . ", " . $data['cateid'] . ", :image ," . (int)$weight . ", '0', '0', :viewgroup, '0', :subgroupid, '1',  " . NV_CURRENTTIME . ", " . NV_CURRENTTIME . ",'0', 1 " . $listvalue . " )";
+ 			VALUES (" . $data['parentid'] . ", " . $data['cateid'] . ", :image ," . ( int )$weight . ", '0', '0', :viewgroup, '0', :subgroupid, '1',  " . NV_CURRENTTIME . ", " . NV_CURRENTTIME . ",'0', 1 " . $listvalue . " )";
 
 		$data_insert = array();
 		$data_insert['viewgroup'] = $viewgroup;
@@ -141,7 +150,7 @@ if( ! empty( $savegroup ) )
 				die();
 			}
 		}
-		catch( PDOException $e )
+		catch ( PDOException $e )
 		{
 			$error = $lang_module['errorsave'];
 		}

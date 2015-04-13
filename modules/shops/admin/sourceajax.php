@@ -11,17 +11,16 @@
 if( ! defined( 'NV_IS_FILE_ADMIN' ) ) die( 'Stop!!!' );
 
 $q = $nv_Request->get_title( 'term', 'get', '', 1 );
-$searchs = array( 'http://www.', 'http://', 'https://www.', 'https://' );
+$searchs = array(
+	'http://www.',
+	'http://',
+	'https://www.',
+	'https://' );
 $replaces = array();
 $q = str_replace( $searchs, $replaces, $q );
 if( ! $q ) return;
 
-$db->sqlreset()
-	->select( NV_LANG_DATA . '_title, link' )
-	->from( $db_config['prefix'] . '_' . $module_data . '_sources' )
-	->where( NV_LANG_DATA . '_title LIKE :title OR link LIKE :link' )
-	->order( 'weight ASC' )
-	->limit( 50 );
+$db->sqlreset()->select( NV_LANG_DATA . '_title, link' )->from( TABLE_SHOPS_NAME . '_sources' )->where( NV_LANG_DATA . '_title LIKE :title OR link LIKE :link' )->order( 'weight ASC' )->limit( 50 );
 
 $sth = $db->prepare( $db->sql() );
 $sth->bindValue( ':title', '%' . $q . '%', PDO::PARAM_STR );

@@ -40,8 +40,7 @@ $array_cat_search[0] = array(
 	'catid' => 0,
 	'title' => $lang_module['search_all'],
 	'select' => ( 0 == $catid ) ? "selected" : "",
-	'xtitle' => ''
-);
+	'xtitle' => '' );
 
 foreach( $global_array_cat as $arr_cat_i )
 {
@@ -58,8 +57,7 @@ foreach( $global_array_cat as $arr_cat_i )
 		'catid' => $arr_cat_i['catid'],
 		'title' => $arr_cat_i['title'],
 		'select' => ( $arr_cat_i['catid'] == $catid ) ? "selected" : "",
-		'xtitle' => $xtitle
-	);
+		'xtitle' => $xtitle );
 }
 
 $contents = call_user_func( 'search_theme', $key, $check_num, $date_array, $array_cat_search );
@@ -95,7 +93,7 @@ if( strlen( $key ) >= NV_MIN_SEARCH_LENGTH )
 		$where .= " AND ( publtime < $fdate AND publtime >= $tdate ) ";
 	}
 
-	$table_search = $db_config['prefix'] . '_' . $module_data . '_rows';
+	$table_search = TABLE_SHOPS_NAME . '_rows';
 
 	// Fetch Limit
 	$db->sqlreset()->select( 'COUNT(*)' )->from( $table_search )->where( 'status =1 ' . $where );
@@ -111,19 +109,19 @@ if( strlen( $key ) >= NV_MIN_SEARCH_LENGTH )
 
 	while( list( $id, $title, $alias, $listcatid, $hometext, $publtime, $homeimgfile, $homeimgthumb ) = $result->fetch( 3 ) )
 	{
-		if( $homeimgthumb == 1 )//image thumb
+		if( $homeimgthumb == 1 ) //image thumb
 		{
 			$thumb = NV_BASE_SITEURL . NV_FILES_DIR . '/' . $module_name . '/' . $homeimgfile;
 		}
-		elseif( $homeimgthumb == 2 )//image file
+		elseif( $homeimgthumb == 2 ) //image file
 		{
 			$thumb = NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module_name . '/' . $homeimgfile;
 		}
-		elseif( $homeimgthumb == 3 )//image url
+		elseif( $homeimgthumb == 3 ) //image url
 		{
 			$thumb = $homeimgfile;
 		}
-		else//no image
+		else //no image
 		{
 			$thumb = NV_BASE_SITEURL . 'themes/' . $module_info['template'] . '/images/' . $module_file . '/no-image.jpg';
 		}
@@ -136,7 +134,7 @@ if( strlen( $key ) >= NV_MIN_SEARCH_LENGTH )
 			'hometext' => $hometext,
 			'publtime' => $publtime,
 			'homeimgthumb' => $thumb,
-		);
+			);
 	}
 	$contents .= call_user_func( 'search_result_theme', $key, $numRecord, $per_pages, $pages, $array_content, $url_link, $catid );
 }

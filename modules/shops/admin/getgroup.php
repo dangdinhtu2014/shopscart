@@ -13,7 +13,7 @@ if( ! defined( 'NV_IS_FILE_ADMIN' ) ) die( 'Stop!!!' );
 function getgroup_ckhtml( $data_group, $array_groupid_in_row, $pid )
 {
 	global $module_name;
-	
+
 	$contents_temp = '';
 	if( ! empty( $data_group ) )
 	{
@@ -34,14 +34,14 @@ function getgroup_ckhtml( $data_group, $array_groupid_in_row, $pid )
 				{
 					$ch = ' checked="checked"';
 				}
-				
+
 				$image = '';
 				if( ! empty( $groupinfo_i['image'] ) )
 				{
 					$image = NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module_name . '/' . $groupinfo_i['image'];
 					$image = '<img src="' . $image . '" style="margin-top: -3px; max-width: 16px; max-height: 16px" alt="' . $groupinfo_i['title'] . '" />';
 				}
-				
+
 				$contents_temp .= '<div class="row"><label>' . $xtitle_i . '<input type="checkbox" name="groupids[]" value="' . $groupid_i . '"' . $ch . ' />' . $image . $groupinfo_i['title'] . '<label></div>';
 				if( $groupinfo_i['numsubgroup'] > 0 )
 				{
@@ -60,7 +60,7 @@ $array_groupid_in_row = unserialize( $inrow );
 
 $array_cat = GetCatidInChild( $cid );
 
-$sql = 'SELECT groupid, parentid, cateid, ' . NV_LANG_DATA . '_title AS title, lev, numsubgroup, image FROM ' . $db_config['prefix'] . '_' . $module_data . '_group ORDER BY sort ASC';
+$sql = 'SELECT groupid, parentid, cateid, ' . NV_LANG_DATA . '_title AS title, lev, numsubgroup, image FROM ' . TABLE_SHOPS_NAME . '_group ORDER BY sort ASC';
 $result_group = $db->query( $sql );
 
 $data_group = array();
@@ -79,7 +79,7 @@ foreach( $data_group as $groupid_i => $groupinfo_i )
 		$image = NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module_name . '/' . $groupinfo_i['image'];
 		$image = '<img src="' . $image . '" style="margin-top: -3px; max-width: 16px; max-height: 16px" alt="' . $groupinfo_i['title'] . '" />';
 	}
-	
+
 	if( $groupinfo_i['parentid'] == 0 && $groupinfo_i['cateid'] == 0 )
 	{
 		$ch = '';

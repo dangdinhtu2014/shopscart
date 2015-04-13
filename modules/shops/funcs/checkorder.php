@@ -27,12 +27,14 @@ if( $checkss == md5( $user_info["userid"] . $global_config['sitekey'] . session_
 			$array_data_payment[$payment] = array(
 				'config' => array(),
 				'orders_id' => array(),
-				'data' => array()
-			);
+				'data' => array() );
 			$array_data_payment[$payment]['config'] = unserialize( nv_base64_decode( $row['config'] ) );
 		}
 	}
-	$array_transaction_status_check = array( 1, 2, 4 );
+	$array_transaction_status_check = array(
+		1,
+		2,
+		4 );
 	$sql = "SELECT t1.order_id, t1.order_code, t2.payment, t2.payment_id, t2.payment_data FROM " . $db_config['prefix'] . "_" . $module_data . "_orders AS t1 INNER JOIN " . $db_config['prefix'] . "_" . $module_data . "_transaction AS t2 ON t1.transaction_id = t2.transaction_id WHERE t1.user_id = " . $user_info["userid"] . " AND t1.transaction_status in (" . implode( ",", $array_transaction_status_check ) . ") ORDER BY t1.order_id DESC ";
 	$result = $db->query( $sql );
 	while( list( $order_id, $order_code, $payment, $payment_id, $payment_data ) = $result->fetch( 3 ) )
@@ -41,8 +43,7 @@ if( $checkss == md5( $user_info["userid"] . $global_config['sitekey'] . session_
 			'order_code' => $order_code,
 			'payment_id' => $payment_id,
 			'order_id' => $order_id,
-			'payment_data' => $payment_data
-		);
+			'payment_data' => $payment_data );
 	}
 
 	foreach( $array_data_payment as $payment => $value )

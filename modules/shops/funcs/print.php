@@ -63,13 +63,12 @@ if( $order_id > 0 and $checkss == md5( $order_id . $global_config['sitekey'] . s
 				"product_price" => $temppro[$id]['price'],
 				"product_unit" => $unit,
 				"money_unit" => $money_unit,
-				"link_pro" => $link . $global_array_cat[$listcatid]['alias'] . "/" . $alias . "-" . $id . $global_config['rewrite_exturl'],
-				"product_number" => $temppro[$id]['num']
-			);
+				"link_pro" => $link . $global_array_cat[$listcatid]['alias'] . "/" . $alias . $global_config['rewrite_exturl'],
+				"product_number" => $temppro[$id]['num'] );
 		}
 	}
 
-    $page_title = $data['order_code'];
+	$page_title = $data['order_code'];
 	$contents = call_user_func( "print_pay", $data, $data_pro );
 
 	include NV_ROOTDIR . '/includes/header.php';

@@ -25,16 +25,16 @@ if( ! function_exists( 'nv_filter_product' ) )
 
 		$xtpl = new XTemplate( 'block.filter_product.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_file );
 		$xtpl->assign( 'LANG', $lang_module );
-		
+
 		foreach( $global_array_group as $arr_group )
 		{
 			$space = '';
-			
+
 			if( ! empty( $arr_group['image'] ) )
 			{
 				$arr_group['image'] = NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module_name . '/' . $arr_group['image'];
 			}
-			
+
 			if( $arr_group['lev'] > 0 )
 			{
 				if( $global_array_group[$arr_group['parentid']]['inhome'] and $arr_group['inhome'] )
@@ -43,14 +43,19 @@ if( ! function_exists( 'nv_filter_product' ) )
 					{
 						$space .= '&nbsp;&nbsp;&nbsp;';
 					}
-					$xtpl->assign( 'DATA', array( 'id' => $arr_group['groupid'], 'title' => $arr_group['title'], 'numpro' => $arr_group['numpro'], 'space' => $space, 'image' => $arr_group['image'] ) );
+					$xtpl->assign( 'DATA', array(
+						'id' => $arr_group['groupid'],
+						'title' => $arr_group['title'],
+						'numpro' => $arr_group['numpro'],
+						'space' => $space,
+						'image' => $arr_group['image'] ) );
 					$xtpl->parse( 'main.loop.sub_group.checkbox' );
-					
+
 					if( ! empty( $arr_group['image'] ) )
 					{
 						$xtpl->parse( 'main.loop.sub_group.image' );
 					}
-					
+
 					$xtpl->parse( 'main.loop.sub_group' );
 				}
 				else
@@ -61,15 +66,15 @@ if( ! function_exists( 'nv_filter_product' ) )
 			elseif( $arr_group['inhome'] )
 			{
 				$xtpl->assign( 'DATA', array( 'title' => $arr_group['title'], 'image' => $arr_group['image'] ) );
-				
+
 				if( ! empty( $arr_group['image'] ) )
 				{
 					$xtpl->parse( 'main.loop.main_group.image' );
 				}
-				
+
 				$xtpl->parse( 'main.loop.main_group' );
 			}
-			
+
 			$xtpl->parse( 'main.loop' );
 		}
 

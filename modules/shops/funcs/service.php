@@ -27,7 +27,7 @@ if( $pro_config['active_payment'] == "1" )
 		{
 			//return - 1; // Sai mã bảo mật
 		}
-		else// Thanh toán thành công
+		else // Thanh toán thành công
 		{
 			// Trường hợp là thanh toán tạm giữ. Hãy đưa thông báo thành công và cập nhật hóa đơn phù hợp
 			if( $payment_type == 2 )
@@ -60,7 +60,7 @@ if( $pro_config['active_payment'] == "1" )
 			return - 1;
 			// Sai mã bảo mật
 		}
-		else// Trường hợp hòan trả thành công
+		else // Trường hợp hòan trả thành công
 		{
 			// Lập trình thông báo hoàn trả thành công và cập nhật hóa đơn
 			$order_code = intval( $order_code );
@@ -80,16 +80,14 @@ if( $pro_config['active_payment'] == "1" )
 		'order_code' => 'xsd:string',
 		'payment_id' => 'xsd:int',
 		'payment_type' => 'xsd:int',
-		'secure_code' => 'xsd:string'
-	), array( 'result' => 'xsd:int' ), NS );
+		'secure_code' => 'xsd:string' ), array( 'result' => 'xsd:int' ), NS );
 	$server->register( 'RefundOrder', array(
 		'transaction_info' => 'xsd:string',
 		'order_code' => 'xsd:string',
 		'payment_id' => 'xsd:int',
 		'refund_payment_id' => 'xsd:int',
 		'payment_type' => 'xsd:int',
-		'secure_code' => 'xsd:string'
-	), array( 'result' => 'xsd:int' ), NS );
+		'secure_code' => 'xsd:string' ), array( 'result' => 'xsd:int' ), NS );
 
 	// Khoi tao Webservice
 	$HTTP_RAW_POST_DATA = ( isset( $HTTP_RAW_POST_DATA ) ) ? $HTTP_RAW_POST_DATA : '';

@@ -10,7 +10,7 @@
 
 if( ! defined( 'NV_IS_FILE_ADMIN' ) ) die( 'Stop!!!' );
 
-$table_name = $db_config['prefix'] . '_' . $module_data . '_orders';
+$table_name = TABLE_SHOPS_NAME . '_orders';
 $contents = $lang_module['order_submit_pay_error'];
 
 $order_id = $nv_Request->get_int( 'order_id', 'get', 0 );
@@ -27,13 +27,13 @@ if( empty( $data_content ) )
 if( $save == 1 )
 {
 	/* transaction_status: Trang thai giao dich:
-	 -1 - Giao dich cho duyet
-	 0 - Giao dich moi tao
-	 1 - Chua thanh toan;
-	 2 - Da thanh toan, dang bi tam giu;
-	 3 - Giao dich bi huy;
-	 4 - Giao dich da hoan thanh thanh cong (truong hop thanh toan ngay hoac thanh toan tam giu nhung nguoi mua da phe chuan)
-	 */
+	-1 - Giao dich cho duyet
+	0 - Giao dich moi tao
+	1 - Chua thanh toan;
+	2 - Da thanh toan, dang bi tam giu;
+	3 - Giao dich bi huy;
+	4 - Giao dich da hoan thanh thanh cong (truong hop thanh toan ngay hoac thanh toan tam giu nhung nguoi mua da phe chuan)
+	*/
 
 	$transaction_status = 4;
 	$payment_id = 0;

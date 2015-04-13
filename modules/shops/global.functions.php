@@ -16,9 +16,9 @@ if( file_exists( NV_ROOTDIR . '/modules/' . $module_file . '/language/custom_' .
 	$lang_temp = $lang_module;
 	require NV_ROOTDIR . '/modules/' . $module_file . '/language/custom_' . NV_LANG_INTERFACE . '.php';
 	$lang_module = $lang_module + $lang_temp;
-	unset( $lang_temp ); 
+	unset( $lang_temp );
 }
-		
+
 // Cau hinh mac dinh
 $pro_config = $module_config[$module_name];
 
@@ -62,14 +62,14 @@ function nv_set_status_module()
 	// status_3= "Het han";
 
 	// Dang cac san pham cho kich hoat theo thoi gian
-	$result = $db->query( 'SELECT id FROM ' . $db_config['prefix'] . '_' . $module_data . '_rows WHERE status =2 AND publtime < ' . NV_CURRENTTIME . ' ORDER BY publtime ASC' );
+	$result = $db->query( 'SELECT id FROM ' . TABLE_SHOPS_NAME . '_rows WHERE status =2 AND publtime < ' . NV_CURRENTTIME . ' ORDER BY publtime ASC' );
 	while( list( $id ) = $result->fetch( 3 ) )
 	{
-		$db->query( 'UPDATE ' . $db_config['prefix'] . '_' . $module_data . '_rows SET status =1 WHERE id=' . $id );
+		$db->query( 'UPDATE ' . TABLE_SHOPS_NAME . '_rows SET status =1 WHERE id=' . $id );
 	}
 
 	// Ngung hieu luc cac san pham da het han
-	$result = $db->query( 'SELECT id, archive FROM ' . $db_config['prefix'] . '_' . $module_data . '_rows WHERE status =1 AND exptime > 0 AND exptime <= ' . NV_CURRENTTIME . ' ORDER BY exptime ASC' );
+	$result = $db->query( 'SELECT id, archive FROM ' . TABLE_SHOPS_NAME . '_rows WHERE status =1 AND exptime > 0 AND exptime <= ' . NV_CURRENTTIME . ' ORDER BY exptime ASC' );
 	while( list( $id, $archive ) = $result->fetch( 3 ) )
 	{
 		if( intval( $archive ) == 0 )
@@ -83,9 +83,9 @@ function nv_set_status_module()
 	}
 
 	// Tim kiem thoi gian chay lan ke tiep
-	$time_publtime = $db->query( 'SELECT MIN(publtime) FROM ' . $db_config['prefix'] . '_' . $module_data . '_rows WHERE status =2 AND publtime > ' . NV_CURRENTTIME )->fetchColumn();
+	$time_publtime = $db->query( 'SELECT MIN(publtime) FROM ' . TABLE_SHOPS_NAME . '_rows WHERE status =2 AND publtime > ' . NV_CURRENTTIME )->fetchColumn();
 
-	$time_exptime = $db->query( 'SELECT MIN(exptime) FROM ' . $db_config['prefix'] . '_' . $module_data . '_rows WHERE status =1 AND exptime > ' . NV_CURRENTTIME )->fetchColumn();
+	$time_exptime = $db->query( 'SELECT MIN(exptime) FROM ' . TABLE_SHOPS_NAME . '_rows WHERE status =1 AND exptime > ' . NV_CURRENTTIME )->fetchColumn();
 
 	$timecheckstatus = min( $time_publtime, $time_exptime );
 	if( ! $timecheckstatus )
@@ -114,14 +114,14 @@ function nv_del_content_module( $id )
 	$content_del = 'NO_' . $id;
 	$title = '';
 
-	list( $id, $listcatid, $title ) = $db->query( 'SELECT id, listcatid, ' . NV_LANG_DATA . '_title FROM ' . $db_config['prefix'] . '_' . $module_data . '_rows WHERE id=' . intval( $id ) )->fetch( 3 );
+	list( $id, $listcatid, $title ) = $db->query( 'SELECT id, listcatid, ' . NV_LANG_DATA . '_title FROM ' . TABLE_SHOPS_NAME . '_rows WHERE id=' . intval( $id ) )->fetch( 3 );
 	if( $id > 0 )
 	{
 		$number_no_del = 0;
 		$array_catid = explode( ',', $listcatid );
 		if( $number_no_del == 0 )
 		{
-			$sql = 'DELETE FROM ' . $db_config['prefix'] . '_' . $module_data . '_rows WHERE id=' . $id;
+			$sql = 'DELETE FROM ' . TABLE_SHOPS_NAME . '_rows WHERE id=' . $id;
 			if( ! $db->exec( $sql ) )
 			{
 				++$number_no_del;
@@ -130,9 +130,9 @@ function nv_del_content_module( $id )
 		if( $number_no_del == 0 )
 		{
 			$db->query( 'DELETE FROM ' . NV_PREFIXLANG . '_comments WHERE module=' . $db->quote( $module_name ) . ' AND id = ' . $id );
-			$db->query( 'DELETE FROM ' . $db_config['prefix'] . '_' . $module_data . '_block WHERE id = ' . $id );
+			$db->query( 'DELETE FROM ' . TABLE_SHOPS_NAME . '_block WHERE id = ' . $id );
 			$groupid = GetGroupID( $id );
-			if( $db->query( 'DELETE FROM ' . $db_config['prefix'] . '_' . $module_data . '_items_group WHERE pro_id = ' . $id ) )
+			if( $db->query( 'DELETE FROM ' . TABLE_SHOPS_NAME . '_items_group WHERE pro_id = ' . $id ) )
 			{
 				nv_fix_group_count( $groupid );
 			}
@@ -155,7 +155,7 @@ function nv_del_content_module( $id )
 function nv_archive_content_module( $id )
 {
 	global $db, $module_data, $db_config;
-	$db->query( 'UPDATE ' . $db_config['prefix'] . '_' . $module_data . '_rows SET status =3 WHERE id=' . $id );
+	$db->query( 'UPDATE ' . TABLE_SHOPS_NAME . '_rows SET status =3 WHERE id=' . $id );
 }
 
 /**
@@ -257,7 +257,7 @@ function product_number_order( $listid, $listnum, $type = '-' )
 		{
 			if( empty( $arraynum[$i] ) ) $arraynum[$i] = 0;
 
-			$sql = 'UPDATE ' . $db_config['prefix'] . '_' . $module_data . '_rows SET product_number = product_number ' . $type . ' ' . intval( $arraynum[$i] ) . ' WHERE id =' . $id;
+			$sql = 'UPDATE ' . TABLE_SHOPS_NAME . '_rows SET product_number = product_number ' . $type . ' ' . intval( $arraynum[$i] ) . ' WHERE id =' . $id;
 			$db->query( $sql );
 		}
 	}
@@ -382,7 +382,7 @@ function GetGroupID( $pro_id )
 {
 	global $db, $db_config, $module_data;
 	$data = array();
-	$result = $db->query( 'SELECT group_id FROM ' . $db_config['prefix'] . '_' . $module_data . '_items_group where pro_id=' . $pro_id );
+	$result = $db->query( 'SELECT group_id FROM ' . TABLE_SHOPS_NAME . '_items_group where pro_id=' . $pro_id );
 	while( $row = $result->fetch() )
 	{
 		$data[] = $row['group_id'];

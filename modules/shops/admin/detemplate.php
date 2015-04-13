@@ -18,7 +18,7 @@ if( $id > 0 )
 	$sql = "DELETE FROM " . $db_config['prefix'] . "_" . $module_data . "_template WHERE id=" . $id;
 	if( $db->exec( $sql ) )
 	{
-		$db->query( "DELETE FROM " . $db_config['prefix'] . "_" . $module_data . "_info_".$id);		
+		$db->query( "DELETE FROM " . $db_config['prefix'] . "_" . $module_data . "_info_" . $id );
 		$contents = "OK_" . $id;
 	}
 }
@@ -33,9 +33,9 @@ else
 		if( $id > 0 )
 		{
 			$sql = "DELETE FROM " . $db_config['prefix'] . "_" . $module_data . "_template WHERE id=" . $id;
-			$db->query( $sql );			
-			$db->query( "DELETE FROM " . $db_config['prefix'] . "_" . $module_data . "_info_".$id);		
-			
+			$db->query( $sql );
+			$db->query( "DELETE FROM " . $db_config['prefix'] . "_" . $module_data . "_info_" . $id );
+
 		}
 	}
 

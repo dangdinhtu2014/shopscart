@@ -13,25 +13,20 @@ if( ! defined( 'NV_IS_FILE_ADMIN' ) ) die( 'Stop!!!' );
 $q = $nv_Request->get_title( 'term', 'get', '', 1 );
 if( empty( $q ) ) return;
 
-$db->sqlreset()
-	->select(NV_LANG_DATA . '_keywords')
-	->from( $db_config['prefix'] . '_' . $module_data . '_tags')
-	->where( NV_LANG_DATA . '_alias LIKE :alias OR ' . NV_LANG_DATA . '_keywords LIKE :keywords' )
-	->order( NV_LANG_DATA . '_alias ASC' )
-	->limit( 50 );
+$db->sqlreset()->select( NV_LANG_DATA . '_keywords' )->from( TABLE_SHOPS_NAME . '_tags' )->where( NV_LANG_DATA . '_alias LIKE :alias OR ' . NV_LANG_DATA . '_keywords LIKE :keywords' )->order( NV_LANG_DATA . '_alias ASC' )->limit( 50 );
 
 $sth = $db->prepare( $db->sql() );
-$sth->bindValue( ':alias','%' . $q . '%', PDO::PARAM_STR );
-$sth->bindValue( ':keywords','%' . $q . '%', PDO::PARAM_STR );
+$sth->bindValue( ':alias', '%' . $q . '%', PDO::PARAM_STR );
+$sth->bindValue( ':keywords', '%' . $q . '%', PDO::PARAM_STR );
 $sth->execute();
 
 $array_data = array();
 while( list( $keywords ) = $sth->fetch( 3 ) )
 {
 	$keywords = explode( ',', $keywords );
-	foreach ( $keywords as $_keyword )
+	foreach( $keywords as $_keyword )
 	{
-		$array_data[] = str_replace('-', ' ', $_keyword) ;
+		$array_data[] = str_replace( '-', ' ', $_keyword );
 	}
 }
 

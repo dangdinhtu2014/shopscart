@@ -19,7 +19,7 @@ if( empty( $id ) or empty( $ac ) ) die( 'NO_0_' . $lang_module['wishlist_error']
 
 if( $ac == 'add' )
 {
-	$wishlist = $db->query( 'SELECT * FROM ' . $db_config['prefix'] . '_' . $module_data . '_wishlist WHERE user_id = ' . $user_info['userid'] )->fetch();
+	$wishlist = $db->query( 'SELECT * FROM ' . TABLE_SHOPS_NAME . '_wishlist WHERE user_id = ' . $user_info['userid'] )->fetch();
 	if( sizeof( $wishlist ) > 1 )
 	{
 		$listid = $wishlist['listid'];
@@ -37,16 +37,16 @@ if( $ac == 'add' )
 		{
 			$listid[] = $id;
 			$listid = implode( ',', $listid );
-			
-			$sql = 'UPDATE ' . $db_config['prefix'] . '_' . $module_data . '_wishlist SET listid = ' . $db->quote( $listid ) . ' WHERE wid = ' . $wishlist['wid'];
+
+			$sql = 'UPDATE ' . TABLE_SHOPS_NAME . '_wishlist SET listid = ' . $db->quote( $listid ) . ' WHERE wid = ' . $wishlist['wid'];
 			if( ! $db->query( $sql ) )
 			{
 				die( 'NO_0_' . $lang_module['wishlist_error'] );
-			} 
-			else 
+			}
+			else
 			{
 				$count += 1;
-			}	
+			}
 		}
 		else
 		{
@@ -56,24 +56,24 @@ if( $ac == 'add' )
 	else
 	{
 		$count = 1;
-		$sql = 'INSERT INTO ' . $db_config['prefix'] . '_' . $module_data . '_wishlist (user_id, listid) VALUES (' . $user_info['userid'] . ', ' . $id . ' )';
+		$sql = 'INSERT INTO ' . TABLE_SHOPS_NAME . '_wishlist (user_id, listid) VALUES (' . $user_info['userid'] . ', ' . $id . ' )';
 		if( ! $db->query( $sql ) ) die( 'NO_0_' . $lang_module['wishlist_error'] );
 	}
-	
+
 	nv_del_moduleCache( $module_name );
 }
 elseif( $ac == 'del' )
 {
 	$listid = explode( ',', $listid );
 	$count = count( $listid );
-	
+
 	if( in_array( $id, $listid ) )
 	{
-		foreach( $listid as $key => $rid)
+		foreach( $listid as $key => $rid )
 		{
 			if( $rid == $id ) unset( $listid[$key] );
 		}
-		
+
 		if( count( $listid ) > 0 )
 		{
 			$listid = implode( ',', $listid );
@@ -82,12 +82,12 @@ elseif( $ac == 'del' )
 		{
 			$listid = '';
 		}
-		
-		$sql = 'UPDATE ' . $db_config['prefix'] . '_' . $module_data . '_wishlist SET listid = ' . $db->quote( $listid ) . ' WHERE user_id = ' . $user_info['userid'];
+
+		$sql = 'UPDATE ' . TABLE_SHOPS_NAME . '_wishlist SET listid = ' . $db->quote( $listid ) . ' WHERE user_id = ' . $user_info['userid'];
 		if( ! $db->query( $sql ) )
 		{
 			die( 'NO_0_' . $lang_module['wishlist_error'] );
-		} 
+		}
 		else
 		{
 			$count -= 1;

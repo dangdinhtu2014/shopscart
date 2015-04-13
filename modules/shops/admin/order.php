@@ -23,7 +23,7 @@ if( $checkss == md5( session_id() ) )
 	$search['date_to'] = $nv_Request->get_string( 'to', 'get', '' );
 	$search['order_email'] = $nv_Request->get_string( 'order_email', 'get', '' );
 	$search['order_payment'] = $nv_Request->get_string( 'order_payment', 'get', '' );
-	
+
 	if( ! empty( $search['order_code'] ) )
 	{
 		$where .= ' AND order_code like "%' . $search['order_code'] . '%"';
@@ -37,11 +37,11 @@ if( $checkss == md5( session_id() ) )
 		}
 		else
 		{
-			$search['date_from' ] = NV_CURRENTTIME;
+			$search['date_from'] = NV_CURRENTTIME;
 		}
 		$where .= ' AND order_time >= ' . $search['date_from'] . '';
 	}
-	
+
 	if( ! empty( $search['date_to'] ) )
 	{
 		if( ! empty( $search['date_to'] ) and preg_match( '/^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/', $search['date_to'], $m ) )
@@ -50,16 +50,16 @@ if( $checkss == md5( session_id() ) )
 		}
 		else
 		{
-			$search['date_to' ] = NV_CURRENTTIME;
+			$search['date_to'] = NV_CURRENTTIME;
 		}
 		$where .= ' AND order_time <= ' . $search['date_to'] . '';
 	}
-	
+
 	if( ! empty( $search['order_email'] ) )
 	{
 		$where .= ' AND order_email like "%' . $search['order_email'] . '%"';
 	}
-	
+
 	if( $search['order_payment'] != '' )
 	{
 		$where .= ' AND transaction_status  = ' . $search['order_payment'] . '';
@@ -72,7 +72,7 @@ $transaction_status = array(
 	'2' => $lang_module['history_payment_check'],
 	'1' => $lang_module['history_payment_send'],
 	'0' => $lang_module['history_payment_no'],
-	'-1' => $lang_module['history_payment_wait']);
+	'-1' => $lang_module['history_payment_wait'] );
 
 $xtpl = new XTemplate( "order.tpl", NV_ROOTDIR . "/themes/" . $global_config['module_theme'] . "/modules/" . $module_file );
 $xtpl->assign( 'LANG', $lang_module );
@@ -86,12 +86,13 @@ $per_page = 20;
 $page = $nv_Request->get_int( 'page', 'get', 1 );
 $base_url = NV_BASE_ADMINURL . "index.php?" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=" . $op;
 $count = 0;
-$order_info = array( 'num_items' => 0, 'sum_price' => 0, 'sum_unit' => '' );
+$order_info = array(
+	'num_items' => 0,
+	'sum_price' => 0,
+	'sum_unit' => '' );
 
 // Fetch Limit
-$db->sqlreset()->select( 'COUNT(*)' )
-	->from( $table_name )
-	->where( '1=1 ' . $where );
+$db->sqlreset()->select( 'COUNT(*)' )->from( $table_name )->where( '1=1 ' . $where );
 
 $num_items = $db->query( $db->sql() )->fetchColumn();
 $order_info['num_items'] = $num_items;
@@ -104,7 +105,7 @@ while( $row = $query->fetch() )
 	$acno = 0;
 	$price = nv_currency_conversion( $row['order_total'], $row['unit_total'], $pro_config['money_unit'] );
 	$order_info['sum_price'] = $order_info['sum_price'] + $price['price'];
-	
+
 	if( $row['transaction_status'] == 4 )
 	{
 		$row['status_payment'] = $transaction_status[4];
@@ -125,7 +126,7 @@ while( $row = $query->fetch() )
 	{
 		$row['status_payment'] = $transaction_status[0];
 	}
-	elseif( $row['transaction_status'] == - 1 )
+	elseif( $row['transaction_status'] == -1 )
 	{
 		$row['status_payment'] = $transaction_status[-1];
 	}
@@ -168,7 +169,10 @@ $xtpl->parse( 'main.data' );
 
 foreach( $transaction_status as $key => $lang_status )
 {
-	$xtpl->assign( 'TRAN_STATUS', array( 'key' => $key, 'title' => $lang_status, 'selected' => ( isset( $search['order_payment'] ) and $key == $search['order_payment'] ) ? 'selected="selected"' : '' ) );
+	$xtpl->assign( 'TRAN_STATUS', array(
+		'key' => $key,
+		'title' => $lang_status,
+		'selected' => ( isset( $search['order_payment'] ) and $key == $search['order_payment'] ) ? 'selected="selected"' : '' ) );
 	$xtpl->parse( 'main.transaction_status' );
 }
 

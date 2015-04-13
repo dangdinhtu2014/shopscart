@@ -69,8 +69,7 @@ foreach( $payment_funcs as $payment )
 			'domain' => trim( $xml->domain ),
 			'images_button' => trim( $xml->images_button ),
 			'config' => $array_config,
-			'titlekey' => $array_config_title
-		);
+			'titlekey' => $array_config_title );
 		unset( $config, $xmlconfig, $xml );
 	}
 }

@@ -48,8 +48,7 @@ else
 						'money_unit' => $data_content['money_unit'],
 						'discount_id' => $data_content['discount_id'],
 						'store' => $data_content['product_number'],
-						'group' => $group
-					);
+						'group' => $group );
 				}
 				else
 				{

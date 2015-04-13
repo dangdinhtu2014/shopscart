@@ -21,7 +21,7 @@ function nv_show_tags_list( $q = '', $incomplete = false )
 {
 	global $db, $db_config, $lang_module, $lang_global, $module_name, $module_data, $op, $module_file, $global_config, $module_info;
 
-	$db->sqlreset()->select( '*' )->from( $db_config['prefix'] . '_' . $module_data . '_tags' )->order( NV_LANG_DATA . '_alias ASC' );
+	$db->sqlreset()->select( '*' )->from( TABLE_SHOPS_NAME . '_tags' )->order( NV_LANG_DATA . '_alias ASC' );
 
 	if( $incomplete === true )
 	{
@@ -60,12 +60,12 @@ function nv_show_tags_list( $q = '', $incomplete = false )
 		$row['url_edit'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;tid=' . $row['tid'] . ( $incomplete === true ? '&amp;incomplete=1' : '' ) . '#edit';
 
 		$xtpl->assign( 'ROW', $row );
-		
+
 		if( empty( $row[NV_LANG_DATA . '_description'] ) and $incomplete === false )
 		{
 			$xtpl->parse( 'main.loop.incomplete' );
 		}
-		
+
 		$xtpl->parse( 'main.loop' );
 	}
 	$sth->closeCursor();
@@ -89,8 +89,8 @@ if( $nv_Request->isset_request( 'del_tid', 'get' ) )
 	$tid = $nv_Request->get_int( 'del_tid', 'get', 0 );
 	if( $tid )
 	{
-		$db->query( 'DELETE FROM ' . $db_config['prefix'] . '_' . $module_data . '_tags WHERE tid=' . $tid );
-		$db->query( 'DELETE FROM ' . $db_config['prefix'] . '_' . $module_data . '_tags_id WHERE tid=' . $tid );
+		$db->query( 'DELETE FROM ' . TABLE_SHOPS_NAME . '_tags WHERE tid=' . $tid );
+		$db->query( 'DELETE FROM ' . TABLE_SHOPS_NAME . '_tags_id WHERE tid=' . $tid );
 	}
 	include NV_ROOTDIR . '/includes/header.php';
 	echo nv_show_tags_list();
@@ -108,7 +108,13 @@ elseif( $nv_Request->isset_request( 'q', 'get' ) )
 $error = '';
 $savecat = 0;
 $incomplete = $nv_Request->get_bool( 'incomplete', 'get,post', false );
-list( $tid, $title, $alias, $description, $image, $keywords ) = array( 0, '', '', '', '', '' );
+list( $tid, $title, $alias, $description, $image, $keywords ) = array(
+	0,
+	'',
+	'',
+	'',
+	'',
+	'' );
 
 $savecat = $nv_Request->get_int( 'savecat', 'post', 0 );
 if( ! empty( $savecat ) )
@@ -148,12 +154,12 @@ if( ! empty( $savecat ) )
 	{
 		if( $tid == 0 )
 		{
-			$sth = $db->prepare( 'INSERT INTO ' . $db_config['prefix'] . '_' . $module_data . '_tags (' . NV_LANG_DATA . '_numpro, ' . NV_LANG_DATA . '_alias, ' . NV_LANG_DATA . '_description, ' . NV_LANG_DATA . '_image, ' . NV_LANG_DATA . '_keywords) VALUES (0, :alias, :description, :image, :keywords)' );
+			$sth = $db->prepare( 'INSERT INTO ' . TABLE_SHOPS_NAME . '_tags (' . NV_LANG_DATA . '_numpro, ' . NV_LANG_DATA . '_alias, ' . NV_LANG_DATA . '_description, ' . NV_LANG_DATA . '_image, ' . NV_LANG_DATA . '_keywords) VALUES (0, :alias, :description, :image, :keywords)' );
 			$msg_lg = 'add_tags';
 		}
 		else
 		{
-			$sth = $db->prepare( 'UPDATE ' . $db_config['prefix'] . '_' . $module_data . '_tags SET ' . NV_LANG_DATA . '_alias = :alias, ' . NV_LANG_DATA . '_description = :description, ' . NV_LANG_DATA . '_image = :image, ' . NV_LANG_DATA . '_keywords = :keywords WHERE tid =' . $tid );
+			$sth = $db->prepare( 'UPDATE ' . TABLE_SHOPS_NAME . '_tags SET ' . NV_LANG_DATA . '_alias = :alias, ' . NV_LANG_DATA . '_description = :description, ' . NV_LANG_DATA . '_image = :image, ' . NV_LANG_DATA . '_keywords = :keywords WHERE tid =' . $tid );
 			$msg_lg = 'edit_tags';
 		}
 
@@ -169,7 +175,7 @@ if( ! empty( $savecat ) )
 			Header( 'Location: ' . NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . ( $incomplete ? '&incomplete=1' : '' ) );
 			die();
 		}
-		catch( PDOException $e )
+		catch ( PDOException $e )
 		{
 			$error = $lang_module['errorsave'];
 		}
@@ -180,7 +186,7 @@ $tid = $nv_Request->get_int( 'tid', 'get', 0 );
 
 if( $tid > 0 )
 {
-	list( $tid, $alias, $description, $image, $keywords ) = $db->query( 'SELECT tid, ' . NV_LANG_DATA . '_alias, ' . NV_LANG_DATA . '_description, ' . NV_LANG_DATA . '_image, ' . NV_LANG_DATA . '_keywords FROM ' . $db_config['prefix'] . '_' . $module_data . '_tags where tid=' . $tid )->fetch( 3 );
+	list( $tid, $alias, $description, $image, $keywords ) = $db->query( 'SELECT tid, ' . NV_LANG_DATA . '_alias, ' . NV_LANG_DATA . '_description, ' . NV_LANG_DATA . '_image, ' . NV_LANG_DATA . '_keywords FROM ' . TABLE_SHOPS_NAME . '_tags where tid=' . $tid )->fetch( 3 );
 	$lang_module['add_tags'] = $lang_module['edit_tags'];
 }
 
@@ -219,7 +225,7 @@ if( ! empty( $error ) )
 if( $incomplete )
 {
 	$xtpl->assign( 'ALL_LINK', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op );
-	
+
 	$xtpl->parse( 'main.incomplete' );
 	$xtpl->parse( 'main.incomplete_link' );
 }

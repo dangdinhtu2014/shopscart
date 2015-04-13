@@ -12,19 +12,30 @@ if( ! defined( 'NV_IS_FILE_ADMIN' ) ) die( 'Stop!!!' );
 
 $page_title = $lang_module['cat_title'];
 
-$table_name = $db_config['prefix'] . '_' . $module_data . '_catalogs';
+$table_name = TABLE_SHOPS_NAME . '_catalogs';
 $error = $admins = '';
 $savecat = 0;
 $data = array();
 $groups_list = nv_groups_list();
 
-list( $data['catid'], $data['parentid'], $data['title'], $data['alias'], $data['description'], $data['keywords'], $data['groups_view'],  $data['image'], $data['form'], $data['newday'] ) = array( 0, 0, '', '', '', '', '6', '', '', 7);
+list( $data['catid'], $data['parentid'], $data['title'], $data['alias'], $data['description'], $data['keywords'], $data['groups_view'], $data['image'], $data['form'], $data['newday'] ) = array(
+	0,
+	0,
+	'',
+	'',
+	'',
+	'',
+	'6',
+	'',
+	'',
+	7 );
 
 $savecat = $nv_Request->get_int( 'savecat', 'post', 0 );
 
 $cat_form_exit = array();
 $_form_exit = scandir( NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file );
-foreach ( $_form_exit as $_form ) {
+foreach( $_form_exit as $_form )
+{
 	if( preg_match( '/^cat\_form\_([a-zA-Z0-9\-\_]+)\.tpl$/', $_form, $m ) )
 	{
 		$cat_form_exit[] = $m[1];
@@ -45,7 +56,7 @@ if( ! empty( $savecat ) )
 	$data['description'] = nv_nl2br( nv_htmlspecialchars( strip_tags( $data['description'] ) ), '<br />' );
 
 	$data['alias'] = ( $data['alias'] == '' ) ? change_alias( $data['title'] ) : change_alias( $data['alias'] );
-
+	$data['alias'] = strtolower( $data['alias'] );
 	// Cat mo ta cho chinh xac
 	if( strlen( $data['description'] ) > 255 )
 	{
@@ -166,7 +177,7 @@ if( ! empty( $savecat ) )
 				die();
 			}
 		}
-		catch( PDOException $e )
+		catch ( PDOException $e )
 		{
 			$error = $lang_module['errorsave'];
 		}
@@ -259,20 +270,18 @@ foreach( $groups_list as $_group_id => $_title )
 	$xtpl->assign( 'GROUPS_VIEW', array(
 		'value' => $_group_id,
 		'checked' => in_array( $_group_id, $groups_view ) ? ' checked="checked"' : '',
-		'title' => $_title
-	) );
+		'title' => $_title ) );
 	$xtpl->parse( 'main.groups_view' );
 }
 
 if( ! empty( $cat_form_exit ) )
 {
-	foreach ( $cat_form_exit as $_form )
+	foreach( $cat_form_exit as $_form )
 	{
 		$xtpl->assign( 'CAT_FORM', array(
 			'value' => $_form,
 			'selected' => ( $data['form'] == $_form ) ? ' selected="selected"' : '',
-			'title' => $_form
-		) );
+			'title' => $_form ) );
 		$xtpl->parse( 'main.cat_form.loop' );
 	}
 	$xtpl->parse( 'main.cat_form' );

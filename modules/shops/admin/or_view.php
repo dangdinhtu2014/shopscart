@@ -11,7 +11,7 @@
 if( ! defined( 'NV_IS_FILE_ADMIN' ) ) die( 'Stop!!!' );
 
 $page_title = $lang_module['order_title'];
-$table_name = $db_config['prefix'] . '_' . $module_data . '_orders';
+$table_name = TABLE_SHOPS_NAME . '_orders';
 
 $order_id = $nv_Request->get_int( 'order_id', 'post,get', 0 );
 $db->query( 'UPDATE ' . $table_name . ' SET order_view = 1 WHERE order_id=' . $order_id );
@@ -23,7 +23,7 @@ $data_content = $result->fetch();
 
 if( empty( $data_content ) ) Header( 'Location: ' . NV_BASE_ADMINURL . 'index.php?' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=order' );
 
-if( $save == 1 and intval( $data_content['transaction_status'] ) == - 1 )
+if( $save == 1 and intval( $data_content['transaction_status'] ) == -1 )
 {
 	$order_id = $nv_Request->get_int( 'order_id', 'post', 0 );
 	$transaction_status = 0;
@@ -57,7 +57,7 @@ $i = 0;
 
 foreach( $listid as $id )
 {
-	$sql = 'SELECT t1.id, t1.listcatid, t1.product_code, t1.publtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.product_price,t2.' . NV_LANG_DATA . '_title FROM ' . $db_config['prefix'] . '_' . $module_data . '_units AS t2, ' . $db_config['prefix'] . '_' . $module_data . '_rows AS t1 WHERE t1.product_unit = t2.id AND t1.id =' . $id . ' AND t1.status =1 AND t1.publtime < ' . NV_CURRENTTIME . ' AND (t1.exptime=0 OR t1.exptime>' . NV_CURRENTTIME . ')';
+	$sql = 'SELECT t1.id, t1.listcatid, t1.product_code, t1.publtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.product_price,t2.' . NV_LANG_DATA . '_title FROM ' . TABLE_SHOPS_NAME . '_units AS t2, ' . TABLE_SHOPS_NAME . '_rows AS t1 WHERE t1.product_unit = t2.id AND t1.id =' . $id . ' AND t1.status =1 AND t1.publtime < ' . NV_CURRENTTIME . ' AND (t1.exptime=0 OR t1.exptime>' . NV_CURRENTTIME . ')';
 
 	$result = $db->query( $sql );
 
@@ -72,8 +72,7 @@ foreach( $listid as $id )
 		'product_unit' => $unit,
 		'link_pro' => $link . $global_array_cat[$_catid]['alias'] . '/' . $alias . '-' . $id,
 		'product_number' => $listnum[$i],
-		'product_group' => isset( $listgroup[$i] ) ? $listgroup[$i] : ''
-	);
+		'product_group' => isset( $listgroup[$i] ) ? $listgroup[$i] : '' );
 	++$i;
 }
 
@@ -94,7 +93,7 @@ foreach( $data_pro as $pdata )
 	$xtpl->assign( 'product_unit', $pdata['product_unit'] );
 	$xtpl->assign( 'link_pro', $pdata['link_pro'] );
 	$xtpl->assign( 'pro_no', $i + 1 );
-	
+
 	if( ! empty( $pdata['product_group'] ) )
 	{
 		$groupid = explode( ',', $pdata['product_group'] );
@@ -144,7 +143,7 @@ elseif( $data_content['transaction_status'] == 0 )
 {
 	$html_payment = $lang_module['history_payment_no'];
 }
-elseif( $data_content['transaction_status'] == - 1 )
+elseif( $data_content['transaction_status'] == -1 )
 {
 	$html_payment = $lang_module['history_payment_wait'];
 }
@@ -155,7 +154,7 @@ else
 
 $xtpl->assign( 'payment', $html_payment );
 
-if( $data_content['transaction_status'] == - 1 )
+if( $data_content['transaction_status'] == -1 )
 {
 	$xtpl->parse( 'main.onsubmit' );
 }
@@ -167,7 +166,7 @@ $xtpl->assign( 'URL_ACTIVE_PAY', NV_BASE_ADMINURL . 'index.php?' . NV_NAME_VARIA
 $xtpl->assign( 'URL_BACK', NV_BASE_ADMINURL . 'index.php?' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=or_view&order_id=' . $order_id );
 
 $array_data_payment = array();
-$sql = 'SELECT * FROM ' . $db_config['prefix'] . '_' . $module_data . '_payment ORDER BY weight ASC';
+$sql = 'SELECT * FROM ' . TABLE_SHOPS_NAME . '_payment ORDER BY weight ASC';
 $result = $db->query( $sql );
 
 while( $row = $result->fetch() )
@@ -176,8 +175,7 @@ while( $row = $result->fetch() )
 	$array_data_payment[$payment] = array(
 		'config' => array(),
 		'orders_id' => array(),
-		'data' => array()
-	);
+		'data' => array() );
 
 	$array_data_payment[$payment]['domain'] = $row['domain'];
 	$array_data_payment[$payment]['paymentname'] = $row['paymentname'];
@@ -206,7 +204,7 @@ if( ! empty( $checkpayment ) and $checkpayment == md5( $order_id . session_id() 
 
 $a = 1;
 $array_transaction = array();
-$result = $db->query( 'SELECT * FROM ' . $db_config['prefix'] . '_' . $module_data . '_transaction WHERE order_id=' . $order_id . ' ORDER BY transaction_id ASC' );
+$result = $db->query( 'SELECT * FROM ' . TABLE_SHOPS_NAME . '_transaction WHERE order_id=' . $order_id . ' ORDER BY transaction_id ASC' );
 
 if( $result->rowCount() )
 {
@@ -243,7 +241,7 @@ if( $result->rowCount() )
 		{
 			$row['transaction'] = $lang_module['history_payment_no'];
 		}
-		elseif( $row['transaction_status'] == - 1 )
+		elseif( $row['transaction_status'] == -1 )
 		{
 			$row['transaction'] = $lang_module['history_payment_wait'];
 		}

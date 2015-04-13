@@ -10,21 +10,19 @@
 
 if( ! defined( 'NV_ADMIN' ) or ! defined( 'NV_MAINFILE' ) or ! defined( 'NV_IS_MODADMIN' ) ) die( 'Stop!!!' );
 
-$allow_func = array( 'main', 'alias', 'items', 'exptime', 'publtime', 'setting','content', 'custom_form', 'keywords', 'del_content','detemplate', 'cat', 'change_cat', 'list_cat', 'del_cat', 'block', 'blockcat', 'del_block_cat', 'list_block_cat', 'chang_block_cat', 'change_block', 'list_block', 'prounit', 'delunit', 'order', 'or_del', 'or_view', 'money', 'delmoney', 'active_pay', 'payport', 'changepay', 'actpay', 'docpay', 'group', 'del_group', 'list_group', 'change_group', 'getcatalog', 'getgroup', 'discounts', 'view', 'tags', 'tagsajax','template' );
-if( defined( 'NV_IS_SPADMIN' ) )
-{
-	$allow_func[] = 'setting';
-	$allow_func[] = 'fields';
-}
-
 $array_viewcat_full = array(
 	'view_home_cat' => $lang_module['view_home_cat'],
 	'viewcat_page_list' => $lang_module['viewcat_page_list'],
-	'viewcat_page_gird' => $lang_module['viewcat_page_gird']
-);
+	'viewcat_page_gird' => $lang_module['viewcat_page_gird'] );
 $array_viewcat_nosub = array( 'viewcat_page_list' => $lang_module['viewcat_page_list'], 'viewcat_page_gird' => $lang_module['viewcat_page_gird'] );
 
 define( 'NV_IS_FILE_ADMIN', true );
+
+define( 'ACTION_METHOD', $nv_Request->get_string( 'action', 'get,post', '' ) );
+
+define( 'TABLE_SHOPS_NAME', $db_config['prefix'] . '_' . $module_data );
+
+define( 'SHOPS_LINK', NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' );
 
 require_once NV_ROOTDIR . '/modules/' . $module_file . '/global.functions.php';
 require_once NV_ROOTDIR . '/modules/' . $module_file . '/site.functions.php';
@@ -41,7 +39,7 @@ function nv_fix_cat_order( $parentid = 0, $order = 0, $lev = 0 )
 {
 	global $db, $db_config, $module_data;
 
-	$sql = 'SELECT catid, parentid FROM ' . $db_config['prefix'] . '_' . $module_data . '_catalogs WHERE parentid=' . $parentid . ' ORDER BY weight ASC';
+	$sql = 'SELECT catid, parentid FROM ' . TABLE_SHOPS_NAME . '_catalogs WHERE parentid=' . $parentid . ' ORDER BY weight ASC';
 	$result = $db->query( $sql );
 	$array_cat_order = array();
 	while( $row = $result->fetch() )
@@ -64,7 +62,7 @@ function nv_fix_cat_order( $parentid = 0, $order = 0, $lev = 0 )
 	{
 		++$order;
 		++$weight;
-		$sql = 'UPDATE ' . $db_config['prefix'] . '_' . $module_data . '_catalogs SET weight=' . $weight . ', sort=' . $order . ', lev=' . $lev . ' WHERE catid=' . $catid_i;
+		$sql = 'UPDATE ' . TABLE_SHOPS_NAME . '_catalogs SET weight=' . $weight . ', sort=' . $order . ', lev=' . $lev . ' WHERE catid=' . $catid_i;
 		$db->query( $sql );
 		$order = nv_fix_cat_order( $catid_i, $order, $lev );
 	}
@@ -72,7 +70,7 @@ function nv_fix_cat_order( $parentid = 0, $order = 0, $lev = 0 )
 	$numsubcat = $weight;
 	if( $parentid > 0 )
 	{
-		$sql = 'UPDATE ' . $db_config['prefix'] . '_' . $module_data . '_catalogs SET numsubcat=' . $numsubcat;
+		$sql = 'UPDATE ' . TABLE_SHOPS_NAME . '_catalogs SET numsubcat=' . $numsubcat;
 		if( $numsubcat == 0 )
 		{
 			$sql .= ", subcatid='', viewcat='viewcat_page_list'";
@@ -96,13 +94,13 @@ function nv_fix_block_cat()
 {
 	global $db, $db_config, $module_data;
 
-	$sql = 'SELECT bid FROM ' . $db_config['prefix'] . '_' . $module_data . '_block_cat ORDER BY weight ASC';
+	$sql = 'SELECT bid FROM ' . TABLE_SHOPS_NAME . '_block_cat ORDER BY weight ASC';
 	$weight = 0;
 	$result = $db->query( $sql );
 	while( $row = $result->fetch() )
 	{
 		++$weight;
-		$sql = 'UPDATE ' . $db_config['prefix'] . '_' . $module_data . '_block_cat SET weight=' . $weight . ' WHERE bid=' . $row['bid'];
+		$sql = 'UPDATE ' . TABLE_SHOPS_NAME . '_block_cat SET weight=' . $weight . ' WHERE bid=' . $row['bid'];
 		$db->query( $sql );
 	}
 	$result->closeCursor();
@@ -123,7 +121,7 @@ function nv_news_fix_block( $bid, $repairtable = true )
 
 	if( $bid > 0 )
 	{
-		$sql = 'SELECT id FROM ' . $db_config['prefix'] . '_' . $module_data . '_block WHERE bid=' . $bid . ' ORDER BY weight ASC';
+		$sql = 'SELECT id FROM ' . TABLE_SHOPS_NAME . '_block WHERE bid=' . $bid . ' ORDER BY weight ASC';
 		$result = $db->query( $sql );
 		$weight = 0;
 		while( $row = $result->fetch() )
@@ -131,11 +129,11 @@ function nv_news_fix_block( $bid, $repairtable = true )
 			++$weight;
 			if( $weight <= 500 )
 			{
-				$sql = 'UPDATE ' . $db_config['prefix'] . '_' . $module_data . '_block SET weight=' . $weight . ' WHERE bid=' . $bid . ' AND id=' . $row['id'];
+				$sql = 'UPDATE ' . TABLE_SHOPS_NAME . '_block SET weight=' . $weight . ' WHERE bid=' . $bid . ' AND id=' . $row['id'];
 			}
 			else
 			{
-				$sql = 'DELETE FROM ' . $db_config['prefix'] . '_' . $module_data . '_block WHERE bid=' . $bid . ' AND id=' . $row['id'];
+				$sql = 'DELETE FROM ' . TABLE_SHOPS_NAME . '_block WHERE bid=' . $bid . ' AND id=' . $row['id'];
 			}
 			$db->query( $sql );
 		}
@@ -143,7 +141,7 @@ function nv_news_fix_block( $bid, $repairtable = true )
 
 		if( $repairtable )
 		{
-			$db->query( 'REPAIR TABLE ' . $db_config['prefix'] . '_' . $module_data . '_block' );
+			$db->query( 'REPAIR TABLE ' . TABLE_SHOPS_NAME . '_block' );
 		}
 	}
 }
@@ -175,7 +173,7 @@ function shops_show_cat_list( $parentid = 0 )
 
 		while( $parentid_i > 0 )
 		{
-			list( $catid_i, $parentid_i, $title_i ) = $db->query( 'SELECT catid, parentid, ' . NV_LANG_DATA . '_title FROM ' . $db_config['prefix'] . '_' . $module_data . '_catalogs WHERE catid=' . intval( $parentid_i ) )->fetch( 3 );
+			list( $catid_i, $parentid_i, $title_i ) = $db->query( 'SELECT catid, parentid, ' . NV_LANG_DATA . '_title FROM ' . TABLE_SHOPS_NAME . '_catalogs WHERE catid=' . intval( $parentid_i ) )->fetch( 3 );
 
 			$array_cat_title[] = "<a href=\"" . NV_BASE_ADMINURL . "index.php?" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=cat&amp;parentid=" . $catid_i . "\"><strong>" . $title_i . "</strong></a>";
 
@@ -191,7 +189,7 @@ function shops_show_cat_list( $parentid = 0 )
 		$xtpl->parse( 'main.catnav' );
 	}
 
-	$sql = 'SELECT catid, parentid, ' . NV_LANG_DATA . '_title, weight, viewcat, numsubcat, inhome, numlinks, newday FROM ' . $db_config['prefix'] . '_' . $module_data . '_catalogs WHERE parentid=' . $parentid . ' ORDER BY weight ASC';
+	$sql = 'SELECT catid, parentid, ' . NV_LANG_DATA . '_title, weight, viewcat, numsubcat, inhome, numlinks, newday FROM ' . TABLE_SHOPS_NAME . '_catalogs WHERE parentid=' . $parentid . ' ORDER BY weight ASC';
 	$result = $db->query( $sql );
 	$num = $result->rowCount();
 
@@ -206,7 +204,7 @@ function shops_show_cat_list( $parentid = 0 )
 			if( ! array_key_exists( $viewcat, $array_viewcat ) )
 			{
 				$viewcat = 'viewcat_page_list';
-				$stmt = $db->prepare( 'UPDATE ' . $db_config['prefix'] . '_' . $module_data . '_catalogs SET viewcat= :viewcat WHERE catid=' . $catid );
+				$stmt = $db->prepare( 'UPDATE ' . TABLE_SHOPS_NAME . '_catalogs SET viewcat= :viewcat WHERE catid=' . $catid );
 				$stmt->bindParam( ':viewcat', $viewcat, PDO::PARAM_STR );
 				$stmt->execute();
 			}
@@ -216,16 +214,14 @@ function shops_show_cat_list( $parentid = 0 )
 				'cat_link' => NV_BASE_ADMINURL . 'index.php?' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=cat&amp;parentid=' . $catid,
 				'title' => $title,
 				'numsubcat' => $numsubcat > 0 ? ' <span style="color:#FF0101;">(' . $numsubcat . ')</span>' : '',
-				'parentid' => $parentid
-			) );
+				'parentid' => $parentid ) );
 
 			for( $i = 1; $i <= $num; $i++ )
 			{
 				$xtpl->assign( 'WEIGHT', array(
 					'key' => $i,
 					'title' => $i,
-					'selected' => $i == $weight ? ' selected=\'selected\'' : ''
-				) );
+					'selected' => $i == $weight ? ' selected=\'selected\'' : '' ) );
 				$xtpl->parse( 'main.data.loop.weight' );
 			}
 
@@ -234,8 +230,7 @@ function shops_show_cat_list( $parentid = 0 )
 				$xtpl->assign( 'INHOME', array(
 					'key' => $key,
 					'title' => $val,
-					'selected' => $key == $inhome ? ' selected=\'selected\'' : ''
-				) );
+					'selected' => $key == $inhome ? ' selected=\'selected\'' : '' ) );
 				$xtpl->parse( 'main.data.loop.inhome' );
 			}
 
@@ -244,8 +239,7 @@ function shops_show_cat_list( $parentid = 0 )
 				$xtpl->assign( 'VIEWCAT', array(
 					'key' => $key,
 					'title' => $val,
-					'selected' => $key == $viewcat ? ' selected=\'selected\'' : ''
-				) );
+					'selected' => $key == $viewcat ? ' selected=\'selected\'' : '' ) );
 				$xtpl->parse( 'main.data.loop.viewcat' );
 			}
 
@@ -254,8 +248,7 @@ function shops_show_cat_list( $parentid = 0 )
 				$xtpl->assign( 'NUMLINKS', array(
 					'key' => $i,
 					'title' => $i,
-					'selected' => $i == $numlinks ? ' selected=\'selected\'' : ''
-				) );
+					'selected' => $i == $numlinks ? ' selected=\'selected\'' : '' ) );
 				$xtpl->parse( 'main.data.loop.numlinks' );
 			}
 
@@ -264,8 +257,7 @@ function shops_show_cat_list( $parentid = 0 )
 				$xtpl->assign( 'NEWDAY', array(
 					'key' => $i,
 					'title' => $i,
-					'selected' => $i == $newday ? ' selected=\'selected\'' : ''
-				) );
+					'selected' => $i == $newday ? ' selected=\'selected\'' : '' ) );
 				$xtpl->parse( 'main.data.loop.newday' );
 			}
 
@@ -295,7 +287,7 @@ function nv_fix_group_order( $parentid = 0, $sort = 0, $lev = 0 )
 {
 	global $db, $db_config, $module_data;
 
-	$sql = 'SELECT groupid, parentid FROM ' . $db_config['prefix'] . '_' . $module_data . '_group WHERE parentid=' . $parentid . ' ORDER BY weight ASC';
+	$sql = 'SELECT groupid, parentid FROM ' . TABLE_SHOPS_NAME . '_group WHERE parentid=' . $parentid . ' ORDER BY weight ASC';
 	$result = $db->query( $sql );
 	$array_group_order = array();
 	while( $row = $result->fetch() )
@@ -317,7 +309,7 @@ function nv_fix_group_order( $parentid = 0, $sort = 0, $lev = 0 )
 		++$sort;
 		++$weight;
 
-		$sql = 'UPDATE ' . $db_config['prefix'] . '_' . $module_data . '_group SET weight=' . $weight . ', sort=' . $sort . ', lev=' . $lev . ' WHERE groupid=' . $groupid_i;
+		$sql = 'UPDATE ' . TABLE_SHOPS_NAME . '_group SET weight=' . $weight . ', sort=' . $sort . ', lev=' . $lev . ' WHERE groupid=' . $groupid_i;
 		$db->query( $sql );
 
 		$sort = nv_fix_group_order( $groupid_i, $sort, $lev );
@@ -408,16 +400,14 @@ function shops_show_group_list( $parentid = 0 )
 				"group_link" => NV_BASE_ADMINURL . "index.php?" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=group&amp;parentid=" . $groupid,
 				"title" => $title,
 				"numsubgroup" => $numsubgroup > 0 ? " <span style=\"color:#FF0101;\">(" . $numsubgroup . ")</span>" : "",
-				"parentid" => $parentid
-			) );
+				"parentid" => $parentid ) );
 
 			for( $i = 1; $i <= $num; $i++ )
 			{
 				$xtpl->assign( 'OPTION', array(
 					"key" => $i,
 					"title" => $i,
-					"selected" => $i == $weight ? " selected=\"selected\"" : ""
-				) );
+					"selected" => $i == $weight ? " selected=\"selected\"" : "" ) );
 				$xtpl->parse( 'main.data.loop.weight' );
 			}
 
@@ -426,15 +416,13 @@ function shops_show_group_list( $parentid = 0 )
 				$xtpl->assign( 'OPTION', array(
 					"key" => $key,
 					"title" => $val,
-					"selected" => $key == $inhome ? " selected=\"selected\"" : ""
-				) );
+					"selected" => $key == $inhome ? " selected=\"selected\"" : "" ) );
 				$xtpl->parse( 'main.data.loop.inhome' );
 
 				$xtpl->assign( 'OPTION', array(
 					"key" => $key,
 					"title" => $val,
-					"selected" => $key == $in_order ? " selected=\"selected\"" : ""
-				) );
+					"selected" => $key == $in_order ? " selected=\"selected\"" : "" ) );
 				$xtpl->parse( 'main.data.loop.in_order' );
 			}
 
@@ -443,8 +431,7 @@ function shops_show_group_list( $parentid = 0 )
 				$xtpl->assign( 'OPTION', array(
 					"key" => $key,
 					"title" => $val,
-					"selected" => $key == $viewgroup ? " selected=\"selected\"" : ""
-				) );
+					"selected" => $key == $viewgroup ? " selected=\"selected\"" : "" ) );
 				$xtpl->parse( 'main.data.loop.viewgroup' );
 			}
 
@@ -497,16 +484,14 @@ function nv_show_block_cat_list()
 			$xtpl->assign( 'ROW', array(
 				"bid" => $row['bid'],
 				"numnews" => $numnews ? " (" . $numnews . " " . $lang_module['num_product'] . ")" : "",
-				"title" => $row[NV_LANG_DATA . '_title']
-			) );
+				"title" => $row[NV_LANG_DATA . '_title'] ) );
 
 			for( $i = 1; $i <= $num; $i++ )
 			{
 				$xtpl->assign( 'WEIGHT', array(
 					"key" => $i,
 					"title" => $i,
-					"selected" => $i == $row['weight'] ? " selected=\"selected\"" : ""
-				) );
+					"selected" => $i == $row['weight'] ? " selected=\"selected\"" : "" ) );
 				$xtpl->parse( 'main.loop.weight' );
 			}
 
@@ -515,8 +500,7 @@ function nv_show_block_cat_list()
 				$xtpl->assign( 'ADDDEFAULT', array(
 					"key" => $key,
 					"title" => $val,
-					"selected" => $key == $row['adddefault'] ? " selected=\"selected\"" : ""
-				) );
+					"selected" => $key == $row['adddefault'] ? " selected=\"selected\"" : "" ) );
 				$xtpl->parse( 'main.loop.adddefault' );
 			}
 
@@ -565,16 +549,14 @@ function shops_show_discounts_list()
 			$xtpl->assign( 'ROW', array(
 				"bid" => $row['bid'],
 				"numnews" => $numnews ? " (" . $numnews . " " . $lang_module['num_product'] . ")" : "",
-				"title" => $row[NV_LANG_DATA . '_title']
-			) );
+				"title" => $row[NV_LANG_DATA . '_title'] ) );
 
 			for( $i = 1; $i <= $num; $i++ )
 			{
 				$xtpl->assign( 'WEIGHT', array(
 					"key" => $i,
 					"title" => $i,
-					"selected" => $i == $row['weight'] ? " selected=\"selected\"" : ""
-				) );
+					"selected" => $i == $row['weight'] ? " selected=\"selected\"" : "" ) );
 				$xtpl->parse( 'main.loop.weight' );
 			}
 
@@ -583,8 +565,7 @@ function shops_show_discounts_list()
 				$xtpl->assign( 'ADDDEFAULT', array(
 					"key" => $key,
 					"title" => $val,
-					"selected" => $key == $row['adddefault'] ? " selected=\"selected\"" : ""
-				) );
+					"selected" => $key == $row['adddefault'] ? " selected=\"selected\"" : "" ) );
 				$xtpl->parse( 'main.loop.adddefault' );
 			}
 
@@ -629,16 +610,14 @@ function nv_show_block_list( $bid )
 		$xtpl->assign( 'ROW', array(
 			"id" => $id,
 			"title" => $title,
-			"link" => NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $global_array_cat[$listcatid]['alias'] . "/" . $alias . "-" . $id
-		) );
+			"link" => NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $global_array_cat[$listcatid]['alias'] . "/" . $alias . "-" . $id ) );
 
 		for( $i = 1; $i <= $num; $i++ )
 		{
 			$xtpl->assign( 'WEIGHT', array(
 				"key" => $i,
 				"title" => $i,
-				"selected" => $i == $weight ? " selected=\"selected\"" : ""
-			) );
+				"selected" => $i == $weight ? " selected=\"selected\"" : "" ) );
 			$xtpl->parse( 'main.loop.weight' );
 		}
 
@@ -733,32 +712,31 @@ function nv_show_custom_form( $form, $array_custom, $array_custom_lang )
 	//editor
 	/*
 	$rowcontent['bodytext1'] = htmlspecialchars( nv_editor_br2nl( $array_custom['link'] ) );
-		if( defined( 'NV_EDITOR' ) and function_exists( 'nv_aleditor' ) )
-		{
-			$edits = nv_aleditor( 'bodytext1', '100%', '300px', $rowcontent['bodytext1'] );
-		}
-		else
-		{
-			$edits = "<textarea style=\"width: 100%\" name=\"bodytext\" id=\"bodytext\" cols=\"20\" rows=\"15\">" . $rowcontent['bodytext1'] . "</textarea>";
-		}
-		$xtpl->assign( 'edit_bodytext1', $edits );*/
-
+	if( defined( 'NV_EDITOR' ) and function_exists( 'nv_aleditor' ) )
+	{
+	$edits = nv_aleditor( 'bodytext1', '100%', '300px', $rowcontent['bodytext1'] );
+	}
+	else
+	{
+	$edits = "<textarea style=\"width: 100%\" name=\"bodytext\" id=\"bodytext\" cols=\"20\" rows=\"15\">" . $rowcontent['bodytext1'] . "</textarea>";
+	}
+	$xtpl->assign( 'edit_bodytext1', $edits );*/
 
 	$xtpl->assign( 'ROW', $array_custom );
 	$i = 0;
 
-	$array_cus = array( );
+	$array_cus = array();
 
 	foreach( $array_custom as $key => $array_custom_i )
 	{
 		$i++;
-		if( $i != 1 AND $i != 2 )
+		if( $i != 1 and $i != 2 )
 		{
 			$array_cus[$key] = explode( "may2s", $array_custom_i );
 		}
 	}
 
-	if( isset( $array_cus['title_config'] ) AND count( $array_cus['title_config'] ) > 1 )
+	if( isset( $array_cus['title_config'] ) and count( $array_cus['title_config'] ) > 1 )
 	{
 		foreach( $array_cus['title_config'] as $key_key => $array_cus_i )
 		{
@@ -781,16 +759,16 @@ function Insertabl_catfields( $table, $array, $idshop )
 
 	$result = $db->query( "SHOW COLUMNS FROM " . $table );
 
-	$array_column = array( );
+	$array_column = array();
 
-	while( $row = $result->fetch( ) )
+	while( $row = $result->fetch() )
 	{
 		$array_column[] = $row['field'];
 	}
 	$sql_insert = '';
 	array_shift( $array_column );
 	array_shift( $array_column );
-	$array_new = array( );
+	$array_new = array();
 
 	foreach( $array as $key => $array_a )
 	{

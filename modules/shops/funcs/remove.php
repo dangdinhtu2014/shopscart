@@ -21,8 +21,7 @@ if( $id > 0 )
 		unset( $_SESSION[$module_data . '_cart'][$id] );
 		echo $id;
 	}
-	else
-		echo "";
+	else  echo "";
 }
 else
 {

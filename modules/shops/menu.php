@@ -20,5 +20,5 @@ while( $row = $result->fetch() )
 		'key' => $row['catid'],
 		'title' => $row[NV_LANG_DATA . '_title'],
 		'alias' => $row[NV_LANG_DATA . '_alias'],
-	);
+		);
 }

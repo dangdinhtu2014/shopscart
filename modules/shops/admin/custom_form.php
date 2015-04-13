@@ -13,7 +13,7 @@ if( ! defined( 'NV_IS_FILE_ADMIN' ) ) die( 'Stop!!!' );
 $datacustom_form = '';
 
 $cid = $nv_Request->get_int( 'cid', 'get', 0 );
-if( $cid AND ! empty( $global_array_cat[$cid]['form'] ) )
+if( $cid and ! empty( $global_array_cat[$cid]['form'] ) )
 {
 	$array_custom = array();
 	$array_custom_lang = array();
@@ -21,12 +21,12 @@ if( $cid AND ! empty( $global_array_cat[$cid]['form'] ) )
 	$id = $nv_Request->get_int( 'id', 'get', 0 );
 	if( $id )
 	{
-		$rowcontent = $db->query( 'SELECT custom, ' . NV_LANG_DATA . '_custom FROM ' . $db_config['prefix'] . '_' . $module_data . '_rows where id=' . $id )->fetch();
-		if ( !empty( $rowcontent['custom'] ) )
+		$rowcontent = $db->query( 'SELECT custom, ' . NV_LANG_DATA . '_custom FROM ' . TABLE_SHOPS_NAME . '_rows where id=' . $id )->fetch();
+		if( ! empty( $rowcontent['custom'] ) )
 		{
 			$array_custom = unserialize( $rowcontent['custom'] );
 		}
-		if ( !empty( $rowcontent[NV_LANG_DATA . '_custom'] ) )
+		if( ! empty( $rowcontent[NV_LANG_DATA . '_custom'] ) )
 		{
 			$array_custom_lang = unserialize( $rowcontent[NV_LANG_DATA . '_custom'] );
 		}

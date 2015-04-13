@@ -8,9 +8,9 @@
  * @Createdate 3/25/2010 18:6
  */
 
-if ( ! defined( 'NV_MAINFILE' ) ) die( 'Stop!!!' );
+if( ! defined( 'NV_MAINFILE' ) ) die( 'Stop!!!' );
 
-if ( ! function_exists( 'nv_cart_info' ) )
+if( ! function_exists( 'nv_cart_info' ) )
 {
 	/**
 	 * nv_cart_info()
@@ -18,7 +18,7 @@ if ( ! function_exists( 'nv_cart_info' ) )
 	 * @param mixed $block_config
 	 * @return
 	 */
-	function nv_cart_info ( $block_config )
+	function nv_cart_info( $block_config )
 	{
 		$module = $block_config['module'];
 
@@ -34,7 +34,7 @@ if ( ! function_exists( 'nv_cart_info' ) )
 	}
 }
 
-if ( defined( 'NV_SYSTEM' ) )
+if( defined( 'NV_SYSTEM' ) )
 {
 	$content = nv_cart_info( $block_config );
 }

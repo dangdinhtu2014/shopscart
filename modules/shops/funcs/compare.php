@@ -62,7 +62,7 @@ if( $nv_Request->isset_request( 'compare_del', 'post' ) and $nv_Request->isset_r
 {
 	$action = $nv_Request->get_int( 'all', 'post', 0 );
 	$array_id = unserialize( $_SESSION[$module_name . '_array_id'] );
-	
+
 	if( $action )
 	{
 		unset( $array_id );
@@ -76,7 +76,7 @@ if( $nv_Request->isset_request( 'compare_del', 'post' ) and $nv_Request->isset_r
 		$_SESSION[$module_name . '_array_id'] = $array_id;
 	}
 	nv_del_moduleCache( $module_name );
-	die('OK');
+	die( 'OK' );
 }
 
 $compare_url_rewrite = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=compare';
@@ -95,26 +95,26 @@ if( ! empty( $array_id ) )
 {
 	foreach( $array_id as $array_id_i )
 	{
-		$sql = 'SELECT id, listcatid, publtime, ' . NV_LANG_DATA . '_title, ' . NV_LANG_DATA . '_alias, ' . NV_LANG_DATA . '_hometext, homeimgfile, homeimgalt, homeimgthumb, product_code, product_number, product_price, money_unit, discount_id, showprice, ' . NV_LANG_DATA . '_warranty,' . NV_LANG_DATA . '_promotional as promotional, ' . NV_LANG_DATA . '_bodytext, custom, ' . NV_LANG_DATA . '_custom FROM ' . $db_config['prefix'] . '_' . $module_data . '_rows WHERE id = ' . $array_id_i;
+		$sql = 'SELECT id, listcatid, publtime, ' . NV_LANG_DATA . '_title, ' . NV_LANG_DATA . '_alias, ' . NV_LANG_DATA . '_hometext, homeimgfile, homeimgalt, homeimgthumb, product_code, product_number, product_price, money_unit, discount_id, showprice, ' . NV_LANG_DATA . '_warranty,' . NV_LANG_DATA . '_promotional as promotional, ' . NV_LANG_DATA . '_bodytext, custom, ' . NV_LANG_DATA . '_custom FROM ' . TABLE_SHOPS_NAME . '_rows WHERE id = ' . $array_id_i;
 		$result = $db->query( $sql );
 		while( list( $id, $listcatid, $publtime, $title, $alias, $hometext, $homeimgfile, $homeimgalt, $homeimgthumb, $product_code, $product_number, $product_price, $money_unit, $discount_id, $showprice, $warranty, $promotional, $bodytext, $custom, $custom_lang ) = $result->fetch( 3 ) )
 		{
 			// Xac dinh anh lon
 			$homeimgfiles1 = $homeimgfile;
-			if( $homeimgthumb == 1 )//image thumb
+			if( $homeimgthumb == 1 ) //image thumb
 			{
 				$homeimgthumbs = NV_BASE_SITEURL . NV_FILES_DIR . '/' . $module_name . '/' . $homeimgfiles1;
 				$homeimgthumbs = NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module_name . '/' . $homeimgfiles1;
 			}
-			elseif( $homeimgthumb == 2 )//image file
+			elseif( $homeimgthumb == 2 ) //image file
 			{
 				$homeimgthumbs = $homeimgfiles1 = NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module_name . '/' . $homeimgfiles1;
 			}
-			elseif( $homeimgthumb == 3 )//image url
+			elseif( $homeimgthumb == 3 ) //image url
 			{
 				$homeimgthumbs = $homeimgfile = $homeimgfiles1;
 			}
-			else//no image
+			else //no image
 			{
 				$homeimgthumbs = NV_BASE_SITEURL . 'themes/' . $module_info['template'] . '/images/' . $module_file . '/no-image.jpg';
 			}
@@ -133,14 +133,13 @@ if( ! empty( $array_id ) )
 				'discount_id' => $discount_id,
 				'money_unit' => $money_unit,
 				'showprice' => $showprice,
-				'link_pro' => $link . $global_array_cat[$listcatid]['alias'] . '/' . $alias . '-' . $id . $global_config['rewrite_exturl'],
+				'link_pro' => $link . $global_array_cat[$listcatid]['alias'] . '/' . $alias . $global_config['rewrite_exturl'],
 				'link_order' => $link . 'setcart&amp;id=' . $id,
 				'warranty' => $warranty,
 				'promotional' => $promotional,
 				'bodytext' => $bodytext,
 				'custom' => $custom,
-				NV_LANG_DATA . '_custom' => $custom_lang
-			);
+				NV_LANG_DATA . '_custom' => $custom_lang );
 		}
 	}
 }

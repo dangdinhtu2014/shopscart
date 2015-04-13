@@ -42,28 +42,28 @@ if( ! empty( $_SESSION[$module_data . '_cart'] ) )
 	{
 		$listid = implode( ',', $arrayid );
 
-		$sql = 'SELECT t1.id, t1.listcatid, t1.publtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.' . NV_LANG_DATA . '_hometext, t1.homeimgalt, t1.homeimgfile, t1.homeimgthumb, t1.product_number, t1.product_price, t1.discount_id, t2.' . NV_LANG_DATA . '_title, t1.money_unit FROM ' . $db_config['prefix'] . '_' . $module_data . '_rows AS t1 LEFT JOIN ' . $db_config['prefix'] . '_' . $module_data . '_units AS t2 ON t1.product_unit = t2.id WHERE t1.id IN (' . $listid . ') AND t1.status =1';
+		$sql = 'SELECT t1.id, t1.listcatid, t1.publtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.' . NV_LANG_DATA . '_hometext, t1.homeimgalt, t1.homeimgfile, t1.homeimgthumb, t1.product_number, t1.product_price, t1.discount_id, t2.' . NV_LANG_DATA . '_title, t1.money_unit FROM ' . TABLE_SHOPS_NAME . '_rows AS t1 LEFT JOIN ' . TABLE_SHOPS_NAME . '_units AS t2 ON t1.product_unit = t2.id WHERE t1.id IN (' . $listid . ') AND t1.status =1';
 		$result = $db->query( $sql );
 
 		while( list( $id, $listcatid, $publtime, $title, $alias, $hometext, $homeimgalt, $homeimgfile, $homeimgthumb, $product_number, $product_price, $discount_id, $unit, $money_unit ) = $result->fetch( 3 ) )
 		{
-			if( $homeimgthumb == 1 )//image thumb
+			if( $homeimgthumb == 1 ) //image thumb
 			{
 				$thumb = NV_BASE_SITEURL . NV_FILES_DIR . '/' . $module_name . '/' . $homeimgfile;
 			}
-			elseif( $homeimgthumb == 2 )//image file
+			elseif( $homeimgthumb == 2 ) //image file
 			{
 				$thumb = NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module_name . '/' . $homeimgfile;
 			}
-			elseif( $homeimgthumb == 3 )//image url
+			elseif( $homeimgthumb == 3 ) //image url
 			{
 				$thumb = $homeimgfile;
 			}
-			else//no image
+			else //no image
 			{
 				$thumb = NV_BASE_SITEURL . 'themes/' . $module_info['template'] . '/images/' . $module_file . '/no-image.jpg';
 			}
-			
+
 			$group = $_SESSION[$module_data . '_cart'][$id]['group'];
 
 			$number = $_SESSION[$module_data . '_cart'][$id]['num'];
@@ -91,10 +91,9 @@ if( ! empty( $_SESSION[$module_data . '_cart'] ) )
 				'product_unit' => $unit,
 				'money_unit' => $money_unit,
 				'group' => $group,
-				'link_pro' => $link . $global_array_cat[$listcatid]['alias'] . '/' . $alias . '-' . $id . $global_config['rewrite_exturl'],
+				'link_pro' => $link . $global_array_cat[$listcatid]['alias'] . '/' . $alias . $global_config['rewrite_exturl'],
 				'num' => $number,
-				'link_remove' => $link . 'remove&id=' . $id
-			);
+				'link_remove' => $link . 'remove&id=' . $id );
 			$_SESSION[$module_data . '_cart'][$id]['order'] = 1;
 		}
 

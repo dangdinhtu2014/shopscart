@@ -11,7 +11,7 @@
 if( ! defined( 'NV_IS_FILE_ADMIN' ) ) die( 'Stop!!!' );
 
 $page_title = $lang_module['order_title'];
-$table_name = $db_config['prefix'] . '_' . $module_data . '_orders';
+$table_name = TABLE_SHOPS_NAME . '_orders';
 
 $id = $nv_Request->get_int( 'id', 'post,get', 0 );
 $save = $nv_Request->get_string( 'save', 'post', '' );
@@ -38,7 +38,7 @@ $listnum = explode( '|', $data['listnum'] );
 $i = 0;
 foreach( $listid as $id )
 {
-	$sql = 'SELECT id, ' . NV_LANG_DATA . '_title, product_price,money_unit FROM ' . $db_config['prefix'] . '_' . $module_data . '_rows WHERE id = ' . $id . ' AND status =1 AND publtime < ' . NV_CURRENTTIME . ' AND (exptime=0 OR exptime>' . NV_CURRENTTIME . ')';
+	$sql = 'SELECT id, ' . NV_LANG_DATA . '_title, product_price,money_unit FROM ' . TABLE_SHOPS_NAME . '_rows WHERE id = ' . $id . ' AND status =1 AND publtime < ' . NV_CURRENTTIME . ' AND (exptime=0 OR exptime>' . NV_CURRENTTIME . ')';
 	$result = $db->query( $sql );
 	list( $id, $title, $product_price, $money_unit ) = $result->fetch( 3 );
 

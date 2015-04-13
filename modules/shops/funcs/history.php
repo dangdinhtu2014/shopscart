@@ -39,8 +39,7 @@ while( list( $order_id, $order_code, $order_note, $user_id, $unit_total, $order_
 		"order_total" => $order_total,
 		"order_time" => $order_time,
 		"link" => $link_module . "&amp;" . NV_OP_VARIABLE . "=payment&amp;order_id=" . $order_id . "&checkss=" . $checkss,
-		"link_remove" => $link_module . "&amp;" . NV_OP_VARIABLE . "=delhis&amp;order_id=" . $order_id . "&checkss=" . $checkss
-	);
+		"link_remove" => $link_module . "&amp;" . NV_OP_VARIABLE . "=delhis&amp;order_id=" . $order_id . "&checkss=" . $checkss );
 }
 
 $link_check_order = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=checkorder&checkss=" . md5( $user_info["userid"] . $global_config['sitekey'] . session_id() );

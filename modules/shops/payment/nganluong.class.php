@@ -39,8 +39,7 @@ class NL_Checkout
 			'receiver' => strval( $receiver ),
 			'transaction_info' => strval( $transaction_info ),
 			'order_code' => strval( $order_code ),
-			'price' => strval( $price )
-		);
+			'price' => strval( $price ) );
 
 		$secure_code = implode( ' ', $arr_param ) . ' ' . $this->secure_pass;
 		$arr_param['secure_code'] = md5( $secure_code );
@@ -50,19 +49,19 @@ class NL_Checkout
 		{
 			$redirect_url .= '?';
 		}
-		else if( substr( $redirect_url, strlen( $redirect_url ) - 1, 1 ) != '?' && strpos( $redirect_url, '&' ) === false )
-		{
-			// Nếu biến $redirect_url có '?' nhưng không kết thúc bằng '?' và có chứa dấu '&' thì bổ sung vào cuối
-			$redirect_url .= '&';
-		}
+		else
+			if( substr( $redirect_url, strlen( $redirect_url ) - 1, 1 ) != '?' && strpos( $redirect_url, '&' ) === false )
+			{
+				// Nếu biến $redirect_url có '?' nhưng không kết thúc bằng '?' và có chứa dấu '&' thì bổ sung vào cuối
+				$redirect_url .= '&';
+			}
 
 		/* Bước 3. tạo url*/
 		$url = '';
 		foreach( $arr_param as $key => $value )
 		{
 			if( $url == '' ) $url .= $key . '=' . $value;
-			else
-				$url .= '&' . $key . '=' . $value;
+			else  $url .= '&' . $key . '=' . $value;
 		}
 
 		return $redirect_url . $url;
@@ -107,8 +106,7 @@ class NL_Checkout
 		$result = $client->call( 'checkOrder', array(
 			'merchant_id' => $this->merchant_site_code,
 			'param' => $param,
-			'checksum' => md5( $this->merchant_site_code . $param . $this->secure_pass )
-		) );
+			'checksum' => md5( $this->merchant_site_code . $param . $this->secure_pass ) ) );
 		if( $xml = simplexml_load_string( $result ) )
 		{
 			$error_code = ( string )$xml->ERROR_CODE;
@@ -129,12 +127,12 @@ class NL_Checkout
 					$data['PAID_TIME'] = mktime( $matches[1], $matches[2], $matches[3], $matches[5], $matches[4], $matches[6] );
 
 					/* CHUẨN HÓA CÁC TRẠNG THÁI GIAO DỊCH VỀ CÁC TRẠNG THÁI SAU
-					 0 – Giao dịch mới tạo;
-					 1 – Chưa thanh toán;
-					 2 – Đã thanh toán, đang bị tạm giữ;
-					 3 – Giao dịch bị huỷ;
-					 4 – Giao dịch đã hoàn thành thành công (trường hợp thanh toán ngay hoặc thanh toán tạm giữ nhưng người mua đã phê chuẩn)
-					 */
+					0 – Giao dịch mới tạo;
+					1 – Chưa thanh toán;
+					2 – Đã thanh toán, đang bị tạm giữ;
+					3 – Giao dịch bị huỷ;
+					4 – Giao dịch đã hoàn thành thành công (trường hợp thanh toán ngay hoặc thanh toán tạm giữ nhưng người mua đã phê chuẩn)
+					*/
 					$data['nv_transaction_status'] = intval( $data['TRANSACTION_STATUS'] );
 
 					return $data;
@@ -164,8 +162,7 @@ class NL_Checkout
 		$result = $client->call( 'checkOrder', array(
 			'merchant_id' => $this->merchant_site_code,
 			'param' => $param,
-			'checksum' => md5( $this->merchant_site_code . $param . $this->secure_pass )
-		) );
+			'checksum' => md5( $this->merchant_site_code . $param . $this->secure_pass ) ) );
 
 		if( $xml = simplexml_load_string( $result ) )
 		{
@@ -189,12 +186,12 @@ class NL_Checkout
 						$data['PAID_TIME'] = mktime( $matches[1], $matches[2], $matches[3], $matches[5], $matches[4], $matches[6] );
 
 						/* CHUẨN HÓA CÁC TRẠNG THÁI GIAO DỊCH VỀ CÁC TRẠNG THÁI SAU
-						 0 – Giao dịch mới tạo;
-						 1 – Chưa thanh toán;
-						 2 – Đã thanh toán, đang bị tạm giữ;
-						 3 – Giao dịch bị huỷ;
-						 4 – Giao dịch đã hoàn thành thành công (trường hợp thanh toán ngay hoặc thanh toán tạm giữ nhưng người mua đã phê chuẩn)
-						 */
+						0 – Giao dịch mới tạo;
+						1 – Chưa thanh toán;
+						2 – Đã thanh toán, đang bị tạm giữ;
+						3 – Giao dịch bị huỷ;
+						4 – Giao dịch đã hoàn thành thành công (trường hợp thanh toán ngay hoặc thanh toán tạm giữ nhưng người mua đã phê chuẩn)
+						*/
 						$data['nv_transaction_status'] = intval( $data['TRANSACTION_STATUS'] );
 
 						$data_orders_return[] = $data;

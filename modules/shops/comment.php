@@ -8,7 +8,7 @@
  * @Createdate Tue, 21 Jan 2014 01:32:02 GMT
  */
 
-if( ! defined( 'NV_MAINFILE' ) )	die( 'Stop!!!' );
+if( ! defined( 'NV_MAINFILE' ) ) die( 'Stop!!!' );
 
 $numf = $db->query( 'SELECT COUNT(*) FROM ' . NV_PREFIXLANG . '_comments where module= ' . $db->quote( $row['module'] ) . ' AND id= ' . $row['id'] . ' AND status=1' )->fetchColumn();
 

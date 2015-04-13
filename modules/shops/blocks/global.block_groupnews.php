@@ -8,8 +8,7 @@
  * @Createdate 3/9/2010 23:25
  */
 
-if( ! defined( 'NV_MAINFILE' ) )
-	die( 'Stop!!!' );
+if( ! defined( 'NV_MAINFILE' ) ) die( 'Stop!!!' );
 
 if( ! function_exists( 'nv_pro_groupnews' ) )
 {
@@ -23,7 +22,7 @@ if( ! function_exists( 'nv_pro_groupnews' ) )
 	{
 		global $global_array_cat, $array_cat;
 		$array_cat[] = $catid;
-		if( ! empty( $global_array_cat[$catid]['parentid'] ) && ($global_array_cat[$catid]['parentid'] > 0) )
+		if( ! empty( $global_array_cat[$catid]['parentid'] ) && ( $global_array_cat[$catid]['parentid'] > 0 ) )
 		{
 			$array_cat[] = $global_array_cat[$catid]['parentid'];
 			$array_cat_temp = GetCatidInChild( $global_array_cat[$catid]['parentid'] );
@@ -92,11 +91,10 @@ if( ! function_exists( 'nv_pro_groupnews' ) )
 		$mod_data = $site_mods[$module]['module_data'];
 		$mod_file = $site_mods[$module]['module_file'];
 		$data_group = $global_array_group;
-		
+
 		$array_get = $_GET;
-		//$array_g = array();			
-				
-							
+		//$array_g = array();
+
 		if( $module != $module_name )
 		{
 			$sql = "SELECT groupid, parentid, cateid, lev, " . NV_LANG_DATA . "_title AS title, " . NV_LANG_DATA . "_alias AS alias, viewgroup, numsubgroup, subgroupid, numlinks, " . NV_LANG_DATA . "_description AS description, inhome, " . NV_LANG_DATA . "_keywords AS keywords, groups_view, numpro FROM " . $db_config['prefix'] . "_" . $mod_data . "_group ORDER BY sort ASC";
@@ -110,7 +108,7 @@ if( ! function_exists( 'nv_pro_groupnews' ) )
 					"cateid" => $row['cateid'],
 					"title" => $row['title'],
 					"alias" => $row['alias'],
-					"link" =>  NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module . "&amp;" . NV_OP_VARIABLE . "=group/" . $row['alias'],
+					"link" => NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module . "&amp;" . NV_OP_VARIABLE . "=group/" . $row['alias'],
 					"viewgroup" => $row['viewgroup'],
 					"numsubgroup" => $row['numsubgroup'],
 					"subgroupid" => $row['subgroupid'],
@@ -120,8 +118,7 @@ if( ! function_exists( 'nv_pro_groupnews' ) )
 					"keywords" => $row['keywords'],
 					"groups_view" => $row['groups_view'],
 					"lev" => $row['lev'],
-					"numpro" => $row['numpro']
-				);
+					"numpro" => $row['numpro'] );
 			}
 		}
 
@@ -137,16 +134,16 @@ if( ! function_exists( 'nv_pro_groupnews' ) )
 		$xtpl = new XTemplate( "block.group_news.tpl", NV_ROOTDIR . "/themes/" . $block_theme . "/modules/" . $mod_file );
 		$xtpl->assign( 'NV_NAME_VARIABLE', NV_NAME_VARIABLE );
 		$xtpl->assign( 'NV_LANG_VARIABLE', NV_LANG_VARIABLE );
-		if ($catid ==0)
+		if( $catid == 0 )
 		{
 			$catid = $array_get['catid'];
 		}
 		$xtpl->assign( 'catid', $catid );
-		$array_cat = array( );
+		$array_cat = array();
 
 		$array_cat = GetCatidInChild( $catid );
 		$contents_temp_none = $contents_temp_chid = "";
-	
+
 		foreach( $data_group as $groupid_i => $groupinfo_i )
 		{
 			if( $groupinfo_i['parentid'] == 0 && $groupinfo_i['cateid'] == 0 )
@@ -158,19 +155,20 @@ if( ! function_exists( 'nv_pro_groupnews' ) )
 				if( $groupinfo_i['numsubgroup'] > 0 )
 				{
 					foreach( $data_group as $groupid_i => $groupinfo )
-					{					
+					{
 						if( $groupinfo['parentid'] == $groupinfo_i['groupid'] )
 						{
-							
-							if ( isset ($array_get[$groupinfo_i['alias']]) && $array_get[$groupinfo_i['alias']] == $groupinfo['groupid'] )
+
+							if( isset( $array_get[$groupinfo_i['alias']] ) && $array_get[$groupinfo_i['alias']] == $groupinfo['groupid'] )
 							{
-								
+
 								$groupinfo['selected'] = 'selected="selected"';
 							}
-							else {
+							else
+							{
 								$groupinfo['selected'] = '';
 							}
-															
+
 							$xtpl->assign( 'GSUB', $groupinfo );
 							$xtpl->parse( 'main.gsub1.gsub2' );
 						}
@@ -188,19 +186,20 @@ if( ! function_exists( 'nv_pro_groupnews' ) )
 				if( $groupinfo_i['numsubgroup'] > 0 )
 				{
 					foreach( $data_group as $groupid_i => $groupinfo )
-					{					
+					{
 						if( $groupinfo['parentid'] == $groupinfo_i['groupid'] )
-						{					
-							
-							if ( isset ($array_get[$groupinfo_i['alias']]) && $array_get[$groupinfo_i['alias']] == $groupinfo['groupid'] )
+						{
+
+							if( isset( $array_get[$groupinfo_i['alias']] ) && $array_get[$groupinfo_i['alias']] == $groupinfo['groupid'] )
 							{
-								
+
 								$groupinfo['selected'] = 'selected="selected"';
 							}
-							else {
+							else
+							{
 								$groupinfo['selected'] = '';
 							}
-															
+
 							$xtpl->assign( 'GSUB', $groupinfo );
 							$xtpl->parse( 'main.gsub1.gsub2' );
 						}

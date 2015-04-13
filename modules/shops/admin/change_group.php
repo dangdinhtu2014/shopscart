@@ -15,13 +15,13 @@ $mod = $nv_Request->get_string( 'mod', 'post', '' );
 $new_vid = $nv_Request->get_int( 'new_vid', 'post', 0 );
 $content = 'NO_' . $groupid;
 
-list( $groupid, $parentid, $numsubgroup ) = $db->query( 'SELECT groupid, parentid, numsubgroup FROM ' . $db_config['prefix'] . '_' . $module_data . '_group WHERE groupid=' . $groupid )->fetch( 3 );
+list( $groupid, $parentid, $numsubgroup ) = $db->query( 'SELECT groupid, parentid, numsubgroup FROM ' . TABLE_SHOPS_NAME . '_group WHERE groupid=' . $groupid )->fetch( 3 );
 
 if( $groupid > 0 )
 {
 	if( $mod == 'weight' and $new_vid > 0 )
 	{
-		$sql = 'SELECT groupid FROM ' . $db_config['prefix'] . '_' . $module_data . '_group WHERE groupid!=' . $groupid . ' AND parentid=' . $parentid . ' ORDER BY weight ASC';
+		$sql = 'SELECT groupid FROM ' . TABLE_SHOPS_NAME . '_group WHERE groupid!=' . $groupid . ' AND parentid=' . $parentid . ' ORDER BY weight ASC';
 		$result = $db->query( $sql );
 
 		$weight = 0;
@@ -29,11 +29,11 @@ if( $groupid > 0 )
 		{
 			++$weight;
 			if( $weight == $new_vid ) ++$weight;
-			$sql = 'UPDATE ' . $db_config['prefix'] . '_' . $module_data . '_group SET weight=' . $weight . ' WHERE groupid=' . $row['groupid'];
+			$sql = 'UPDATE ' . TABLE_SHOPS_NAME . '_group SET weight=' . $weight . ' WHERE groupid=' . $row['groupid'];
 			$db->query( $sql );
 		}
 
-		$sql = 'UPDATE ' . $db_config['prefix'] . '_' . $module_data . '_group SET weight=' . $new_vid . ' WHERE groupid=' . $groupid;
+		$sql = 'UPDATE ' . TABLE_SHOPS_NAME . '_group SET weight=' . $new_vid . ' WHERE groupid=' . $groupid;
 		$db->query( $sql );
 
 		nv_fix_group_order();
@@ -41,13 +41,13 @@ if( $groupid > 0 )
 	}
 	elseif( $mod == 'inhome' and ( $new_vid == 0 or $new_vid == 1 ) )
 	{
-		$sql = 'UPDATE ' . $db_config['prefix'] . '_' . $module_data . '_group SET inhome=' . $new_vid . ' WHERE groupid=' . $groupid;
+		$sql = 'UPDATE ' . TABLE_SHOPS_NAME . '_group SET inhome=' . $new_vid . ' WHERE groupid=' . $groupid;
 		$db->query( $sql );
 		$content = 'OK_' . $parentid;
 	}
 	elseif( $mod == 'numlinks' and $new_vid >= 0 and $new_vid <= 10 )
 	{
-		$sql = 'UPDATE ' . $db_config['prefix'] . '_' . $module_data . '_group SET numlinks=' . $new_vid . ' WHERE groupid=' . $groupid;
+		$sql = 'UPDATE ' . TABLE_SHOPS_NAME . '_group SET numlinks=' . $new_vid . ' WHERE groupid=' . $groupid;
 		$db->query( $sql );
 		$content = 'OK_' . $parentid;
 	}
@@ -59,14 +59,14 @@ if( $groupid > 0 )
 		{
 			$viewgroup = 'viewcat_page_list';
 		}
-		$stmt = $db->prepare( 'UPDATE ' . $db_config['prefix'] . '_' . $module_data . '_group SET viewgroup= :viewgroup WHERE groupid=' . $groupid );
+		$stmt = $db->prepare( 'UPDATE ' . TABLE_SHOPS_NAME . '_group SET viewgroup= :viewgroup WHERE groupid=' . $groupid );
 		$stmt->bindParam( ':viewgroup', $viewgroup, PDO::PARAM_STR );
 		$stmt->execute();
 		$content = 'OK_' . $parentid;
 	}
 	elseif( $mod == 'in_order' and ( $new_vid == 0 or $new_vid == 1 ) )
 	{
-		$sql = 'UPDATE ' . $db_config['prefix'] . '_' . $module_data . '_group SET in_order=' . $new_vid . ' WHERE groupid=' . $groupid;
+		$sql = 'UPDATE ' . TABLE_SHOPS_NAME . '_group SET in_order=' . $new_vid . ' WHERE groupid=' . $groupid;
 		$db->query( $sql );
 		$content = 'OK_' . $parentid;
 	}

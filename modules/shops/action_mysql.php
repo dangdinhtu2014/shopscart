@@ -49,7 +49,7 @@ if( sizeof( $rows ) )
 
 if( in_array( $lang, $array_lang_module_setup ) and $num_table > 1 )
 {
-	$sql_drop_module[] = 'ALTER TABLE ' . $db_config['prefix'] . '_' . $module_data . '_rows
+	$sql_drop_module[] = 'ALTER TABLE ' . TABLE_SHOPS_NAME . '_rows
 	 DROP ' . $lang . '_title,
 	 DROP ' . $lang . '_alias,
 	 DROP ' . $lang . '_hometext,
@@ -58,59 +58,59 @@ if( in_array( $lang, $array_lang_module_setup ) and $num_table > 1 )
 	 DROP ' . $lang . '_promotional,
 	 DROP ' . $lang . '_custom';
 
-	$sql_drop_module[] = 'ALTER TABLE ' . $db_config['prefix'] . '_' . $module_data . '_catalogs
+	$sql_drop_module[] = 'ALTER TABLE ' . TABLE_SHOPS_NAME . '_catalogs
 	 DROP ' . $lang . '_title,
 	 DROP ' . $lang . '_alias,
 	 DROP ' . $lang . '_description,
 	 DROP ' . $lang . '_keywords';
 
-	$sql_drop_module[] = 'ALTER TABLE ' . $db_config['prefix'] . '_' . $module_data . '_group
+	$sql_drop_module[] = 'ALTER TABLE ' . TABLE_SHOPS_NAME . '_group
 	 DROP ' . $lang . '_title,
 	 DROP ' . $lang . '_alias,
 	 DROP ' . $lang . '_description,
 	 DROP ' . $lang . '_keywords';
 
-	$sql_drop_module[] = 'ALTER TABLE ' . $db_config['prefix'] . '_' . $module_data . '_block_cat
+	$sql_drop_module[] = 'ALTER TABLE ' . TABLE_SHOPS_NAME . '_block_cat
 	 DROP ' . $lang . '_title,
 	 DROP ' . $lang . '_alias,
 	 DROP ' . $lang . '_description,
 	 DROP ' . $lang . '_keywords';
 
-	$sql_drop_module[] = 'ALTER TABLE ' . $db_config['prefix'] . '_' . $module_data . '_units
+	$sql_drop_module[] = 'ALTER TABLE ' . TABLE_SHOPS_NAME . '_units
 	 DROP ' . $lang . '_title,
 	 DROP ' . $lang . '_note';
-	 
-	$sql_drop_module[] = 'ALTER TABLE ' . $db_config['prefix'] . '_' . $module_data . '_tags
+
+	$sql_drop_module[] = 'ALTER TABLE ' . TABLE_SHOPS_NAME . '_tags
 	 DROP ' . $lang . '_numpro,
 	 DROP ' . $lang . '_alias,
 	 DROP ' . $lang . '_image,
 	 DROP ' . $lang . '_description,
 	 DROP ' . $lang . '_keywords';
-	 
-	$sql_drop_module[] = 'ALTER TABLE ' . $db_config['prefix'] . '_' . $module_data . '_tags_id DROP ' . $lang . '_keyword';
+
+	$sql_drop_module[] = 'ALTER TABLE ' . TABLE_SHOPS_NAME . '_tags_id DROP ' . $lang . '_keyword';
 }
 elseif( $op != 'setup' )
 {
-	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_block';
-	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_field';
-	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_template';
-	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_info';
-	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_block_cat';
-	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_catalogs';
-	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_group';
-	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_orders';
-	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_payment';
-	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_transaction';
-	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_rows';
-	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_units';
-	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_discounts';
-	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_items_group';
-	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_tags';
-	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_tags_id';
+	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_block';
+	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_field';
+	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_template';
+	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_info';
+	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_block_cat';
+	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_catalogs';
+	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_group';
+	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_orders';
+	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_payment';
+	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_transaction';
+	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_rows';
+	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_units';
+	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_discounts';
+	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_items_group';
+	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_tags';
+	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_tags_id';
 	$set_lang_data = '';
 }
 
-$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_money_' . $lang;
+$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_money_' . $lang;
 
 $sql_create_module = $sql_drop_module;
 
@@ -397,9 +397,8 @@ $sql_create_module[] = "ALTER TABLE " . $db_config['prefix'] . "_" . $module_dat
  ADD " . $lang . "_description text,
  ADD " . $lang . "_keywords varchar(255) DEFAULT '',
  ADD UNIQUE(" . $lang . "_alias)";
- 
-$sql_create_module[] = "ALTER TABLE " . $db_config['prefix'] . "_" . $module_data . "_tags_id ADD " . $lang . "_keyword varchar(65) NOT NULL";
 
+$sql_create_module[] = "ALTER TABLE " . $db_config['prefix'] . "_" . $module_data . "_tags_id ADD " . $lang . "_keyword varchar(65) NOT NULL";
 
 $data = array();
 $data['image_size'] = '100x100';
@@ -486,7 +485,7 @@ if( ! empty( $set_lang_data ) )
 	{
 		$sql_create_module[] = "INSERT INTO " . $db_config['prefix'] . "_" . $module_data . "_money_" . $lang . " SELECT * FROM " . $db_config['prefix'] . "_" . $module_data . "_money_" . $set_lang_data;
 	}
-	
+
 	$numrow = $db->query( "SELECT count(*) FROM " . $db_config['prefix'] . "_" . $module_data . "_tags" )->fetchColumn();
 	if( $numrow )
 	{
@@ -495,13 +494,12 @@ if( ! empty( $set_lang_data ) )
 		$sql_create_module[] = "UPDATE " . $db_config['prefix'] . "_" . $module_data . "_tags SET " . $lang . "_description = " . $set_lang_data . "_description";
 		$sql_create_module[] = "UPDATE " . $db_config['prefix'] . "_" . $module_data . "_tags SET " . $lang . "_keywords = " . $set_lang_data . "_keywords";
 	}
-	
+
 	$numrow = $db->query( "SELECT count(*) FROM " . $db_config['prefix'] . "_" . $module_data . "_tags_id" )->fetchColumn();
 	if( $numrow )
 	{
 		$sql_create_module[] = "UPDATE " . $db_config['prefix'] . "_" . $module_data . "_tags_id SET " . $lang . "_keyword = " . $set_lang_data . "_keyword";
 	}
-
 
 	$sql_create_module[] = "UPDATE " . $db_config['prefix'] . "_" . $module_data . "_money_" . $lang . " SET exchange = '1'";
 }

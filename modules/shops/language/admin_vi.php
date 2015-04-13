@@ -359,7 +359,7 @@ $lang_module['content_tags_empty_auto'] = 'Hệ thống sẽ tạo tự động 
 
 //THEM
 
-$lang_module['template']= 'Dạng template';
+$lang_module['template'] = 'Dạng template';
 $lang_module['template_info'] = "Thêm template";
 $lang_module['template_name'] = "Tên template";
 $lang_module['template_save'] = "Lưu lại";
@@ -504,7 +504,8 @@ $lang_module['note_add'] = 'Cách nhau bởi dấu |';
 $lang_module['title_config'] = 'Tiêu đề cấu hình';
 $lang_module['content_config'] = 'Nội dung cấu hình sản phẩm';
 
-$lang_module['addconfig'] = 'Thêm cấu hình';$lang_module['printer_model'] = 'Kiểu máy in';
+$lang_module['addconfig'] = 'Thêm cấu hình';
+$lang_module['printer_model'] = 'Kiểu máy in';
 $lang_module['printer_speed'] = 'Tốc độ in';
 $lang_module['memory'] = 'Bộ nhớ';
 $lang_module['paper_size'] = 'Khổ giấy';

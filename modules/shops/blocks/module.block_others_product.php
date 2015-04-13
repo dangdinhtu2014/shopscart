@@ -32,12 +32,7 @@ if( ! function_exists( 'nv_others_product' ) )
 			$xtpl->assign( 'THEME_TEM', NV_BASE_SITEURL . 'themes/' . $module_info['template'] );
 			$xtpl->assign( 'WIDTH', $pro_config['blockwidth'] );
 
-			$db->sqlreset()
-				->select( 'id, listcatid, ' . NV_LANG_DATA . '_title, ' . NV_LANG_DATA . '_alias ,addtime, homeimgfile, homeimgthumb, product_price, money_unit, discount_id, showprice' )
-				->from( $db_config['prefix'] . '_' . $module_data . '_rows' )
-				->where( 'status =1 AND listcatid = ' . $catid . ' AND id < ' . $id )
-				->order( 'id DESC' )
-				->limit( 20 );
+			$db->sqlreset()->select( 'id, listcatid, ' . NV_LANG_DATA . '_title, ' . NV_LANG_DATA . '_alias ,addtime, homeimgfile, homeimgthumb, product_price, money_unit, discount_id, showprice' )->from( TABLE_SHOPS_NAME . '_rows' )->where( 'status =1 AND listcatid = ' . $catid . ' AND id < ' . $id )->order( 'id DESC' )->limit( 20 );
 
 			$result = $db->query( $db->sql() );
 
@@ -61,7 +56,7 @@ if( ! function_exists( 'nv_others_product' ) )
 					$src_img = NV_BASE_SITEURL . 'themes/' . $global_config['site_theme'] . '/images/shops/no-image.jpg';
 				}
 
-				$xtpl->assign( 'link', NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_cat[$listcatid_i]['alias'] . '/' . $alias_i . '-' . $id_i . $global_config['rewrite_exturl'] );
+				$xtpl->assign( 'link', NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_cat[$listcatid_i]['alias'] . '/' . $alias_i . $global_config['rewrite_exturl'] );
 				$xtpl->assign( 'title', $title_i );
 				$xtpl->assign( 'src_img', $src_img );
 				$xtpl->assign( 'time', nv_date( 'd-m-Y h:i:s A', $addtime_i ) );

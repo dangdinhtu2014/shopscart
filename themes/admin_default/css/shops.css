@@ -1,4 +1,6 @@
-﻿.news {
+﻿.block-group{padding:6px 4px; background:#FFFFFF; text-align:left; border: 1px solid #CCCCCC}
+.block-group .news_checkbox{margin-bottom: 4px}
+.news {
 	text-align: right;
 	margin: 2px 0;
 	clear: both;

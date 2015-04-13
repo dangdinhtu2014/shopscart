@@ -128,8 +128,7 @@ if( ! function_exists( 'nv_pro_catalogs' ) )
 					"inhome" => $row['inhome'],
 					"keywords" => $row['keywords'],
 					"groups_view" => $row['groups_view'],
-					'lev' => $row['lev']
-				);
+					'lev' => $row['lev'] );
 			}
 			unset( $list, $row );
 		}

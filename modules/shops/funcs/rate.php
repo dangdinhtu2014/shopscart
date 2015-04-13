@@ -17,8 +17,8 @@ $showdata = $nv_Request->get_int( 'showdata', 'get,post', 0 );
 if( $showdata == 1 )
 {
 	$sql = "SELECT ratingdetail FROM " . $db_config['prefix'] . "_" . $module_data . "_rows WHERE id=" . $id;
-    $ratingdetail = $db->query( $sql )->fetchColumn();
-    
+	$ratingdetail = $db->query( $sql )->fetchColumn();
+
 	if( ! empty( $ratingdetail ) || $ratingdetail != 0 )
 	{
 		$ratingdetail = unserialize( $ratingdetail );
@@ -29,21 +29,21 @@ if( $showdata == 1 )
 		$percent_rate[3] = round( $ratingdetail[3] * 100 / $total_value );
 		$percent_rate[4] = round( $ratingdetail[4] * 100 / $total_value );
 		$percent_rate[5] = round( $ratingdetail[5] * 100 / $total_value );
-        
-        $total_rate = $ratingdetail[1] + ( $ratingdetail[2] * 2 ) + ( $ratingdetail[3] * 3 ) + ( $ratingdetail[4] * 4 ) + ( $ratingdetail[5] * 5 ); 
-        $ratefercent_avg = round($total_rate / $total_value,1);
-    
+
+		$total_rate = $ratingdetail[1] + ( $ratingdetail[2] * 2 ) + ( $ratingdetail[3] * 3 ) + ( $ratingdetail[4] * 4 ) + ( $ratingdetail[5] * 5 );
+		$ratefercent_avg = round( $total_rate / $total_value, 1 );
+
 		$xtpl = new XTemplate( "detail.tpl", NV_ROOTDIR . "/themes/" . $module_info['template'] . "/modules/" . $module_file );
 		$xtpl->assign( 'LANG', $lang_module );
 		$xtpl->assign( 'RATINGDETAIL', $ratingdetail );
 		$xtpl->assign( 'PERCENT_RATE', $percent_rate );
-        $xtpl->assign( 'RATE_AVG_PERCENT', $ratefercent_avg );
+		$xtpl->assign( 'RATE_AVG_PERCENT', $ratefercent_avg );
 		$xtpl->parse( 'main.allowed_rating' );
 		$contents = $xtpl->text( 'main.allowed_rating' );
 		include NV_ROOTDIR . '/includes/header.php';
 		echo $contents;
 		include NV_ROOTDIR . '/includes/footer.php';
-        exit();
+		exit();
 	}
 }
 if( ! defined( 'NV_IS_AJAX' ) ) die( 'Wrong URL' );
@@ -67,7 +67,7 @@ if( $timeout == 0 or NV_CURRENTTIME - $timeout > $difftimeout )
 			4 => 0,
 			5 => 0 );
 	}
-    
+
 	$ratingdetail[$val] = $ratingdetail[$val] + 1;
 
 	$ratingdetail = serialize( $ratingdetail );

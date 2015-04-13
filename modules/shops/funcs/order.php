@@ -40,8 +40,7 @@ $data_order = array(
 	'who_is' => 0,
 	'unit_total' => $pro_config['money_unit'],
 	'order_total' => 0,
-	'order_time' => NV_CURRENTTIME
-);
+	'order_time' => NV_CURRENTTIME );
 
 if( $post_order == 1 )
 {
@@ -51,7 +50,7 @@ if( $post_order == 1 )
 	$listgroup = '';
 	$i = 0;
 	$total = 0;
-	
+
 	foreach( $_SESSION[$module_data . '_cart'] as $pro_id => $info )
 	{
 		if( $pro_config['active_price'] == '0' )
@@ -74,9 +73,9 @@ if( $post_order == 1 )
 				$listid .= '|' . $pro_id;
 				$listnum .= '|' . $info['num'];
 				$listprice .= '|' . $info['price'];
-				$listgroup .= '|' . $info['group']; 
+				$listgroup .= '|' . $info['group'];
 			}
-			
+
 			$total = $total + ( ( int )$info['num'] * ( double )$info['price'] );
 			++$i;
 		}
@@ -108,7 +107,7 @@ if( $post_order == 1 )
 		$result->closeCursor();
 
 		$order_code = vsprintf( $pro_config['format_order_id'], $item['auto_increment'] );
-		$transaction_status = ( empty( $pro_config['auto_check_order'] ) ) ? - 1 : 0;
+		$transaction_status = ( empty( $pro_config['auto_check_order'] ) ) ? -1 : 0;
 		$sql = "INSERT INTO " . $db_config['prefix'] . "_" . $module_data . "_orders (
 			lang, order_code, order_name, order_email, order_address, order_phone, order_note, listid, listnum, listprice, listgroup,
 			user_id, admin_id, shop_id, who_is, unit_total, order_total, order_time, postip, order_view,
@@ -148,7 +147,7 @@ if( $post_order == 1 )
 			$order_code2 = vsprintf( $pro_config['format_order_id'], $order_id );
 			if( $order_code != $order_code2 )
 			{
-				$stmt = $db->prepare( 'UPDATE ' . $db_config['prefix'] . '_' . $module_data . '_orders SET order_code= :order_code WHERE order_id=' . $order_id );
+				$stmt = $db->prepare( 'UPDATE ' . TABLE_SHOPS_NAME . '_orders SET order_code= :order_code WHERE order_id=' . $order_id );
 				$stmt->bindParam( ':order_code', $order_code2, PDO::PARAM_STR );
 				$stmt->execute();
 			}
@@ -180,7 +179,7 @@ if( $post_order == 1 )
 			{
 				$templistid = implode( ',', $arrayid );
 
-				$sql = 'SELECT t1.id, t1.listcatid, t1.publtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.' . NV_LANG_DATA . '_hometext, t2.' . NV_LANG_DATA . '_title, t1.money_unit FROM ' . $db_config['prefix'] . '_' . $module_data . '_rows AS t1 LEFT JOIN ' . $db_config['prefix'] . '_' . $module_data . '_units AS t2 ON t1.product_unit = t2.id WHERE t1.id IN (' . $templistid . ') AND t1.status =1';
+				$sql = 'SELECT t1.id, t1.listcatid, t1.publtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.' . NV_LANG_DATA . '_hometext, t2.' . NV_LANG_DATA . '_title, t1.money_unit FROM ' . TABLE_SHOPS_NAME . '_rows AS t1 LEFT JOIN ' . TABLE_SHOPS_NAME . '_units AS t2 ON t1.product_unit = t2.id WHERE t1.id IN (' . $templistid . ') AND t1.status =1';
 				$result = $db->query( $sql );
 
 				while( list( $id, $listcatid, $publtime, $title, $alias, $hometext, $unit, $money_unit ) = $result->fetch( 3 ) )
@@ -194,8 +193,7 @@ if( $post_order == 1 )
 						'product_price' => $temppro[$id]['price'],
 						'product_unit' => $unit,
 						'money_unit' => $money_unit,
-						'product_number' => $temppro[$id]['num']
-					);
+						'product_number' => $temppro[$id]['num'] );
 				}
 			}
 
@@ -235,24 +233,24 @@ if( $action == 0 )
 	{
 		$listid = implode( ',', $arrayid );
 
-		$sql = 'SELECT t1.id, t1.listcatid, t1.publtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.' . NV_LANG_DATA . '_hometext, t1.homeimgalt, t1.homeimgfile, t1.homeimgthumb, t1.product_price, t2.' . NV_LANG_DATA . '_title, t1.money_unit, t1.discount_id FROM ' . $db_config['prefix'] . '_' . $module_data . '_rows AS t1 LEFT JOIN ' . $db_config['prefix'] . '_' . $module_data . '_units AS t2 ON t1.product_unit = t2.id WHERE t1.id IN (' . $listid . ') AND t1.status =1';
+		$sql = 'SELECT t1.id, t1.listcatid, t1.publtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.' . NV_LANG_DATA . '_hometext, t1.homeimgalt, t1.homeimgfile, t1.homeimgthumb, t1.product_price, t2.' . NV_LANG_DATA . '_title, t1.money_unit, t1.discount_id FROM ' . TABLE_SHOPS_NAME . '_rows AS t1 LEFT JOIN ' . TABLE_SHOPS_NAME . '_units AS t2 ON t1.product_unit = t2.id WHERE t1.id IN (' . $listid . ') AND t1.status =1';
 		$result = $db->query( $sql );
 
 		while( list( $id, $listcatid, $publtime, $title, $alias, $hometext, $homeimgalt, $homeimgfile, $homeimgthumb, $product_price, $unit, $money_unit, $discount_id ) = $result->fetch( 3 ) )
 		{
-			if( $homeimgthumb == 1 )//image thumb
+			if( $homeimgthumb == 1 ) //image thumb
 			{
 				$thumb = NV_BASE_SITEURL . NV_FILES_DIR . '/' . $module_name . '/' . $homeimgfile;
 			}
-			elseif( $homeimgthumb == 2 )//image file
+			elseif( $homeimgthumb == 2 ) //image file
 			{
 				$thumb = NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module_name . '/' . $homeimgfile;
 			}
-			elseif( $homeimgthumb == 3 )//image url
+			elseif( $homeimgthumb == 3 ) //image url
 			{
 				$thumb = $homeimgfile;
 			}
-			else//no image
+			else //no image
 			{
 				$thumb = NV_BASE_SITEURL . 'themes/' . $module_info['template'] . '/images/' . $module_file . '/no-image.jpg';
 			}
@@ -261,7 +259,7 @@ if( $action == 0 )
 			{
 				$discount_id = $product_price = 0;
 			}
-			
+
 			$group = $_SESSION[$module_data . '_cart'][$id]['group'];
 
 			$data_content[] = array(
@@ -277,9 +275,8 @@ if( $action == 0 )
 				'product_unit' => $unit,
 				'money_unit' => $money_unit,
 				'group' => $group,
-				'link_pro' => $link . $global_array_cat[$listcatid]['alias'] . '/' . $alias . '-' . $id . $global_config['rewrite_exturl'],
-				'num' => $_SESSION[$module_data . '_cart'][$id]['num']
-			);
+				'link_pro' => $link . $global_array_cat[$listcatid]['alias'] . '/' . $alias . $global_config['rewrite_exturl'],
+				'num' => $_SESSION[$module_data . '_cart'][$id]['num'] );
 			++$i;
 		}
 	}

@@ -14,16 +14,14 @@ $array_get = $_GET;
 
 $array_g = array();
 
+foreach( $array_get as $key => $array_g_i )
+{
 
-foreach ($array_get as $key => $array_g_i)
-{	
-		
-	if ($key !='nv' AND $key !='op' AND $key != '0' AND $key !='language' AND  $key != $array_g_i AND  $key != 'catid')
+	if( $key != 'nv' and $key != 'op' and $key != '0' and $key != 'language' and $key != $array_g_i and $key != 'catid' )
 	{
 		$array_g[] = $array_g_i;
 	}
 }
-
 
 if( empty( $array_g ) )
 {
@@ -46,20 +44,11 @@ $link = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA .
 $base_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=group/' . $global_array_group[$array_g[0]]['alias'];
 
 // Fetch Limit
-$db->sqlreset()
-	->select( 'COUNT(*)' )
-	->from( $db_config['prefix'] . '_' . $module_data . '_rows t1' )
-	->join( 'INNER JOIN ' . $db_config['prefix'] . '_' . $module_data . '_items_group t2 ON t2.pro_id = t1.id' )
-	->where( 't2.group_id IN (' . implode(",", $array_g) . ') AND status =1 AND t1.listcatid='. $array_get['catid'] );
-	
+$db->sqlreset()->select( 'COUNT(*)' )->from( TABLE_SHOPS_NAME . '_rows t1' )->join( 'INNER JOIN ' . TABLE_SHOPS_NAME . '_items_group t2 ON t2.pro_id = t1.id' )->where( 't2.group_id IN (' . implode( ",", $array_g ) . ') AND status =1 AND t1.listcatid=' . $array_get['catid'] );
+
 $num_items = $db->query( $db->sql() )->fetchColumn();
 
-
-$db->select( 't1.id, t1.listcatid, t1.publtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.' . NV_LANG_DATA . '_hometext, t1.homeimgalt, t1.homeimgfile, t1.homeimgthumb, t1.product_code, t1.product_number, t1.product_price, t1.money_unit, t1.discount_id, t1.showprice,t1.' . NV_LANG_DATA . '_promotional, t3.newday' )
-	->join( 'INNER JOIN ' . $db_config['prefix'] . '_' . $module_data . '_items_group t2 ON t2.pro_id = t1.id INNER JOIN ' . $db_config['prefix'] . '_' . $module_data . '_catalogs t3 ON t3.catid = t1.listcatid' )
-	->order( 'id DESC' )
-	->limit( $per_page )
-	->offset( ( $page - 1 ) * $per_page );
+$db->select( 't1.id, t1.listcatid, t1.publtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.' . NV_LANG_DATA . '_hometext, t1.homeimgalt, t1.homeimgfile, t1.homeimgthumb, t1.product_code, t1.product_number, t1.product_price, t1.money_unit, t1.discount_id, t1.showprice,t1.' . NV_LANG_DATA . '_promotional, t3.newday' )->join( 'INNER JOIN ' . TABLE_SHOPS_NAME . '_items_group t2 ON t2.pro_id = t1.id INNER JOIN ' . TABLE_SHOPS_NAME . '_catalogs t3 ON t3.catid = t1.listcatid' )->order( 'id DESC' )->limit( $per_page )->offset( ( $page - 1 ) * $per_page );
 
 $result = $db->query( $db->sql() );
 

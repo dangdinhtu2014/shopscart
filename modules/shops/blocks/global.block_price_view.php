@@ -45,7 +45,7 @@ if( ! function_exists( 'nv_view_product_price' ) )
 	 */
 	function numoney_to_strmoney( $money, $mod_file )
 	{
-		include NV_ROOTDIR . '/modules/' . $mod_file . '/language/' . NV_LANG_DATA . '.php' ;
+		include NV_ROOTDIR . '/modules/' . $mod_file . '/language/' . NV_LANG_DATA . '.php';
 		if( $money > 1000 and $money < 1000000 )
 		{
 			$money = $money / 1000;

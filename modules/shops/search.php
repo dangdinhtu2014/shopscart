@@ -11,9 +11,7 @@
 if( ! defined( 'NV_IS_MOD_SEARCH' ) ) die( 'Stop!!!' );
 
 // Fetch Limit
-$db->sqlreset()->select( 'COUNT(*)' )
-	->from( $db_config['prefix'] . '_' . $m_values['module_data'] . '_rows' )
-	->where( "(" . nv_like_logic( NV_LANG_DATA . '_title', $dbkeyword, $logic ) . "
+$db->sqlreset()->select( 'COUNT(*)' )->from( $db_config['prefix'] . '_' . $m_values['module_data'] . '_rows' )->where( "(" . nv_like_logic( NV_LANG_DATA . '_title', $dbkeyword, $logic ) . "
 		OR " . nv_like_logic( 'product_code', $dbkeyword, $logic ) . "
 		OR " . nv_like_logic( NV_LANG_DATA . '_bodytext', $dbkeyword, $logic ) . "
 		OR " . nv_like_logic( NV_LANG_DATA . '_hometext', $dbkeyword, $logic ) . ")
@@ -21,10 +19,7 @@ $db->sqlreset()->select( 'COUNT(*)' )
 
 $num_items = $db->query( $db->sql() )->fetchColumn();
 
-$db->select( 'id, ' . NV_LANG_DATA . '_title,' . NV_LANG_DATA . '_alias, listcatid, ' . NV_LANG_DATA . '_hometext, ' . NV_LANG_DATA . '_bodytext' )
-	->order( 'id DESC' )
-	->limit( $limit )
-	->offset( ( $page - 1 ) * $limit );
+$db->select( 'id, ' . NV_LANG_DATA . '_title,' . NV_LANG_DATA . '_alias, listcatid, ' . NV_LANG_DATA . '_hometext, ' . NV_LANG_DATA . '_bodytext' )->order( 'id DESC' )->limit( $limit )->offset( ( $page - 1 ) * $limit );
 
 $tmp_re = $db->query( $db->sql() );
 
@@ -49,7 +44,6 @@ if( $num_items )
 		$result_array[] = array(
 			'link' => $url,
 			'title' => BoldKeywordInStr( $tilterow, $key, $logic ),
-			'content' => BoldKeywordInStr( $content, $key, $logic )
-		);
+			'content' => BoldKeywordInStr( $content, $key, $logic ) );
 	}
 }

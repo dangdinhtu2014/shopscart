@@ -133,8 +133,7 @@ if( ! nv_function_exists( 'nv_global_product_center' ) )
 					'inhome' => $row['inhome'],
 					'keywords' => $row['keywords'],
 					'groups_view' => $row['groups_view'],
-					'lev' => $row['lev']
-				);
+					'lev' => $row['lev'] );
 			}
 			unset( $list, $row );
 		}
@@ -144,19 +143,13 @@ if( ! nv_function_exists( 'nv_global_product_center' ) )
 		$xtpl->assign( 'NUMVIEW', $num_view );
 		$xtpl->assign( 'WIDTH', $pro_config['homewidth'] );
 
-		$db->sqlreset()
-			->select( 't1.id, t1.listcatid, t1.' . NV_LANG_DATA . '_title AS title, t1.' . NV_LANG_DATA . '_alias AS alias, t1.homeimgfile, t1.homeimgthumb , t1.homeimgalt' )
-			->from( $db_config['prefix'] . '_' . $mod_data . '_rows t1' )
-			->join( 'INNER JOIN ' . $db_config['prefix'] . '_' . $mod_data . '_block t2 ON t1.id = t2.id' )
-			->where( 't2.bid= ' . $block_config['blockid'] . ' AND t1.status =1' )
-			->order( 't1.id DESC' )
-			->limit( $num_get );
+		$db->sqlreset()->select( 't1.id, t1.listcatid, t1.' . NV_LANG_DATA . '_title AS title, t1.' . NV_LANG_DATA . '_alias AS alias, t1.homeimgfile, t1.homeimgthumb , t1.homeimgalt' )->from( $db_config['prefix'] . '_' . $mod_data . '_rows t1' )->join( 'INNER JOIN ' . $db_config['prefix'] . '_' . $mod_data . '_block t2 ON t1.id = t2.id' )->where( 't2.bid= ' . $block_config['blockid'] . ' AND t1.status =1' )->order( 't1.id DESC' )->limit( $num_get );
 
 		$list = nv_db_cache( $db->sql(), '', $module );
 
 		foreach( $list as $row )
 		{
-			$link = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module . '&amp;' . NV_OP_VARIABLE . '=' . $array_cat_shops[$row['listcatid']]['alias'] . '/' . $row['alias'] . '-' . $row['id'] . $global_config['rewrite_exturl'];
+			$link = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module . '&amp;' . NV_OP_VARIABLE . '=' . $array_cat_shops[$row['listcatid']]['alias'] . '/' . $row['alias'] . $global_config['rewrite_exturl'];
 
 			if( $row['homeimgthumb'] == 1 ) //image thumb
 			{

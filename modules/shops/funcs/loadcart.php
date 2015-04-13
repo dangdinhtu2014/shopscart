@@ -44,7 +44,7 @@ $xtpl->assign( 'WISHLIST', NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "
 if( $pro_config['active_wishlist'] and ! empty( $user_info ) )
 {
 	$count = 0;
-	$listid = $db->query( 'SELECT listid FROM ' . $db_config['prefix'] . '_' . $module_data . '_wishlist WHERE user_id = ' . $user_info['userid'] . '' )->fetchColumn();
+	$listid = $db->query( 'SELECT listid FROM ' . TABLE_SHOPS_NAME . '_wishlist WHERE user_id = ' . $user_info['userid'] . '' )->fetchColumn();
 	if( $listid )
 	{
 		$count = count( explode( ',', $listid ) );
@@ -78,7 +78,7 @@ $content = $xtpl->text( 'main' );
 $content = nv_url_rewrite( $content );
 
 $type = $nv_Request->get_int( 't', 'get', 0 );
-switch ( $type )
+switch( $type )
 {
 	case 0:
 		echo $content;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @Project NUKEVIET 3.0
  * @Author VINADES., JSC (contact@vinades.vn)
@@ -6,10 +7,10 @@
  * @Createdate Dec 29, 2010  10:42:00 PM
  */
 
-if ( ! defined( 'NV_IS_MOD_SHOPS' ) ) die( 'Stop!!!' );
+if( ! defined( 'NV_IS_MOD_SHOPS' ) ) die( 'Stop!!!' );
 
 // Gọi thư viện PayPal SDK
-require_once( NV_ROOTDIR . '/includes/class/PayPal/PPBootStrap.php');
+require_once ( NV_ROOTDIR . '/includes/class/PayPal/PPBootStrap.php' );
 
 // Thông tin cấu hình gian hàng
 foreach( $payment_config as $ckey => $cval )
@@ -23,14 +24,14 @@ $config = array(
 	"acct1.UserName" => $payment_config['apiusername'],
 	"acct1.Password" => $payment_config['apipassword'],
 	"acct1.Signature" => $payment_config['signature'],
-);
+	);
 
 // Đường dẫn trả về nếu có lỗi
 $BackUrl = NV_MY_DOMAIN . NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name;
 
-/* 
- * DoExpressCheckoutPayment API
- */
+/*
+* DoExpressCheckoutPayment API
+*/
 
 // Lấy thông tin
 $payerID = $nv_Request->get_string( "payerid", "get", "" );
@@ -51,7 +52,7 @@ try
 {
 	$getECResponse = $paypalService->GetExpressCheckoutDetails( $getExpressCheckoutReq );
 }
-catch( Exception $ex )
+catch ( exception $ex )
 {
 	redict_link( $ex->getMessage(), $lang_module['cart_back'], $BackUrl );
 }
@@ -69,7 +70,7 @@ $orderTotal = new BasicAmountType();
 $orderTotal->currencyID = $PaymentDetail['currency'];
 $orderTotal->value = $PaymentDetail['amount'];
 
-$paymentDetails= new PaymentDetailsType();
+$paymentDetails = new PaymentDetailsType();
 $paymentDetails->OrderTotal = $orderTotal;
 //$paymentDetails->NotifyURL = "";
 
@@ -87,9 +88,9 @@ $DoECReq->DoExpressCheckoutPaymentRequest = $DoECRequest;
 
 try
 {
-	$DoECResponse = $paypalService->DoExpressCheckoutPayment($DoECReq);
+	$DoECResponse = $paypalService->DoExpressCheckoutPayment( $DoECReq );
 }
-catch( Exception $ex )
+catch ( exception $ex )
 {
 	redict_link( $ex->getMessage(), $lang_module['cart_back'], $BackUrl );
 }
@@ -100,57 +101,80 @@ if( isset( $DoECResponse ) )
 	{
 		// Lấy thông tin chi tiết
 		$details = $DoECResponse->DoExpressCheckoutPaymentResponseDetails;
-		
+
 		$payment_info = $details->PaymentInfo[0];
 		$tran_ID = $payment_info->TransactionID;
-		
+
 		$amt_obj = $payment_info->GrossAmount;
 		$amt = $amt_obj->value;
 		$currency_cd = $amt_obj->currencyID;
-		
+
 		$PaymentStatus = $payment_info->PaymentStatus;
 		$PaymentDate = $payment_info->PaymentDate;
 		$PaymentDate = strtotime( $PaymentDate );
 		if( $PaymentDate < 0 ) $PaymentDate = 0;
-		
+
 		/*
-			Thông số mặc định của PayPal
-			Completed - Thanh toán hoàn thành
-			Pending - Thanh toán đang chờ
-			Failed - Thanh toán không thành công
-			Denied - Bị từ chối thanh toán 
-			Refunded - Được hoàn tiền thanh toán
-			Canceled_Reversal - Thanh toán ngược bị hủy
-			Reversed - Thanh toán ngược lại (hoàn trả)
-			Expired - Thanh toán bị hết hạn
-			Processed - Đang thực hiện thanh toán
-			Voided - Bị hủy bỏ vì không được xác thực
-			Created - Đang khởi tạo
-		 */
-		 
+		Thông số mặc định của PayPal
+		Completed - Thanh toán hoàn thành
+		Pending - Thanh toán đang chờ
+		Failed - Thanh toán không thành công
+		Denied - Bị từ chối thanh toán 
+		Refunded - Được hoàn tiền thanh toán
+		Canceled_Reversal - Thanh toán ngược bị hủy
+		Reversed - Thanh toán ngược lại (hoàn trả)
+		Expired - Thanh toán bị hết hạn
+		Processed - Đang thực hiện thanh toán
+		Voided - Bị hủy bỏ vì không được xác thực
+		Created - Đang khởi tạo
+		*/
+
 		$Status = 0;
 		switch( $PaymentStatus )
 		{
-			case 'Canceled_Reversal': $Status = 5; break;
-			case 'Completed': $Status = 4; break;
-			case 'Denied': $Status = 6; break;
-			case 'Expired': $Status = 7; break;
-			case 'Failed': $Status = 8; break;
-			case 'Pending': $Status = 2; break;
-			case 'Processed': $Status = 9; break;
-			case 'Refunded': $Status = 10; break;
-			case 'Reversed': $Status = 11; break;
-			case 'Voided': $Status = 3; break;
-			case 'Created': $Status = 0; break;
-			default: $Status = -1;
+			case 'Canceled_Reversal':
+				$Status = 5;
+				break;
+			case 'Completed':
+				$Status = 4;
+				break;
+			case 'Denied':
+				$Status = 6;
+				break;
+			case 'Expired':
+				$Status = 7;
+				break;
+			case 'Failed':
+				$Status = 8;
+				break;
+			case 'Pending':
+				$Status = 2;
+				break;
+			case 'Processed':
+				$Status = 9;
+				break;
+			case 'Refunded':
+				$Status = 10;
+				break;
+			case 'Reversed':
+				$Status = 11;
+				break;
+			case 'Voided':
+				$Status = 3;
+				break;
+			case 'Created':
+				$Status = 0;
+				break;
+			default:
+				$Status = -1;
 		}
-		
+
 		$nv_Request->unset_request( $module_data . "_payerdata_paypal", "session" );
-		
+
 		if( $PaymentDetail['order_id'] > 0 )
 		{
 			$error_update = false;
-			
+
 			$PaymentDetail['transaction_status'] = $Status;
 			$PaymentDetail['transaction_time'] = $PaymentDate;
 			$PaymentDetail['transaction_id'] = $tran_ID;
@@ -161,9 +185,9 @@ if( isset( $DoECResponse ) )
 			$stmt = $db->prepare( $db->sql() );
 			$stmt->bindParam( ':payment_id', $tran_ID, PDO::PARAM_STR );
 			$stmt->execute();
-			
+
 			$payment_data_old = $stmt->fetchColumn();
-			
+
 			if( $payment_data != $payment_data_old )
 			{
 				$nv_transaction_status = intval( $Status );
@@ -171,7 +195,7 @@ if( isset( $DoECResponse ) )
 				$payment_time = $PaymentDate;
 
 				$transaction_id = $db->insert_id( "INSERT INTO " . $db_config['prefix'] . "_" . $module_data . "_transaction (transaction_id, transaction_time, transaction_status, order_id, userid, payment, payment_id, payment_time, payment_amount, payment_data) VALUES (NULL, " . NV_CURRENTTIME . ", '" . $nv_transaction_status . "', '" . $PaymentDetail['order_id'] . "', '0', '" . $payment . "', '" . $tran_ID . "', '" . $payment_time . "', '" . $payment_amount . "', '" . $payment_data . "')" );
-				
+
 				if( $transaction_id > 0 )
 				{
 					$db->query( "UPDATE " . $db_config['prefix'] . "_" . $module_data . "_orders SET transaction_status=" . $nv_transaction_status . " , transaction_id = " . $transaction_id . " , transaction_count = transaction_count+1 WHERE order_id=" . $PaymentDetail['order_id'] );
@@ -181,7 +205,7 @@ if( isset( $DoECResponse ) )
 					$error_update = true;
 				}
 			}
-			
+
 			if( ! $error_update )
 			{
 				$nv_redirect = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=history";

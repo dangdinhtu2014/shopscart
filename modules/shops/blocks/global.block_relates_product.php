@@ -114,8 +114,7 @@ if( ! nv_function_exists( 'nv_relates_product' ) )
 					'inhome' => $row['inhome'],
 					'keywords' => $row['keywords'],
 					'groups_view' => $row['groups_view'],
-					'lev' => $row['lev']
-				);
+					'lev' => $row['lev'] );
 			}
 			unset( $list, $row );
 
@@ -130,13 +129,7 @@ if( ! nv_function_exists( 'nv_relates_product' ) )
 		$xtpl = new XTemplate( 'block.others_product.tpl', NV_ROOTDIR . '/themes/' . $block_theme . '/modules/' . $mod_file );
 		$xtpl->assign( 'WIDTH', $pro_config['blockwidth'] );
 
-		$db->sqlreset()
-			->select( 't1.id, t1.listcatid, t1.' . NV_LANG_DATA . '_title AS title, t1.' . NV_LANG_DATA . '_alias AS alias, t1.addtime, t1.homeimgfile, t1.homeimgthumb, t1.product_price, t1.money_unit, t1.discount_id, t1.showprice' )
-			->from( $db_config['prefix'] . '_' . $module . '_rows t1' )
-			->join( 'INNER JOIN ' . $db_config['prefix'] . '_' . $module . '_block t2 ON t1.id = t2.id' )
-			->where( 't2.bid= ' . $block_config['blockid'] . ' AND t1.status =1' )
-			->order( 't1.addtime DESC, t2.weight ASC' )
-			->limit( $block_config['numrow'] );
+		$db->sqlreset()->select( 't1.id, t1.listcatid, t1.' . NV_LANG_DATA . '_title AS title, t1.' . NV_LANG_DATA . '_alias AS alias, t1.addtime, t1.homeimgfile, t1.homeimgthumb, t1.product_price, t1.money_unit, t1.discount_id, t1.showprice' )->from( $db_config['prefix'] . '_' . $module . '_rows t1' )->join( 'INNER JOIN ' . $db_config['prefix'] . '_' . $module . '_block t2 ON t1.id = t2.id' )->where( 't2.bid= ' . $block_config['blockid'] . ' AND t1.status =1' )->order( 't1.addtime DESC, t2.weight ASC' )->limit( $block_config['numrow'] );
 
 		$list = nv_db_cache( $db->sql(), 'id', $module );
 
@@ -162,7 +155,7 @@ if( ! nv_function_exists( 'nv_relates_product' ) )
 				$src_img = NV_BASE_SITEURL . 'themes/' . $global_config['site_theme'] . '/images/shops/no-image.jpg';
 			}
 
-			$xtpl->assign( 'link', $link . $array_cat_shops[$row['listcatid']]['alias'] . '/' . $row['alias'] . '-' . $row['id'] . $global_config['rewrite_exturl'] );
+			$xtpl->assign( 'link', $link . $array_cat_shops[$row['listcatid']]['alias'] . '/' . $row['alias'] . $global_config['rewrite_exturl'] );
 			$xtpl->assign( 'title', nv_clean60( $row['title'], $cut_num ) );
 			$xtpl->assign( 'src_img', $src_img );
 			$xtpl->assign( 'time', nv_date( 'd-m-Y h:i:s A', $row['addtime'] ) );
