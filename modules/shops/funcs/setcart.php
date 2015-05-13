@@ -17,7 +17,7 @@ $id = $nv_Request->get_int( 'id', 'post,get', 1 );
 $group = $nv_Request->get_string( 'group', 'post,get', '' );
 $num = $nv_Request->get_int( 'num', 'post,get', 1 );
 $ac = $nv_Request->get_string( 'ac', 'post,get', 0 );
-$contents_msg = "";
+$contents_msg = '';
 
 if( ! is_numeric( $num ) || $num < 0 )
 {
@@ -29,10 +29,10 @@ else
 	{
 		if( $id > 0 )
 		{
-			$result = $db->query( "SELECT * FROM " . $db_config['prefix'] . "_" . $module_data . "_rows WHERE id = " . $id );
+			$result = $db->query( 'SELECT * FROM ' . TABLE_SHOPS_NAME . '_rows WHERE id = ' . $id );
 			$data_content = $result->fetch();
 
-			if( $num > $data_content['product_number'] and empty( $pro_config['active_order_number'] ) )
+			if( $num > $data_content['quantity'] and empty( $pro_config['active_order_number'] ) )
 			{
 				$contents_msg = 'ERR_' . $lang_module['cart_set_err_num'];
 			}
@@ -44,17 +44,17 @@ else
 					$_SESSION[$module_data . '_cart'][$id] = array(
 						'num' => $num,
 						'order' => 0,
-						'price' => $data_content['product_price'],
+						'price' => $data_content['quantity'],
 						'money_unit' => $data_content['money_unit'],
 						'discount_id' => $data_content['discount_id'],
-						'store' => $data_content['product_number'],
+						'store' => $data_content['quantity'],
 						'group' => $group );
 				}
 				else
 				{
-					if( ( $_SESSION[$module_data . '_cart'][$id]['num'] + $num ) > $data_content['product_number'] and empty( $pro_config['active_order_number'] ) )
+					if( ( $_SESSION[$module_data . '_cart'][$id]['num'] + $num ) > $data_content['quantity'] and empty( $pro_config['active_order_number'] ) )
 					{
-						$contents_msg = 'ERR_' . $lang_module['cart_set_err_num'] . ': ' . $data_content['product_number'];
+						$contents_msg = 'ERR_' . $lang_module['cart_set_err_num'] . ': ' . $data_content['quantity'];
 						$update_cart = false;
 					}
 					else
@@ -64,7 +64,7 @@ else
 				}
 				if( $update_cart )
 				{
-					$title = str_replace( "_", "#@#", $data_content[NV_LANG_DATA . '_title'] );
+					$title = str_replace( '_', '#@#', $data_content[NV_LANG_DATA . '_title'] );
 					$contents = sprintf( $lang_module['set_cart_success'], $title );
 					$contents_msg = 'OK_' . $contents;
 				}
@@ -75,12 +75,12 @@ else
 	{
 		if( $id > 0 )
 		{
-			$result = $db->query( "SELECT * FROM " . $db_config['prefix'] . "_" . $module_data . "_rows WHERE id = " . $id );
+			$result = $db->query( 'SELECT * FROM ' . TABLE_SHOPS_NAME . '_rows WHERE id = ' . $id );
 			$data_content = $result->fetch();
 
-			if( $num > $data_content['product_number'] and empty( $pro_config['active_order_number'] ) )
+			if( $num > $data_content['quantity'] and empty( $pro_config['active_order_number'] ) )
 			{
-				$contents_msg = 'ERR_' . $lang_module['cart_set_err_num'] . ': ' . $data_content['product_number'];
+				$contents_msg = 'ERR_' . $lang_module['cart_set_err_num'] . ': ' . $data_content['quantity'];
 			}
 			else
 			{

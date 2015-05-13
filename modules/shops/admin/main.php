@@ -16,33 +16,26 @@ $link = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA 
 $array_info = array();
 
 // Tong so luong san pham
-$number = $db->query( 'SELECT COUNT(*) FROM ' . TABLE_SHOPS_NAME . '_rows WHERE publtime < ' . NV_CURRENTTIME . ' AND (exptime=0 OR exptime>' . NV_CURRENTTIME . ')' )->fetchColumn();
+$number = $db->query( 'SELECT COUNT(*) FROM ' . TABLE_SHOPS_NAME . '_rows WHERE 1' )->fetchColumn();
 $array_info[] = array(
-	'title' => $lang_module['product_number_all'],
+	'title' => $lang_module['quantity_all'],
 	'value' => $number,
 	'link' => $link . '=items',
 	'unit' => $lang_module['product_unit'] );
 
 // Tong so luong san pham chua duyet
-$number = $db->query( 'SELECT COUNT(*) FROM ' . TABLE_SHOPS_NAME . '_rows WHERE status = 0 AND publtime < ' . NV_CURRENTTIME . ' AND (exptime=0 OR exptime>' . NV_CURRENTTIME . ')' )->fetchColumn();
+$number = $db->query( 'SELECT COUNT(*) FROM ' . TABLE_SHOPS_NAME . '_rows WHERE status = 0' )->fetchColumn();
 
 $array_info[] = array(
-	'title' => $lang_module['product_number_all_noctive'],
+	'title' => $lang_module['quantity_all_noctive'],
 	'value' => $number,
 	'link' => $link . '=items',
 	'unit' => $lang_module['product_unit'] );
-// Tong so luong binh luan
-$number = $db->query( 'SELECT COUNT(*) FROM ' . NV_PREFIXLANG . '_comments WHERE module=' . $db->quote( $module_name ) )->fetchColumn();
-$array_info[] = array(
-	'title' => $lang_module['product_number_commet'],
-	'value' => $number,
-	'link' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=comment&amp;module=' . $module_name,
-	'unit' => $lang_module['product_comment'] );
-
+ 
 // Tong so luong so luong san pham trong kho
-$number = $db->query( 'SELECT SUM(product_number) FROM ' . TABLE_SHOPS_NAME . '_rows' )->fetchColumn();
+$number = $db->query( 'SELECT SUM(quantity) FROM ' . TABLE_SHOPS_NAME . '_rows' )->fetchColumn();
 $array_info[] = array(
-	'title' => $lang_module['product_number_all_store'],
+	'title' => $lang_module['quantity_all_store'],
 	'value' => $number,
 	'link' => $link . '=items',
 	'unit' => $lang_module['product_unit'] );
@@ -50,7 +43,7 @@ $array_info[] = array(
 // Tong so luong don dat hang
 $number = $db->query( 'SELECT COUNT(*) FROM ' . TABLE_SHOPS_NAME . '_orders' )->fetchColumn();
 $array_info[] = array(
-	'title' => $lang_module['product_number_order'],
+	'title' => $lang_module['quantity_order'],
 	'value' => $number,
 	'link' => $link . '=order',
 	'unit' => $lang_module['product_order'] );
@@ -58,7 +51,7 @@ $array_info[] = array(
 // Tong so luong don dat hang moi
 $number = $db->query( 'SELECT COUNT(*) FROM ' . TABLE_SHOPS_NAME . '_orders WHERE order_view = 0' )->fetchColumn();
 $array_info[] = array(
-	'title' => $lang_module['product_number_order_new'],
+	'title' => $lang_module['quantity_order_new'],
 	'value' => $number,
 	'link' => $link . '=order',
 	'unit' => $lang_module['product_order'] );
@@ -66,7 +59,7 @@ $array_info[] = array(
 // Tong so luong don dat hang nhung chua duyet
 $number = $db->query( 'SELECT COUNT(*) FROM ' . TABLE_SHOPS_NAME . '_orders WHERE transaction_status = -1' )->fetchColumn();
 $array_info[] = array(
-	'title' => $lang_module['product_number_order_no_active'],
+	'title' => $lang_module['quantity_order_no_active'],
 	'value' => $number,
 	'link' => $link . '=order',
 	'unit' => $lang_module['product_order'] );
@@ -74,7 +67,7 @@ $array_info[] = array(
 // Tong so luong don dat hang chua thanh toan
 $number = $db->query( 'SELECT COUNT(*) FROM ' . TABLE_SHOPS_NAME . '_orders WHERE transaction_status = 0' )->fetchColumn();
 $array_info[] = array(
-	'title' => $lang_module['product_number_order_no_payment'],
+	'title' => $lang_module['quantity_order_no_payment'],
 	'value' => $number,
 	'link' => $link . '=order',
 	'unit' => $lang_module['product_order'] );
@@ -82,7 +75,7 @@ $array_info[] = array(
 // Tong so luong don dat hang da thanh toan
 $number = $db->query( 'SELECT COUNT(*) FROM ' . TABLE_SHOPS_NAME . '_orders WHERE transaction_status = 4' )->fetchColumn();
 $array_info[] = array(
-	'title' => $lang_module['product_number_order_payment'],
+	'title' => $lang_module['quantity_order_payment'],
 	'value' => $number,
 	'link' => $link . '=order',
 	'unit' => $lang_module['product_order'] );
@@ -90,7 +83,7 @@ $array_info[] = array(
 // Tong so luong don dat hang da gui thanh toan
 $number = $db->query( 'SELECT COUNT(*) FROM ' . TABLE_SHOPS_NAME . '_orders WHERE transaction_status = 1' )->fetchColumn();
 $array_info[] = array(
-	'title' => $lang_module['product_number_order_send_payment'],
+	'title' => $lang_module['quantity_order_send_payment'],
 	'value' => $number,
 	'link' => $link . '=order',
 	'unit' => $lang_module['product_order'] );
@@ -98,7 +91,7 @@ $array_info[] = array(
 // Tong so luong don dat hang da gui thanh toan
 $number = $db->query( 'SELECT COUNT(*) FROM ' . TABLE_SHOPS_NAME . '_orders WHERE transaction_status = 5' )->fetchColumn();
 $array_info[] = array(
-	'title' => $lang_module['product_number_order_dis_payment'],
+	'title' => $lang_module['quantity_order_dis_payment'],
 	'value' => $number,
 	'link' => $link . '=order',
 	'unit' => $lang_module['product_order'] );

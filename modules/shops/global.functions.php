@@ -33,74 +33,8 @@ if( ! empty( $pro_config ) )
 if( empty( $pro_config['format_order_id'] ) ) $pro_config['format_order_id'] = strtoupper( $module_name ) . '%d';
 if( empty( $pro_config['timecheckstatus'] ) ) $pro_config['timecheckstatus'] = 0; // Thoi gian xu ly archive
 
-// Xu ly viec dang san pham tu dong, cho het han san pham ...
-if( $pro_config['timecheckstatus'] > 0 and $pro_config['timecheckstatus'] < NV_CURRENTTIME )
-{
-	nv_set_status_module();
-}
-
-/**
- * nv_set_status_module()
- *
- * @return
- */
-function nv_set_status_module()
-{
-	global $db, $module_name, $module_data, $global_config, $db_config;
-
-	$check_run_cronjobs = NV_ROOTDIR . '/' . NV_LOGS_DIR . '/data_logs/cronjobs_' . md5( $module_data . 'nv_set_status_module' . $global_config['sitekey'] ) . '.txt';
-	$p = NV_CURRENTTIME - 300;
-	if( file_exists( $check_run_cronjobs ) and @filemtime( $check_run_cronjobs ) > $p )
-	{
-		return;
-	}
-	file_put_contents( $check_run_cronjobs, '' );
-
-	// status_0 = "Cho duyet";
-	// status_1 = "Xuat ban";
-	// status_2 = "Hen gio dang";
-	// status_3= "Het han";
-
-	// Dang cac san pham cho kich hoat theo thoi gian
-	$result = $db->query( 'SELECT id FROM ' . TABLE_SHOPS_NAME . '_rows WHERE status =2 AND publtime < ' . NV_CURRENTTIME . ' ORDER BY publtime ASC' );
-	while( list( $id ) = $result->fetch( 3 ) )
-	{
-		$db->query( 'UPDATE ' . TABLE_SHOPS_NAME . '_rows SET status =1 WHERE id=' . $id );
-	}
-
-	// Ngung hieu luc cac san pham da het han
-	$result = $db->query( 'SELECT id, archive FROM ' . TABLE_SHOPS_NAME . '_rows WHERE status =1 AND exptime > 0 AND exptime <= ' . NV_CURRENTTIME . ' ORDER BY exptime ASC' );
-	while( list( $id, $archive ) = $result->fetch( 3 ) )
-	{
-		if( intval( $archive ) == 0 )
-		{
-			nv_del_content_module( $id );
-		}
-		else
-		{
-			nv_archive_content_module( $id );
-		}
-	}
-
-	// Tim kiem thoi gian chay lan ke tiep
-	$time_publtime = $db->query( 'SELECT MIN(publtime) FROM ' . TABLE_SHOPS_NAME . '_rows WHERE status =2 AND publtime > ' . NV_CURRENTTIME )->fetchColumn();
-
-	$time_exptime = $db->query( 'SELECT MIN(exptime) FROM ' . TABLE_SHOPS_NAME . '_rows WHERE status =1 AND exptime > ' . NV_CURRENTTIME )->fetchColumn();
-
-	$timecheckstatus = min( $time_publtime, $time_exptime );
-	if( ! $timecheckstatus )
-	{
-		$timecheckstatus = max( $time_publtime, $time_exptime );
-	}
-
-	$db->query( "REPLACE INTO " . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES('" . NV_LANG_DATA . "', " . $db->quote( $module_name ) . ", 'timecheckstatus', '" . intval( $timecheckstatus ) . "')" );
-	nv_del_moduleCache( 'settings' );
-	nv_del_moduleCache( $module_name );
-
-	unlink( $check_run_cronjobs );
-	clearstatcache();
-}
-
+ 
+ 
 /**
  * nv_del_content_module()
  *
@@ -114,11 +48,11 @@ function nv_del_content_module( $id )
 	$content_del = 'NO_' . $id;
 	$title = '';
 
-	list( $id, $listcatid, $title ) = $db->query( 'SELECT id, listcatid, ' . NV_LANG_DATA . '_title FROM ' . TABLE_SHOPS_NAME . '_rows WHERE id=' . intval( $id ) )->fetch( 3 );
+	list( $id, $catid, $title ) = $db->query( 'SELECT id, catid, ' . NV_LANG_DATA . '_title FROM ' . TABLE_SHOPS_NAME . '_rows WHERE id=' . intval( $id ) )->fetch( 3 );
 	if( $id > 0 )
 	{
 		$number_no_del = 0;
-		$array_catid = explode( ',', $listcatid );
+		$array_catid = explode( ',', $catid );
 		if( $number_no_del == 0 )
 		{
 			$sql = 'DELETE FROM ' . TABLE_SHOPS_NAME . '_rows WHERE id=' . $id;
@@ -129,8 +63,7 @@ function nv_del_content_module( $id )
 		}
 		if( $number_no_del == 0 )
 		{
-			$db->query( 'DELETE FROM ' . NV_PREFIXLANG . '_comments WHERE module=' . $db->quote( $module_name ) . ' AND id = ' . $id );
-			$db->query( 'DELETE FROM ' . TABLE_SHOPS_NAME . '_block WHERE id = ' . $id );
+			 
 			$groupid = GetGroupID( $id );
 			if( $db->query( 'DELETE FROM ' . TABLE_SHOPS_NAME . '_items_group WHERE pro_id = ' . $id ) )
 			{
@@ -237,14 +170,14 @@ function nv_list_lang()
 // $listnum : danh sach so luong tuong ung
 
 /**
- * product_number_order()
+ * quantity_order()
  *
  * @param mixed $listid
  * @param mixed $listnum
  * @param string $type
  * @return
  */
-function product_number_order( $listid, $listnum, $type = '-' )
+function quantity_order( $listid, $listnum, $type = '-' )
 {
 	global $db_config, $db, $module_data;
 
@@ -257,7 +190,7 @@ function product_number_order( $listid, $listnum, $type = '-' )
 		{
 			if( empty( $arraynum[$i] ) ) $arraynum[$i] = 0;
 
-			$sql = 'UPDATE ' . TABLE_SHOPS_NAME . '_rows SET product_number = product_number ' . $type . ' ' . intval( $arraynum[$i] ) . ' WHERE id =' . $id;
+			$sql = 'UPDATE ' . TABLE_SHOPS_NAME . '_rows SET quantity = quantity ' . $type . ' ' . intval( $arraynum[$i] ) . ' WHERE id =' . $id;
 			$db->query( $sql );
 		}
 	}

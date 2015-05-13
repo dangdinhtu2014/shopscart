@@ -11,7 +11,7 @@
 if( ! defined( 'NV_MAINFILE' ) ) die( 'Stop!!!' );
 
 // Categories
-$sql = 'SELECT catid, parentid, lev, ' . NV_LANG_DATA . '_title AS title, ' . NV_LANG_DATA . '_alias AS alias, viewcat, numsubcat, subcatid, newday, form, numlinks, ' . NV_LANG_DATA . '_description AS description, inhome, ' . NV_LANG_DATA . '_keywords AS keywords, groups_view, image FROM ' . TABLE_SHOPS_NAME . '_catalogs ORDER BY sort ASC';
+$sql = 'SELECT catid, parentid, lev, ' . NV_LANG_DATA . '_title AS title, ' . NV_LANG_DATA . '_alias AS alias, viewcat, numsubcat, subcatid, newday, form, numlinks, numrows, ' . NV_LANG_DATA . '_description AS description, inhome, ' . NV_LANG_DATA . '_keywords AS keywords, groups_view, image FROM ' . TABLE_SHOPS_NAME . '_catalogs ORDER BY sort ASC';
 $global_array_cat = nv_db_cache( $sql, 'catid', $module_name );
 
 // Groups

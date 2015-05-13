@@ -23,7 +23,7 @@ if( empty( $data_content ) )
 	exit();
 }
 
-$catid = $data_content['listcatid'];
+$catid = $data_content['catid'];
 
 $result = $db->query( "SELECT * FROM " . $db_config['prefix'] . "_" . $module_data . "_units WHERE id = " . $data_content['product_unit'] );
 $data_unit = $result->fetch();

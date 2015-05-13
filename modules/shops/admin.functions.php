@@ -73,7 +73,7 @@ function nv_fix_cat_order( $parentid = 0, $order = 0, $lev = 0 )
 		$sql = 'UPDATE ' . TABLE_SHOPS_NAME . '_catalogs SET numsubcat=' . $numsubcat;
 		if( $numsubcat == 0 )
 		{
-			$sql .= ", subcatid='', viewcat='viewcat_page_list'";
+			$sql .= ", subcatid='', viewcat='viewcat_page_gird'";
 		}
 		else
 		{
@@ -599,18 +599,18 @@ function nv_show_block_list( $bid )
 	$xtpl->assign( 'OP', $op );
 	$xtpl->assign( 'BID', $bid );
 
-	$sql = "SELECT t1.id, t1.listcatid, t1." . NV_LANG_DATA . "_title, t1." . NV_LANG_DATA . "_alias, t2.weight FROM " . $db_config['prefix'] . "_" . $module_data . "_rows as t1 INNER JOIN " . $db_config['prefix'] . "_" . $module_data . "_block AS t2 ON t1.id = t2.id WHERE t2.bid= " . $bid . " AND t1.inhome='1' ORDER BY t2.weight ASC";
+	$sql = "SELECT t1.id, t1.catid, t1." . NV_LANG_DATA . "_title, t1." . NV_LANG_DATA . "_alias, t2.weight FROM " . $db_config['prefix'] . "_" . $module_data . "_rows as t1 INNER JOIN " . $db_config['prefix'] . "_" . $module_data . "_block AS t2 ON t1.id = t2.id WHERE t2.bid= " . $bid . " AND t1.inhome='1' ORDER BY t2.weight ASC";
 
 	$result = $db->query( $sql );
 	$num = $result->rowCount();
 	$a = 0;
 
-	while( list( $id, $listcatid, $title, $alias, $weight ) = $result->fetch( 3 ) )
+	while( list( $id, $catid, $title, $alias, $weight ) = $result->fetch( 3 ) )
 	{
 		$xtpl->assign( 'ROW', array(
 			"id" => $id,
 			"title" => $title,
-			"link" => NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $global_array_cat[$listcatid]['alias'] . "/" . $alias . "-" . $id ) );
+			"link" => NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $global_array_cat[$catid]['alias'] . "/" . $alias . "-" . $id ) );
 
 		for( $i = 1; $i <= $num; $i++ )
 		{
@@ -792,4 +792,12 @@ function Insertabl_catfields( $table, $array, $idshop )
 	$sql = " INSERT INTO " . $table . " VALUES ( " . $idshop . ",1 " . $sql_insert . ")";
 
 	$db->query( $sql );
+}
+
+function nv_fix_category_count( $catid )
+{
+	global $db;
+	
+	$db->query('UPDATE ' . TABLE_SHOPS_NAME . '_catalogs SET numrows =(SELECT COUNT(*) FROM ' . TABLE_SHOPS_NAME . '_rows WHERE catid = '. intval( $catid ) .') WHERE catid = '. intval( $catid ) );
+		
 }

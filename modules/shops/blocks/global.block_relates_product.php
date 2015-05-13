@@ -10,6 +10,68 @@
 
 if( ! defined( 'NV_MAINFILE' ) ) die( 'Stop!!!' );
 
+if( ! nv_function_exists( 'creat_thumbs' ) )
+{
+	function creat_thumbs( $id, $homeimgfile, $module_name, $width = 200, $height = 150, $quality = 90 )
+	{
+		if( $width >= $height ) $rate = $width / $height;
+		else  $rate = $height / $width;
+
+		$image = NV_UPLOADS_REAL_DIR . '/' . $module_name . '/' . $homeimgfile;
+
+		if( $homeimgfile != '' and file_exists( $image ) )
+		{
+			$imgsource = NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module_name . '/' . $homeimgfile;
+			$imginfo = nv_is_image( $image );
+
+			$basename = $module_name . $width . 'x' . $height . '-' . $id . '-' . md5_file( $image ) . '.' . $imginfo['ext'];
+
+			if( file_exists( NV_ROOTDIR . '/' . NV_TEMP_DIR . '/' . $basename ) )
+			{
+				$imgsource = NV_BASE_SITEURL . NV_TEMP_DIR . '/' . $basename;
+			}
+			else
+			{
+				require_once NV_ROOTDIR . '/includes/class/image.class.php';
+
+				$_image = new image( $image, NV_MAX_WIDTH, NV_MAX_HEIGHT );
+
+				if( $imginfo['width'] <= $imginfo['height'] )
+				{
+					$_image->resizeXY( $width, 0 );
+
+				}
+				elseif( ( $imginfo['width'] / $imginfo['height'] ) < $rate )
+				{
+					$_image->resizeXY( $width, 0 );
+				}
+				elseif( ( $imginfo['width'] / $imginfo['height'] ) >= $rate )
+				{
+					$_image->resizeXY( 0, $height );
+				}
+
+				//$_image->cropFromCenter( $width, $height );
+
+				$_image->save( NV_ROOTDIR . '/' . NV_TEMP_DIR, $basename, $quality );
+
+				if( file_exists( NV_ROOTDIR . '/' . NV_TEMP_DIR . '/' . $basename ) )
+				{
+					$imgsource = NV_BASE_SITEURL . NV_TEMP_DIR . '/' . $basename;
+				}
+			}
+		}
+		elseif( nv_is_url( $homeimgfile ) )
+		{
+			$imgsource = $homeimgfile;
+		}
+		else
+		{
+			$imgsource = '';
+		}
+		return $imgsource;
+	}
+	 
+}
 if( ! nv_function_exists( 'nv_relates_product' ) )
 {
 	/**
@@ -26,7 +88,7 @@ if( ! nv_function_exists( 'nv_relates_product' ) )
 
 		$html = "<tr>";
 		$html .= "	<td>" . $lang_block['blockid'] . "</td>";
-		$html .= "	<td><select name=\"config_blockid\">\n";
+		$html .= "	<td><select name=\"config_blockid\" class=\"w300 form-control\">\n";
 		$sql = "SELECT bid, " . NV_LANG_DATA . "_title," . NV_LANG_DATA . "_alias FROM " . $db_config['prefix'] . "_" . $site_mods[$module]['module_data'] . "_block_cat ORDER BY weight ASC";
 		$list = nv_db_cache( $sql, 'catid', $module );
 		foreach( $list as $l )
@@ -39,12 +101,12 @@ if( ! nv_function_exists( 'nv_relates_product' ) )
 
 		$html .= "<tr>";
 		$html .= "	<td>" . $lang_block['numrow'] . "</td>";
-		$html .= "	<td><input type=\"text\" name=\"config_numrow\" size=\"5\" value=\"" . $data_block['numrow'] . "\"/></td>";
+		$html .= "	<td><input type=\"text\" name=\"config_numrow\" size=\"5\" value=\"" . $data_block['numrow'] . "\" class=\"w300 form-control\"/></td>";
 		$html .= "</tr>";
 
 		$html .= "<tr>";
 		$html .= "	<td>" . $lang_block['cut_num'] . "</td>";
-		$html .= "	<td><input type=\"text\" name=\"config_cut_num\" size=\"5\" value=\"" . $data_block['cut_num'] . "\"/></td>";
+		$html .= "	<td><input type=\"text\" name=\"config_cut_num\" size=\"5\" value=\"" . $data_block['cut_num'] . "\" class=\"w300 form-control\"/></td>";
 		$html .= "</tr>";
 
 		return $html;
@@ -128,51 +190,70 @@ if( ! nv_function_exists( 'nv_relates_product' ) )
 
 		$xtpl = new XTemplate( 'block.others_product.tpl', NV_ROOTDIR . '/themes/' . $block_theme . '/modules/' . $mod_file );
 		$xtpl->assign( 'WIDTH', $pro_config['blockwidth'] );
+		$xtpl->assign( 'BLOCK_TITLE', $block_config['title'] );
 
-		$db->sqlreset()->select( 't1.id, t1.listcatid, t1.' . NV_LANG_DATA . '_title AS title, t1.' . NV_LANG_DATA . '_alias AS alias, t1.addtime, t1.homeimgfile, t1.homeimgthumb, t1.product_price, t1.money_unit, t1.discount_id, t1.showprice' )->from( $db_config['prefix'] . '_' . $module . '_rows t1' )->join( 'INNER JOIN ' . $db_config['prefix'] . '_' . $module . '_block t2 ON t1.id = t2.id' )->where( 't2.bid= ' . $block_config['blockid'] . ' AND t1.status =1' )->order( 't1.addtime DESC, t2.weight ASC' )->limit( $block_config['numrow'] );
+		$db->sqlreset()->select( 't1.id, t1.catid, t1.' . NV_LANG_DATA . '_title title, t1.' . NV_LANG_DATA . '_alias alias, t1.addtime, t1.homeimgfile, t1.homeimgthumb, t1.product_price, t1.quantity, t1.money_unit, t1.discount_id, t1.showprice' )->from( $db_config['prefix'] . '_' . $module . '_rows t1' )->join( 'INNER JOIN ' . $db_config['prefix'] . '_' . $module . '_block t2 ON t1.id = t2.id' )->where( 't2.bid= ' . $block_config['blockid'] . ' AND t1.status =1' )->order( 't1.addtime DESC, t2.weight ASC' )->limit( $block_config['numrow'] );
 
 		$list = nv_db_cache( $db->sql(), 'id', $module );
-
+		
+		$numslide = ceil( count( $list )/ 6 );
+		$lists = array_chunk( $list, 6, true);
+		 
 		$i = 1;
 		$cut_num = $block_config['cut_num'];
-
-		foreach( $list as $row )
+		$a = 0;
+		foreach( $lists as $key => $value )
 		{
-			if( $row['homeimgthumb'] == 1 ) //image thumb
+ 
+			foreach( $value as $row )
 			{
-				$src_img = NV_BASE_SITEURL . NV_FILES_DIR . '/' . $module . '/' . $row['homeimgfile'];
-			}
-			elseif( $row['homeimgthumb'] == 2 ) //image file
-			{
-				$src_img = NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module . '/' . $row['homeimgfile'];
-			}
-			elseif( $row['homeimgthumb'] == 3 ) //image url
-			{
-				$src_img = $row['homeimgfile'];
-			}
-			else //no image
-			{
-				$src_img = NV_BASE_SITEURL . 'themes/' . $global_config['site_theme'] . '/images/shops/no-image.jpg';
-			}
+				if( !empty($row['homeimgfile']) ) //image thumb
+				{
+					$src_img = creat_thumbs( $row['id'], $row['homeimgfile'], $module , $width = 300, $height = 225, $quality = 90 );
+				}		 
+				else //no image
+				{
+					$src_img = NV_BASE_SITEURL . 'themes/' . $global_config['site_theme'] . '/images/shops/no-image.jpg';
+				}
 
-			$xtpl->assign( 'link', $link . $array_cat_shops[$row['listcatid']]['alias'] . '/' . $row['alias'] . $global_config['rewrite_exturl'] );
-			$xtpl->assign( 'title', nv_clean60( $row['title'], $cut_num ) );
-			$xtpl->assign( 'src_img', $src_img );
-			$xtpl->assign( 'time', nv_date( 'd-m-Y h:i:s A', $row['addtime'] ) );
+				$xtpl->assign( 'LINK', $link . $array_cat_shops[$row['catid']]['alias'] . '/' . $row['alias'] . $global_config['rewrite_exturl'] );
+				$xtpl->assign( 'TITLE', nv_clean60( $row['title'], $cut_num ) );
+				$xtpl->assign( 'IMG_SRC', $src_img );
+				$xtpl->assign( 'TIME', nv_date( 'd-m-Y h:i:s A', $row['addtime'] ) );
+				
+				if( $pro_config['active_price'] == '1' and $row['showprice'] == '1' )
+				{	
+					$price = nv_currency_conversion( $row['product_price'], $row['money_unit'], $pro_config['money_unit'], $row['discount_id'] );
 
-			if( $pro_config['active_price'] == '1' and $row['showprice'] == '1' )
+					$xtpl->assign( 'PRICE', $price );
+					if( $row['discount_id'] and $price['discount_percent'] > 0 )
+					{
+						$xtpl->parse( 'main.loop.loopitem.price.discounts' );
+ 					}
+					else
+					{
+						$xtpl->parse( 'main.loop.loopitem.price.no_discounts' );
+					}
+ 
+					$xtpl->parse( 'main.loop.loopitem.price' );
+				}
+ 
+				$xtpl->parse( 'main.loop.loopitem' );
+				++$i;
+			}	
+			if( $a == 0 )
 			{
-				$price = nv_currency_conversion( $row['product_price'], $row['money_unit'], $pro_config['money_unit'], $row['discount_id'] );
-				$xtpl->assign( 'PRICE', $price );
-				$xtpl->parse( 'main.loop.price' );
+				$xtpl->assign( 'ACTIVE', 'active');
+			}else 
+			{
+				$xtpl->assign( 'ACTIVE', '');
 			}
-
-			$bg = ( $i % 2 == 0 ) ? 'bg' : '';
-			$xtpl->assign( 'bg', $bg );
+			$xtpl->assign( 'NUM', $a );
+			++$a;
 			$xtpl->parse( 'main.loop' );
-			++$i;
+			$xtpl->parse( 'main.loopnum' );
+			
 		}
-
 		$xtpl->parse( 'main' );
 		return $xtpl->text( 'main' );
 	}

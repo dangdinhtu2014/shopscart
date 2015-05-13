@@ -68,19 +68,19 @@ $tbl_src = '';
 if( strlen( $key ) >= NV_MIN_SEARCH_LENGTH )
 {
 	$dbkey = $db->dblikeescape( $key );
-	$where = "AND ( product_code LIKE '%" . $dbkey . "%' OR " . NV_LANG_DATA . "_title LIKE '%" . $dbkey . "%' OR " . NV_LANG_DATA . "_bodytext LIKE '%" . $dbkey . "%' ) ";
+	$where = "AND ( model LIKE '%" . $dbkey . "%' OR " . NV_LANG_DATA . "_title LIKE '%" . $dbkey . "%' OR " . NV_LANG_DATA . "_bodytext LIKE '%" . $dbkey . "%' ) ";
 
 	if( $catid != 0 )
 	{
 		if( $global_array_cat[$catid]['numsubcat'] == 0 )
 		{
-			$where .= 'AND listcatid=' . $catid;
+			$where .= 'AND catid=' . $catid;
 		}
 		else
 		{
 			$array_cat = array();
 			$array_cat = GetCatidInParent( $catid );
-			$where .= 'AND listcatid IN (' . implode( ',', $array_cat ) . ')';
+			$where .= 'AND catid IN (' . implode( ',', $array_cat ) . ')';
 		}
 	}
 
@@ -90,7 +90,7 @@ if( strlen( $key ) >= NV_MIN_SEARCH_LENGTH )
 		$tdate = mktime( 0, 0, 0, $m[2], $m[1], $m[3] );
 		preg_match( '/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/', $from_date, $m );
 		$fdate = mktime( 0, 0, 0, $m[2], $m[1], $m[3] );
-		$where .= " AND ( publtime < $fdate AND publtime >= $tdate ) ";
+		$where .= " AND ( addtime < $fdate AND addtime >= $tdate ) ";
 	}
 
 	$table_search = TABLE_SHOPS_NAME . '_rows';
@@ -100,14 +100,14 @@ if( strlen( $key ) >= NV_MIN_SEARCH_LENGTH )
 
 	$numRecord = $db->query( $db->sql() )->fetchColumn();
 
-	$db->select( 'id, ' . NV_LANG_DATA . '_title, ' . NV_LANG_DATA . '_alias, listcatid, ' . NV_LANG_DATA . '_hometext, publtime, homeimgfile, homeimgthumb' )->order( 'id DESC' )->limit( $per_pages )->offset( ( $page - 1 ) * $per_page );
+	$db->select( 'id, ' . NV_LANG_DATA . '_title, ' . NV_LANG_DATA . '_alias, catid, ' . NV_LANG_DATA . '_hometext, addtime, homeimgfile, homeimgthumb' )->order( 'id DESC' )->limit( $per_pages )->offset( ( $page - 1 ) * $per_page );
 
 	$result = $db->query( $db->sql() );
 
 	$array_content = array();
 	$url_link = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=';
 
-	while( list( $id, $title, $alias, $listcatid, $hometext, $publtime, $homeimgfile, $homeimgthumb ) = $result->fetch( 3 ) )
+	while( list( $id, $title, $alias, $catid, $hometext, $addtime, $homeimgfile, $homeimgthumb ) = $result->fetch( 3 ) )
 	{
 		if( $homeimgthumb == 1 ) //image thumb
 		{
@@ -130,9 +130,9 @@ if( strlen( $key ) >= NV_MIN_SEARCH_LENGTH )
 			'id' => $id,
 			'title' => $title,
 			'alias' => $alias,
-			'listcatid' => $listcatid,
+			'catid' => $catid,
 			'hometext' => $hometext,
-			'publtime' => $publtime,
+			'addtime' => $addtime,
 			'homeimgthumb' => $thumb,
 			);
 	}

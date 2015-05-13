@@ -14,23 +14,23 @@
 <script type="text/javascript">var inrow = '{inrow}';</script>
 <form class="form-inline" action="" enctype="multipart/form-data" method="post">
 	<input type="hidden" value="1" name="save">
-	<input type="hidden" value="{rowcontent.id}" name="id">
+	<input type="hidden" value="{DATA.id}" name="id">
 	<div class="row">
 		<div class="col-sm-24 col-md-18">
 			<table class="table table-striped table-bordered table-hover">
 				<tbody>
 					<tr>
 						<th class="150px">{LANG.name} <span class="require">(*)</span></th>
-						<td><input type="text" maxlength="255" value="{rowcontent.title}" name="title" id="idtitle" class="form-control" style="width: 400px" /></td>
+						<td><input type="text" maxlength="255" value="{DATA.title}" name="title" id="idtitle" class="form-control" style="width: 400px" /></td>
 					</tr>
 					<tr>
 						<th>{LANG.alias}: </th>
-						<td><input class="form-control" name="alias" type="text" id="idalias" value="{rowcontent.alias}" maxlength="255" style="width: 400px" /> &nbsp; <i class="fa fa-refresh fa-lg" onclick="get_alias();">&nbsp;</i></td>
+						<td><input class="form-control" name="alias" type="text" id="idalias" value="{DATA.alias}" maxlength="255" style="width: 400px" /> &nbsp; <i class="fa fa-refresh fa-lg" onclick="get_alias();">&nbsp;</i></td>
 					</tr>
 					<tr>
 						<th>{LANG.content_cat} <span class="require">(*)</span></th>
 						<td>
-							<select class="form-control" name="catid" style="width:300px" onchange="nv_change_catid(this, {rowcontent.id})">
+							<select class="form-control" name="catid" style="width:300px" onchange="nv_change_catid(this, {DATA.id})">
 								<option value="0" > --- </option>
 								<!-- BEGIN: rowscat -->
 								<option value="{ROWSCAT.catid}" {ROWSCAT.selected} >{ROWSCAT.title}</option>
@@ -43,10 +43,10 @@
 			<table class="table table-striped table-bordered table-hover">
 				<tbody>
 					<tr>
-						<th>{LANG.content_product_code}: </th>
-						<td><input class="form-control" name="product_code" type="text" value="{rowcontent.product_code}" maxlength="255"/></td>
-						<th align="right">{LANG.content_product_product_price}</th>
-						<td><input class="form-control" type="text" maxlength="50" value="{rowcontent.product_price}" name="product_price" style="width: 80px;" onkeyup="this.value=FormatNumber(this.value);" id="f_money"/>
+						<th>{LANG.content_model}: </th>
+						<td><input class="form-control" name="model" type="text" value="{DATA.model}" maxlength="255"/></td>
+						<th align="right">{LANG.content_product_price}</th>
+						<td><input class="form-control" type="text" maxlength="50" value="{DATA.product_price}" name="product_price" style="width: 80px;" onkeyup="this.value=FormatNumber(this.value);" id="f_money"/>
 						<select class="form-control" name="money_unit">
 							<!-- BEGIN: money_unit -->
 							<option value="{MON.code}" {MON.select}>{MON.currency}</option>
@@ -54,8 +54,8 @@
 						</select></td>
 					</tr>
 					<tr>
-						<th class="150px">{LANG.content_product_number}</th>
-						<td><!-- BEGIN: edit --><strong>{rowcontent.product_number}</strong> + <input class="form-control" type="text" maxlength="50" value="0" name="product_number" style="width: 50px;" /><!-- END: edit --><!-- BEGIN: add --><input class="form-control" type="text" maxlength="50" value="{rowcontent.product_number}" name="product_number" style="width: 50px;" /><!-- END: add -->
+						<th class="150px">{LANG.content_quantity}</th>
+						<td><!-- BEGIN: edit --><strong>{DATA.quantity}</strong> + <input class="form-control" type="text" maxlength="50" value="0" name="quantity" style="width: 50px;" /><!-- END: edit --><!-- BEGIN: add --><input class="form-control" type="text" maxlength="50" value="{DATA.quantity}" name="quantity" style="width: 50px;" /><!-- END: add -->
 						<select class="form-control" name="product_unit">
 							<!-- BEGIN: rowunit -->
 							<option value="{uid}" {uch}>{utitle}</option>
@@ -64,37 +64,13 @@
 						<th align="right">{LANG.content_product_discounts}</th>
 						<td>
 						<select class="form-control" name="discount_id" style="width:300px">
-							<option value="0"> --- </option>
+							<option value="0">  ------  </option>
 							<!-- BEGIN: discount -->
 							<option value="{DISCOUNT.did}" {DISCOUNT.selected} >{DISCOUNT.title}</option>
 							<!-- END: discount -->
 						</select></td>
 					</tr>
-					<tr>
-						<th>{LANG.yesvat} &nbsp;<input value="0"{checkvat1} name="vat" type="radio" value="0"/></th>
-						<th>{LANG.novat} &nbsp;<input value="1"{checkvat2}  name="vat" type="radio" value="1"/></th>
-						<th>{LANG.content_warranty}</th>
-						<th><input type="text" name="warranty" value="{rowcontent.warranty}"/>&nbsp;{LANG.month}</th>
-					</tr>
-					<tr>
-					<th>{LANG.typeproduct}</th>
-					<th>{LANG.genuine} &nbsp;<input {checktype1} name="typeproduct" type="radio" value="0" />
-						{LANG.notebook} &nbsp;<input {checktype2} name="typeproduct" type="radio" value="1"/>
-					 </th>
-					 
-					 <th>{LANG.new_old}</th>
-					 <th>					 	
-					 	{LANG.new} &nbsp;<input {checknew} name="new_old" value="0" type="radio" />
-						{LANG.old} &nbsp;<input {checkold} name="new_old" value="1" type="radio" />
-						<input type="text" name="percentnew" value="{rowcontent.percentnew}" size="10" />&nbsp;	%
-					 </th>
-					</tr>
-					<tr>
-						<th>{LANG.address}</th>
-						<th><input type="checkbox" value="1" {checkadd} name="adddefaul"> {LANG.adddefaul}</th>
-						<th>{LANG.addaddress} <br/>{LANG.note_add}</th>	
-						<th><textarea name="address" style="width:98%" >{rowcontent.address}</textarea></th>									
-					</tr>
+ 
 					
 				</tbody>
 			</table>
@@ -104,21 +80,16 @@
 						<th>{LANG.content_homeimg}</th>
 					</tr>
 					<tr>
-						<td><input class="form-control" style="width:400px; margin-right: 5px" type="text" name="homeimg" id="homeimg" value="{rowcontent.homeimgfile}"/><input type="button" value="{LANG.browse_image}" name="selectimg" class="btn btn-info" style="margin-right: 5px" /><input type="button" class="btn btn-info" onclick="nv_add_otherimage();" value="{LANG.add_otherimage}"></td>
+						<td><input class="form-control" style="width:400px; margin-right: 5px" type="text" name="homeimg" id="homeimg" value="{DATA.homeimgfile}"/><input type="button" value="{LANG.browse_image}" name="selectimg" class="btn btn-info" style="margin-right: 5px" /><input type="button" class="btn btn-info" onclick="nv_add_otherimage();" value="{LANG.add_otherimage}"></td>
 					</tr>
 				</tbody>
 				<tbody id="otherimage">
 					<!-- BEGIN: otherimage -->
 					<tr>
-						<td><input value="{DATAOTHERIMAGE.value}" name="otherimage[]" id="otherimage_{DATAOTHERIMAGE.id}" class="form-control" maxlength="255"><input value="{LANG.browse_image}" name="selectfile" onclick="nv_open_browse( '{NV_BASE_ADMINURL}index.php?{NV_NAME_VARIABLE}=upload&popup=1&area=otherimage_{DATAOTHERIMAGE.id}&path={NV_UPLOADS_DIR}/{module_name}&currentpath={CURRENT}&type=file', 'NVImg', 850, 500, 'resizable=no,scrollbars=no,toolbar=no,location=no,status=no' ); return false; " type="button"></td>
+						<td><input value="{DATAOTHERIMAGE.value}" name="otherimage[]" id="otherimage_{DATAOTHERIMAGE.id}" class="form-control" style="width : 80%" maxlength="255"><input value="{LANG.browse_image}" name="selectfile" onclick="nv_open_browse( '{NV_BASE_ADMINURL}index.php?{NV_NAME_VARIABLE}=upload&popup=1&area=otherimage_{DATAOTHERIMAGE.id}&path={NV_UPLOADS_DIR}/{module_name}&currentpath={CURRENT}&type=file', 'NVImg', 850, 500, 'resizable=no,scrollbars=no,toolbar=no,location=no,status=no' ); return false; " type="button" class="btn btn-info"></td>
 					</tr>
 					<!-- END: otherimage -->
-					<tr>
-						<td> {LANG.content_homeimgalt} </td>
-					</tr>
-					<tr>
-						<td><input class="form-control" type="text" maxlength="255" value="{rowcontent.homeimgalt}" name="homeimgalt" style="width:100%" /></td>
-					</tr>
+ 
 				</tbody>
 			</table>
 			<table class="table table-striped table-bordered table-hover">
@@ -127,7 +98,7 @@
 						<th>{LANG.content_hometext} <span class="require">(*)</span> {LANG.content_notehome}</th>
 					</tr>
 					<tr>
-						<td><textarea class="form-control" rows="4" name="hometext" style="width:98%">{rowcontent.hometext}</textarea></td>
+						<td><textarea class="form-control" rows="4" name="hometext" style="width:98%">{DATA.hometext}</textarea></td>
 					</tr>
 					<tr>
 						<th>{LANG.content_bodytext} <span class="require">(*)</span> {LANG.content_bodytext_note}</th>
@@ -143,15 +114,24 @@
 						<th>{LANG.content_promotional}</th>
 					</tr>
 					<tr>
-						<td><textarea class="form-control" name="promotional" style="width:100%;height:50px">{rowcontent.promotional}</textarea></td>
+						<td><textarea class="form-control" name="promotional" style="width:100%;height:50px">{DATA.promotional}</textarea></td>
+					</tr>
+					<tr>
+						<td>{LANG.content_status}</td>
+					</tr>
+					<tr>
+						
+						<td>
+							<select class="form-control" name="status" style="width:100%">
+								<!-- BEGIN: status -->
+								<option value="{STATUS.key}" {STATUS.selected} >{STATUS.name}</option>
+								<!-- END: status -->
+							</select>
+						</td>
 					</tr>
 				</tbody>
 			</table>
-			<!-- BEGIN:custom_form -->
-			<div class="row" id="custom_form">
-				{DATACUSTOM_FORM}
-			</div>
-			<!-- END:custom_form -->
+	 
 		</div>
 		<div class="col-sm-24 col-md-6">
 			<!-- BEGIN:block_cat -->
@@ -169,6 +149,19 @@
 				</tbody>
 			</table>
 			<!-- END:block_cat -->
+			
+			<!-- BEGIN:listgroup -->
+			<table class="table table-striped table-bordered table-hover">
+				<tbody>
+					<tr>
+						<th>{LANG.content_group}</th>
+					</tr>
+					<tr>
+						<td id="listgroupid">&nbsp;</td>
+					</tr>
+				</tbody>
+			</table>
+			<!-- END:listgroup -->
 			<table class="table table-striped table-bordered table-hover">
 				<tbody>
 					<tr>
@@ -201,123 +194,15 @@
 					</tr>
 				</tbody>
 			</table>
-			<table class="table table-striped table-bordered table-hover">
-				<tbody>
-					<tr>
-						<th>{LANG.content_publ_date} <span class="timestamp">{LANG.content_notetime}</span></th>
-					</tr>
-					<tr>
-						<td>
-							<div class="row">
-								<input class="form-control" name="publ_date" id="publ_date" value="{publ_date}" style="width: 90px;" maxlength="10" type="text" />
-								<select class="form-control" name="phour">
-									{phour}
-								</select> :
-								<select class="form-control" name="pmin">
-									{pmin}
-								</select>
-							</div>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<table class="table table-striped table-bordered table-hover">
-				<tbody>
-					<tr>
-						<th>{LANG.content_exp_date} <span class="timestamp">{LANG.content_notetime}</span></th>
-					</tr>
-					<tr>
-						<td>
-							<div class="row">
-								<input class="form-control" name="exp_date" id="exp_date" value="{exp_date}" style="width: 90px;" maxlength="10" type="text" />
-								<select class="form-control" name="ehour">
-									{ehour}
-								</select> :
-								<select class="form-control" name="emin">
-									{emin}
-								</select>
-							</div>
-							<div style="margin-top: 5px;">
-								<input type="checkbox" value="1" name="archive" {archive_checked} />
-								<label>{LANG.content_archive}</label>
-							</div>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<table class="table table-striped table-bordered table-hover">
-				<tbody>
-					<tr>
-						<th>{LANG.content_extra}</th>
-					</tr>
-					<tr>
-						<td>
-							<div style="margin-bottom: 2px;">
-								<input type="checkbox" value="1" name="inhome" {inhome_checked}/>
-								<label>{LANG.content_inhome}</label>
-							</div>
-							<div style="margin-bottom: 2px;">
-								<input type="checkbox" value="1" name="allowed_rating" {allowed_rating_checked}/>
-								<label>{LANG.content_allowed_rating}</label>
-							</div>
-							<div style="margin-bottom: 2px;">
-								<input type="checkbox" value="1" name="allowed_send" {allowed_send_checked}/>
-								<label>{LANG.content_allowed_send}</label>
-							</div>
-							<div style="margin-bottom: 2px;">
-								<input type="checkbox" value="1" name="allowed_print" {allowed_print_checked} />
-								<label>{LANG.content_allowed_print}</label>
-							</div>
-							<div style="margin-bottom: 2px;">
-								<input type="checkbox" value="1" name="allowed_save" {allowed_save_checked} />
-								<label>{LANG.content_allowed_save}</label>
-							</div>
-							<div style="margin-bottom: 2px;">
-								<input type="checkbox" name="showprice" value="1" {ck_showprice}/>{LANG.content_showprice}
-							</div>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<table class="table table-striped table-bordered table-hover">
-				<tbody>
-					<tr>
-						<th>{LANG.content_allowed_comm}</th>
-					</tr>
-					<tr>
-						<td>
-							<!-- BEGIN: allowed_comm -->
-							<div class="row">
-								<label><input name="allowed_comm[]" type="checkbox" value="{ALLOWED_COMM.value}" {ALLOWED_COMM.checked} />{ALLOWED_COMM.title}</label>
-							</div>
-							<!-- END: allowed_comm -->
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<!-- BEGIN:listgroup -->
-			<table class="table table-striped table-bordered table-hover">
-				<tbody>
-					<tr>
-						<th>{LANG.content_group}</th>
-					</tr>
-					<tr>
-						<td id="listgroupid">&nbsp;</td>
-					</tr>
-				</tbody>
-			</table>
-			<!-- END:listgroup -->
+    
 		</div>
 	</div>
 
 	<div class="text-center" style="margin-top: 10px">
-		<!-- BEGIN:status -->
-		<input class="btn btn-primary" name="statussave" type="submit" value="{LANG.save}" />
-		<!-- END:status -->
-		<!-- BEGIN:status0 -->
-		<input class="btn btn-primary" name="status0" type="submit" value="{LANG.save_temp}" />
-		<input class="btn btn-primary" name="status1" type="submit" value="{LANG.publtime}" />
-		<!-- END:status0 -->
+ 
+		<input class="btn btn-primary" type="submit" value="{LANG.save}" />
+ 
+ 
 	</div>
 </form>
 

@@ -123,7 +123,7 @@ function GetDataIn( $result, $catid )
 	global $global_array_cat, $module_name, $db, $link, $module_info, $global_config;
 	$data_content = array();
 	$data = array();
-	while( list( $id, $listcatid, $publtime, $title, $alias, $hometext, $homeimgalt, $homeimgfile, $homeimgthumb, $product_code, $product_number, $product_price, $money_unit, $discount_id, $showprice, $promotional, $newday ) = $result->fetch( 3 ) )
+	while( list( $id, $addtime, $title, $alias, $hometext, $homeimgfile, $homeimgthumb, $model, $quantity, $product_price, $money_unit, $discount_id, $showprice, $promotional, $newday ) = $result->fetch( 3 ) )
 	{
 		if( $homeimgthumb == 1 ) //image thumb
 		{
@@ -144,23 +144,23 @@ function GetDataIn( $result, $catid )
 
 		$data[] = array(
 			'id' => $id,
-			'publtime' => $publtime,
+			'addtime' => $addtime,
 			'title' => $title,
 			'alias' => $alias,
 			'hometext' => $hometext,
-			'homeimgalt' => $homeimgalt,
+			'homeimgfile' => $homeimgfile,
 			'homeimgthumb' => $thumb,
-			'product_code' => $product_code,
-			'product_number' => $product_number,
+			'model' => $model,
+			'quantity' => $quantity,
 			'product_price' => $product_price,
 			'discount_id' => $discount_id,
 			'money_unit' => $money_unit,
 			'showprice' => $showprice,
 			'newday' => $newday,
 			'promotional' => $promotional,
-			'link_pro' => $link . $global_array_cat[$listcatid]['alias'] . '/' . $alias . $global_config['rewrite_exturl'],
+			'link_pro' => $link . $global_array_cat[$catid]['alias'] . '/' . $alias . $global_config['rewrite_exturl'],
 			'link_order' => $link . 'setcart&amp;id=' . $id );
-	}
+	} 
 
 	$data_content['id'] = $catid;
 	$data_content['title'] = $global_array_cat[$catid]['title'];
@@ -185,7 +185,7 @@ function GetDataInGroups( $result, $array_g )
 	$data_content = array();
 	$data = array();
 
-	while( list( $id, $listcatid, $publtime, $title, $alias, $hometext, $homeimgalt, $homeimgfile, $homeimgthumb, $product_code, $product_number, $product_price, $money_unit, $discount_id, $showprice, $promotional, $newday ) = $result->fetch( 3 ) )
+	while( list( $id, $catid, $addtime, $title, $alias, $hometext, $homeimgfile, $homeimgthumb, $model, $quantity, $quantity, $money_unit, $discount_id, $showprice, $promotional, $newday ) = $result->fetch( 3 ) )
 	{
 		if( $homeimgthumb == 1 ) //image thumb
 		{
@@ -206,21 +206,21 @@ function GetDataInGroups( $result, $array_g )
 
 		$data[] = array(
 			'id' => $id,
-			'publtime' => $publtime,
+			'addtime' => $addtime,
 			'title' => $title,
 			'alias' => $alias,
 			'hometext' => $hometext,
-			'homeimgalt' => $homeimgalt,
+			'homeimgfile' => $homeimgfile,
 			'homeimgthumb' => $thumb,
-			'product_code' => $product_code,
-			'product_number' => $product_number,
-			'product_price' => $product_price,
+			'model' => $model,
+			'quantity' => $quantity,
+			'quantity' => $quantity,
 			'discount_id' => $discount_id,
 			'money_unit' => $money_unit,
 			'showprice' => $showprice,
 			'newday' => $newday,
 			'promotional' => $promotional,
-			'link_pro' => $link . $global_array_cat[$listcatid]['alias'] . '/' . $alias . $global_config['rewrite_exturl'],
+			'link_pro' => $link . $global_array_cat[$catid]['alias'] . '/' . $alias . $global_config['rewrite_exturl'],
 			'link_order' => $link . 'setcart&amp;id=' . $id );
 	}
 
@@ -294,3 +294,65 @@ function getgroup_selecthtml( $data_group, $pid, $listgroupid )
 	}
 	return $contents_temp;
 }
+
+ 
+function creat_thumbs( $id, $homeimgfile, $module_name, $width = 200, $height = 150, $quality = 90 )
+{
+	if( $width >= $height ) $rate = $width / $height;
+	else  $rate = $height / $width;
+
+	$image = NV_UPLOADS_REAL_DIR . '/' . $module_name . '/' . $homeimgfile;
+
+	if( $homeimgfile != '' and file_exists( $image ) )
+	{
+		$imgsource = NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module_name . '/' . $homeimgfile;
+		$imginfo = nv_is_image( $image );
+
+		$basename = $module_name . $width . 'x' . $height . '-' . $id . '-' . md5_file( $image ) . '.' . $imginfo['ext'];
+
+		if( file_exists( NV_ROOTDIR . '/' . NV_TEMP_DIR . '/' . $basename ) )
+		{
+			$imgsource = NV_BASE_SITEURL . NV_TEMP_DIR . '/' . $basename;
+		}
+		else
+		{
+			require_once NV_ROOTDIR . '/includes/class/image.class.php';
+
+			$_image = new image( $image, NV_MAX_WIDTH, NV_MAX_HEIGHT );
+
+			if( $imginfo['width'] <= $imginfo['height'] )
+			{
+				$_image->resizeXY( $width, 0 );
+
+			}
+			elseif( ( $imginfo['width'] / $imginfo['height'] ) < $rate )
+			{
+				$_image->resizeXY( $width, 0 );
+			}
+			elseif( ( $imginfo['width'] / $imginfo['height'] ) >= $rate )
+			{
+				$_image->resizeXY( 0, $height );
+			}
+
+			//$_image->cropFromCenter( $width, $height );
+
+			$_image->save( NV_ROOTDIR . '/' . NV_TEMP_DIR, $basename, $quality );
+
+			if( file_exists( NV_ROOTDIR . '/' . NV_TEMP_DIR . '/' . $basename ) )
+			{
+				$imgsource = NV_BASE_SITEURL . NV_TEMP_DIR . '/' . $basename;
+			}
+		}
+	}
+	elseif( nv_is_url( $homeimgfile ) )
+	{
+		$imgsource = $homeimgfile;
+	}
+	else
+	{
+		$imgsource = '';
+	}
+	return $imgsource;
+}
+ 
+

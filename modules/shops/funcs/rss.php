@@ -40,21 +40,21 @@ if( ! empty( $catid ) )
 	$channel['link'] = NV_MY_DOMAIN . NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $alias_cat_url;
 	$channel['description'] = $global_array_cat[$catid]['description'];
 
-	$db->sqlreset()->select( 'id, listcatid, publtime, ' . NV_LANG_DATA . '_title, ' . NV_LANG_DATA . '_alias, ' . NV_LANG_DATA . '_hometext, homeimgfile' )->from( TABLE_SHOPS_NAME . '_rows' )->where( 'listcatid= ' . $catid . ' AND status =1' )->order( 'publtime DESC' )->limit( 30 );
+	$db->sqlreset()->select( 'id, catid, addtime, ' . NV_LANG_DATA . '_title, ' . NV_LANG_DATA . '_alias, ' . NV_LANG_DATA . '_hometext, homeimgfile' )->from( TABLE_SHOPS_NAME . '_rows' )->where( 'catid= ' . $catid . ' AND status =1' )->order( 'addtime DESC' )->limit( 30 );
 	$sql = $db->sql();
 }
 else
 {
-	$db->sqlreset()->select( 'id, listcatid, publtime, ' . NV_LANG_DATA . '_title, ' . NV_LANG_DATA . '_alias, ' . NV_LANG_DATA . '_hometext, homeimgfile, homeimgthumb' )->from( TABLE_SHOPS_NAME . '_rows' )->where( 'status =1' )->order( 'publtime DESC' )->limit( 30 );
+	$db->sqlreset()->select( 'id, catid, addtime, ' . NV_LANG_DATA . '_title, ' . NV_LANG_DATA . '_alias, ' . NV_LANG_DATA . '_hometext, homeimgfile, homeimgthumb' )->from( TABLE_SHOPS_NAME . '_rows' )->where( 'status =1' )->order( 'addtime DESC' )->limit( 30 );
 	$sql = $db->sql();
 }
 
 if( $module_info['rss'] )
 {
 	$result = $db->query( $sql );
-	while( list( $id, $listcatid, $publtime, $title, $alias, $hometext, $homeimgfile, $homeimgthumb ) = $result->fetch( 3 ) )
+	while( list( $id, $catid, $addtime, $title, $alias, $hometext, $homeimgfile, $homeimgthumb ) = $result->fetch( 3 ) )
 	{
-		$catalias = $global_array_cat[$listcatid]['alias'];
+		$catalias = $global_array_cat[$catid]['alias'];
 
 		if( $homeimgthumb == 1 ) //image thumb
 		{
@@ -80,7 +80,7 @@ if( $module_info['rss'] )
 			'link' => NV_MY_DOMAIN . NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $catalias . '/' . $alias . $global_config['rewrite_exturl'],
 			'guid' => $module_name . '_' . $id,
 			'description' => $rimages . $hometext,
-			'pubdate' => $publtime );
+			'pubdate' => $addtime );
 	}
 }
 

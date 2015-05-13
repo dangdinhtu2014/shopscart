@@ -20,14 +20,14 @@ if( ( $cache = nv_get_cache( $module_name, $cacheFile ) ) != false and filemtime
 }
 else
 {
-	$db->sqlreset()->select( 'id, listcatid, edittime, ' . NV_LANG_DATA . '_alias' )->from( TABLE_SHOPS_NAME . '_rows' )->where( 'status =1' )->order( 'publtime DESC' )->limit( 1000 );
+	$db->sqlreset()->select( 'id, catid, edittime, ' . NV_LANG_DATA . '_alias' )->from( TABLE_SHOPS_NAME . '_rows' )->where( 'status =1' )->order( 'addtime DESC' )->limit( 1000 );
 
 	$result = $db->query( $db->sql() );
 	$url = array();
 
 	while( list( $id, $catid_i, $edittime, $alias ) = $result->fetch( 3 ) )
 	{
-		$url[] = array( 'link' => NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_cat[$catid_i]['alias'] . '/' . $alias . $global_config['rewrite_exturl'], 'publtime' => $edittime );
+		$url[] = array( 'link' => NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_cat[$catid_i]['alias'] . '/' . $alias . $global_config['rewrite_exturl'], 'addtime' => $edittime );
 	}
 
 	$cache = serialize( $url );

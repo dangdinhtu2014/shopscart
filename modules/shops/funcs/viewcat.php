@@ -50,11 +50,11 @@ if( empty( $contents ) )
 	}
 	elseif( $sorts == 1 )
 	{
-		$orderby = 'product_price ASC, id DESC ';
+		$orderby = 'quantity ASC, id DESC ';
 	}
 	else
 	{
-		$orderby = ' product_price DESC, id DESC ';
+		$orderby = ' quantity DESC, id DESC ';
 	}
 
 	if( $global_array_cat[$catid]['viewcat'] == 'view_home_cat' and $global_array_cat[$catid]['numsubcat'] > 0 )
@@ -70,16 +70,16 @@ if( empty( $contents ) )
 			$array_cat = GetCatidInParent( $catid_i );
 
 			// Fetch Limit
-			$db->sqlreset()->select( 'COUNT(*)' )->from( TABLE_SHOPS_NAME . '_rows t1' )->where( 't1.listcatid IN (' . implode( ',', $array_cat ) . ') AND t1.status =1 ' );
+			$db->sqlreset()->select( 'COUNT(*)' )->from( TABLE_SHOPS_NAME . '_rows t1' )->where( 't1.catid IN (' . implode( ',', $array_cat ) . ') AND t1.status =1 ' );
 
 			$num_pro = $db->query( $db->sql() )->fetchColumn();
 
-			$db->select( 't1.id, t1.publtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.' . NV_LANG_DATA . '_hometext, t1.homeimgalt, t1.homeimgfile, t1.homeimgthumb, t1.product_code, t1.product_number, t1.product_price, t1.money_unit, t1.discount_id, t1.showprice,t1.' . NV_LANG_DATA . '_promotional, t2.newday' )->join( 'INNER JOIN ' . TABLE_SHOPS_NAME . '_catalogs t2 ON t2.catid = t1.listcatid' )->order( $orderby )->limit( $array_info_i['numlinks'] );
+			$db->select( 't1.id, t1.addtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.' . NV_LANG_DATA . '_hometext, t1.homeimgfile, t1.homeimgthumb, t1.model, t1.quantity, t1.product_price, t1.money_unit, t1.discount_id, t1.showprice,t1.' . NV_LANG_DATA . '_promotional, t2.newday' )->join( 'INNER JOIN ' . TABLE_SHOPS_NAME . '_catalogs t2 ON t2.catid = t1.catid' )->order( $orderby )->limit( $array_info_i['numlinks'] );
 			$result = $db->query( $db->sql() );
 
 			$data_pro = array();
 
-			while( list( $id, $publtime, $title, $alias, $hometext, $homeimgalt, $homeimgfile, $homeimgthumb, $product_code, $product_number, $product_price, $money_unit, $discount_id, $showprice, $promotional, $newday ) = $result->fetch( 3 ) )
+			while( list( $id, $addtime, $title, $alias, $hometext, $homeimgfile, $homeimgthumb, $model, $quantity, $product_price, $money_unit, $discount_id, $showprice, $promotional, $newday ) = $result->fetch( 3 ) )
 			{
 				if( $homeimgthumb == 1 ) //image thumb
 				{
@@ -99,14 +99,14 @@ if( empty( $contents ) )
 				}
 				$data_pro[] = array(
 					'id' => $id,
-					'publtime' => $publtime,
+					'addtime' => $addtime,
 					'title' => $title,
 					'alias' => $alias,
 					'hometext' => $hometext,
-					'homeimgalt' => $homeimgalt,
+					'homeimgfile' => $homeimgfile,
 					'homeimgthumb' => $thumb,
-					'product_code' => $product_code,
-					'product_number' => $product_number,
+					'model' => $model,
+					'quantity' => $quantity,
 					'product_price' => $product_price,
 					'discount_id' => $discount_id,
 					'money_unit' => $money_unit,
@@ -140,20 +140,20 @@ if( empty( $contents ) )
 		// Fetch Limit
 		if( $global_array_cat[$catid]['numsubcat'] == 0 )
 		{
-			$where = ' t1.listcatid=' . $catid;
+			$where = ' t1.catid=' . $catid;
 		}
 		else
 		{
 			$array_cat = array();
 			$array_cat = GetCatidInParent( $catid );
-			$where = ' t1.listcatid IN (' . implode( ',', $array_cat ) . ')';
+			$where = ' t1.catid IN (' . implode( ',', $array_cat ) . ')';
 		}
 
 		$db->sqlreset()->select( 'COUNT(*)' )->from( TABLE_SHOPS_NAME . '_rows t1' )->where( $where . ' AND t1.status =1 ' );
 
 		$num_items = $db->query( $db->sql() )->fetchColumn();
 
-		$db->select( 't1.id, t1.listcatid, t1.publtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.' . NV_LANG_DATA . '_hometext, t1.homeimgalt, t1.homeimgfile, t1.homeimgthumb, t1.product_code, t1.product_number, t1.product_price, t1.money_unit, t1.discount_id, t1.showprice, t1.' . NV_LANG_DATA . '_promotional,t2.newday, t2.image' )->join( 'INNER JOIN ' . TABLE_SHOPS_NAME . '_catalogs t2 ON t2.catid = t1.listcatid' )->order( $orderby )->limit( $per_page )->offset( ( $page - 1 ) * $per_page );
+		$db->select( 't1.id,  t1.addtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.' . NV_LANG_DATA . '_hometext, t1.homeimgfile, t1.homeimgthumb, t1.model, t1.quantity, t1.product_price, t1.money_unit, t1.discount_id, t1.showprice, t1.' . NV_LANG_DATA . '_promotional,t2.newday, t2.image' )->join( 'INNER JOIN ' . TABLE_SHOPS_NAME . '_catalogs t2 ON t2.catid = t1.catid' )->order( $orderby )->limit( $per_page )->offset( ( $page - 1 ) * $per_page );
 		$result = $db->query( $db->sql() );
 
 		$data_content = GetDataIn( $result, $catid );

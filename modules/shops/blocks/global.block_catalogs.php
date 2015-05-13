@@ -142,6 +142,7 @@ if( ! function_exists( 'nv_pro_catalogs' ) )
 		$xtpl->assign( 'ID', $block_config['bid'] );
 		$cut_num = $block_config['cut_num'];
 		$html = "";
+ 
 		foreach( $array_cat_shops as $cat )
 		{
 			if( $cat['parentid'] == 0 )
@@ -149,9 +150,10 @@ if( ! function_exists( 'nv_pro_catalogs' ) )
 				if( $cat['inhome'] == '1' )
 				{
 					$html .= "<li>\n";
-					$html .= "<a title=\"" . $cat['title'] . "\" href=\"" . $cat['link'] . "\">" . nv_clean60( $cat['title'], $cut_num ) . "</a>\n";
-					if( ! empty( $cat['subcatid'] ) ) $html .= html_viewsub( $cat['subcatid'], $block_config );
+					$html .= "<h2 class=\"h2_title_product\"><a title=\"" . $cat['title'] . "\" href=\"" . $cat['link'] . "\">" . nv_clean60( $cat['title'], $cut_num ) . "</a></h2>\n";
+					if( ! empty( $cat['subcatid'] ) ) $html .= html_viewsub( $cat['subcatid'], $block_config, $cat['lev'] );
 					$html .= "</li>\n";
+ 
 				}
 			}
 		}
@@ -167,22 +169,24 @@ if( ! function_exists( 'nv_pro_catalogs' ) )
 	 * @param mixed $block_config
 	 * @return
 	 */
-	function html_viewsub( $list_sub, $block_config )
+	function html_viewsub( $list_sub, $block_config, $lev )
 	{
 		global $array_cat_shops;
 		$cut_num = $block_config['cut_num'];
 		if( empty( $list_sub ) ) return "";
 		else
 		{
-			$html = "<ul>\n";
+			$class = ( $lev == 2 ) ? 'class="sub_left_2"' : '';
+			$html = "<ul ".$class.">\n";
 			$list = explode( ",", $list_sub );
+			
 			foreach( $list as $catid )
 			{
 				if( $array_cat_shops[$catid]['inhome'] == '1' )
 				{
 					$html .= "<li>\n";
-					$html .= "<a title=\"" . $array_cat_shops[$catid]['title'] . "\" href=\"" . $array_cat_shops[$catid]['link'] . "\">" . nv_clean60( $array_cat_shops[$catid]['title'], $cut_num ) . "</a>\n";
-					if( ! empty( $array_cat_shops[$catid]['subcatid'] ) ) $html .= html_viewsub( $array_cat_shops[$catid]['subcatid'], $block_config );
+					$html .= "<h3 class=\"h3_title_product\"><a title=\"" . $array_cat_shops[$catid]['title'] . "\" href=\"" . $array_cat_shops[$catid]['link'] . "\">" . nv_clean60( $array_cat_shops[$catid]['title'], $cut_num ) . "</a></h3>\n";
+					if( ! empty( $array_cat_shops[$catid]['subcatid'] ) ) $html .= html_viewsub( $array_cat_shops[$catid]['subcatid'], $block_config, $array_cat_shops[$catid]['lev'] );
 					$html .= "</li>\n";
 				}
 			}

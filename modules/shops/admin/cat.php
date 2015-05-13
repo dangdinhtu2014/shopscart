@@ -163,10 +163,9 @@ if( ! empty( $savecat ) )
 
 				if( $data['parentid'] != $data['parentid_old'] )
 				{
-					$stmt = $db->prepare( 'SELECT max(weight) FROM ' . $table_name . ' WHERE parentid= :parentid ' );
-					$stmt->bindParam( ':parentid', $data['parentid'], PDO::PARAM_INT );
+					$stmt = $db->prepare( 'SELECT max(weight) FROM ' . $table_name . ' WHERE parentid=' . $data['parentid'] );
 					$stmt->execute();
-					$weight->fetchColumn();
+					$weight = $stmt->fetchColumn();
 					$weight = intval( $weight ) + 1;
 					$sql = 'UPDATE ' . $table_name . ' SET weight=' . $weight . ' WHERE catid=' . intval( $data['catid'] );
 					$db->query( $sql );

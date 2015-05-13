@@ -10,17 +10,17 @@
 
 if( ! defined( 'NV_MAINFILE' ) ) die( 'Stop!!!' );
 
-if( ! function_exists( 'nv_view_product_price' ) )
+if( ! function_exists( 'nv_view_quantity' ) )
 {
 	/**
-	 * nv_block_config_product_price_blocks()
+	 * nv_block_config_quantity_blocks()
 	 * 
 	 * @param mixed $module
 	 * @param mixed $data_block
 	 * @param mixed $lang_block
 	 * @return
 	 */
-	function nv_block_config_product_price_blocks( $module, $data_block, $lang_block )
+	function nv_block_config_quantity_blocks( $module, $data_block, $lang_block )
 	{
 		$html = '<tr>';
 		$html .= '	<td>' . $lang_block['price_begin'] . '</td>';
@@ -59,13 +59,13 @@ if( ! function_exists( 'nv_view_product_price' ) )
 		return $money;
 	}
 	/**
-	 * nv_block_config_product_price_blocks_submit()
+	 * nv_block_config_quantity_blocks_submit()
 	 * 
 	 * @param mixed $module
 	 * @param mixed $lang_block
 	 * @return
 	 */
-	function nv_block_config_product_price_blocks_submit( $module, $lang_block )
+	function nv_block_config_quantity_blocks_submit( $module, $lang_block )
 	{
 		global $nv_Request;
 		$return = array();
@@ -77,12 +77,12 @@ if( ! function_exists( 'nv_view_product_price' ) )
 		return $return;
 	}
 	/**
-	 * nv_view_product_price()
+	 * nv_view_quantity()
 	 * 
 	 * @param mixed $block_config
 	 * @return
 	 */
-	function nv_view_product_price( $block_config )
+	function nv_view_quantity( $block_config )
 	{
 		global $site_mods, $module_info, $nv_Request, $catid;
 
@@ -149,5 +149,5 @@ if( ! function_exists( 'nv_view_product_price' ) )
 
 if( defined( 'NV_SYSTEM' ) )
 {
-	$content = nv_view_product_price( $block_config );
+	$content = nv_view_quantity( $block_config );
 }

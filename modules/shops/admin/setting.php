@@ -51,7 +51,7 @@ if( $savesetting == 1 )
 	$data['active_payment'] = $nv_Request->get_int( 'active_payment', 'post', 0 );
 	$data['active_showhomtext'] = $nv_Request->get_int( 'active_showhomtext', 'post', 0 );
 	$data['active_tooltip'] = $nv_Request->get_int( 'active_tooltip', 'post', 0 );
-	$data['show_product_code'] = $nv_Request->get_int( 'show_product_code', 'post', 0 );
+	$data['show_model'] = $nv_Request->get_int( 'show_model', 'post', 0 );
 	$data['show_compare'] = $nv_Request->get_int( 'show_compare', 'post', 0 );
 	$data['show_displays'] = $nv_Request->get_int( 'show_displays', 'post', 0 );
 	$data['active_guest_order'] = $nv_Request->get_int( 'active_guest_order', 'post', 0 );
@@ -158,8 +158,8 @@ $xtpl->assign( 'ck_active_showhomtext', $check );
 $check = ( $data['active_tooltip'] == '1' ) ? "checked=\"checked\"" : "";
 $xtpl->assign( 'ck_active_tooltip', $check );
 
-$check = ! empty( $data['show_product_code'] ) ? "checked=\"checked\"" : "";
-$xtpl->assign( 'ck_show_product_code', $check );
+$check = ! empty( $data['show_model'] ) ? "checked=\"checked\"" : "";
+$xtpl->assign( 'ck_show_model', $check );
 
 $check = ( $data['show_compare'] == '1' ) ? "checked=\"checked\"" : "";
 $xtpl->assign( 'ck_compare', $check );

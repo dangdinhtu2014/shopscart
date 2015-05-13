@@ -23,7 +23,7 @@ if( $order_id > 0 and $checkss == md5( $order_id . $global_config['sitekey'] . s
 	// Cong lai san pham trong kho
 	if( $pro_config['active_order_number'] == '0' )
 	{
-		product_number_order( $data_order['listid'], $data_order['listnum'], "+" );
+		quantity_order( $data_order['listid'], $data_order['listnum'], "+" );
 	}
 
 	$exec = $db->exec( "DELETE FROM " . $db_config['prefix'] . "_" . $module_data . "_orders WHERE order_id=" . $order_id . " AND transaction_status < 1" );
@@ -53,7 +53,7 @@ elseif( $nv_Request->isset_request( 'listall', 'post,get' ) )
 			// Cong lai san pham trong kho
 			if( $pro_config['active_order_number'] == '0' )
 			{
-				product_number_order( $data_order['listid'], $data_order['listnum'], "+" );
+				quantity_order( $data_order['listid'], $data_order['listnum'], "+" );
 			}
 
 			$exec = $db->exec( "DELETE FROM " . $db_config['prefix'] . "_" . $module_data . "_orders WHERE order_id=" . $order_id . " AND transaction_status < 1" );

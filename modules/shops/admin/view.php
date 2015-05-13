@@ -14,7 +14,7 @@ $id = $nv_Request->get_int( 'id', 'get,post', 0 );
 $row = $db->query( 'SELECT * FROM ' . TABLE_SHOPS_NAME . '_rows where id=' . $id )->fetch();
 if( ! empty( $row['id'] ) )
 {
-	$_url_rewrite = nv_url_rewrite( NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_cat[$row['listcatid']]['alias'] . '/' . $row[NV_LANG_DATA . '_alias'] . '-' . $row['id'] . $global_config['rewrite_exturl'], true );
+	$_url_rewrite = nv_url_rewrite( NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_cat[$row['catid']]['alias'] . '/' . $row[NV_LANG_DATA . '_alias'] . '-' . $row['id'] . $global_config['rewrite_exturl'], true );
 	Header( 'Location: ' . $_url_rewrite );
 	die();
 }

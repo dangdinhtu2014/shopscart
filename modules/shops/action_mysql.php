@@ -13,6 +13,8 @@ $sql_drop_module = array();
 
 global $op, $db;
 
+define( 'TABLE_SHOPS_NAME', $db_config['prefix'] . '_' . $module_data );
+
 $result = $db->query( "SHOW TABLE STATUS LIKE '" . $db_config['prefix'] . "\_" . $module_data . "\_money\_%'" );
 $num_table = intval( $result->rowCount() );
 $array_lang_module_setup = array();
@@ -39,14 +41,7 @@ if( $num_table > 0 )
 		}
 	}
 }
-
-$result = $db->query( "SHOW TABLE STATUS LIKE '" . $db_config['prefix'] . "\_" . $lang . "\_comments'" );
-$rows = $result->fetchAll();
-if( sizeof( $rows ) )
-{
-	$sql_drop_module[] = "DELETE FROM " . $db_config['prefix'] . "_" . $lang . "_comments WHERE module='" . $module_name . "'";
-}
-
+ 
 if( in_array( $lang, $array_lang_module_setup ) and $num_table > 1 )
 {
 	$sql_drop_module[] = 'ALTER TABLE ' . TABLE_SHOPS_NAME . '_rows
@@ -55,8 +50,7 @@ if( in_array( $lang, $array_lang_module_setup ) and $num_table > 1 )
 	 DROP ' . $lang . '_hometext,
 	 DROP ' . $lang . '_bodytext,
 	 DROP ' . $lang . '_warranty,
-	 DROP ' . $lang . '_promotional,
-	 DROP ' . $lang . '_custom';
+	 DROP ' . $lang . '_promotional';
 
 	$sql_drop_module[] = 'ALTER TABLE ' . TABLE_SHOPS_NAME . '_catalogs
 	 DROP ' . $lang . '_title,
@@ -92,8 +86,6 @@ if( in_array( $lang, $array_lang_module_setup ) and $num_table > 1 )
 elseif( $op != 'setup' )
 {
 	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_block';
-	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_field';
-	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_template';
 	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_info';
 	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_block_cat';
 	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_catalogs';
@@ -107,6 +99,8 @@ elseif( $op != 'setup' )
 	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_items_group';
 	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_tags';
 	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_tags_id';
+	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_wishlist';
+	$sql_drop_module[] = 'DROP TABLE IF EXISTS ' . TABLE_SHOPS_NAME . '_template';
 	$set_lang_data = '';
 }
 
@@ -126,6 +120,7 @@ $sql_create_module[] = "CREATE TABLE IF NOT EXISTS " . $db_config['prefix'] . "_
  subcatid varchar(255) NOT NULL default '',
  inhome tinyint(1) unsigned NOT NULL default '0',
  numlinks tinyint(2) unsigned NOT NULL default '3',
+ numrows mediumint(8) unsigned NOT NULL default '0',
  newday tinyint(4) NOT NULL DEFAULT '3',
  form varchar(50) NOT NULL DEFAULT '',
  admins mediumtext NOT NULL,
@@ -156,26 +151,7 @@ $sql_create_module[] = "CREATE TABLE IF NOT EXISTS " . $db_config['prefix'] . "_
   status tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (id) 
 ) ENGINE=MyISAM ";
-
-$sql_create_module[] = "CREATE TABLE IF NOT EXISTS " . $db_config['prefix'] . "_" . $module_data . "_field (
-  `fid` mediumint(8) NOT NULL AUTO_INCREMENT,
-  `field` varchar(25) NOT NULL,
-  `listtemplate` varchar(25) NOT NULL,
-  `weight` int(10) unsigned NOT NULL DEFAULT '1',
-  `field_type` enum('number','date','textbox','textarea','editor','select','radio','checkbox','multiselect') NOT NULL DEFAULT 'textbox',
-  `field_choices` text NOT NULL,
-  `sql_choices` text NOT NULL,
-  `match_type` enum('none','alphanumeric','email','url','regex','callback') NOT NULL DEFAULT 'none',
-  `match_regex` varchar(250) NOT NULL DEFAULT '',
-  `func_callback` varchar(75) NOT NULL DEFAULT '',
-  `min_length` int(11) NOT NULL DEFAULT '0',
-  `max_length` bigint(20) unsigned NOT NULL DEFAULT '0',  
-  `language` text NOT NULL,
-  `default_value` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`fid`),
-  UNIQUE KEY `field` (`field`)
-) ENGINE=MyISAM ";
-
+ 
 $sql_create_module[] = "CREATE TABLE IF NOT EXISTS " . $db_config['prefix'] . "_" . $module_data . "_group (
  groupid mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
  parentid mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -208,16 +184,13 @@ $sql_create_module[] = "CREATE TABLE IF NOT EXISTS " . $db_config['prefix'] . "_
 
 $sql_create_module[] = "CREATE TABLE IF NOT EXISTS " . $db_config['prefix'] . "_" . $module_data . "_rows (
  id int(11) unsigned NOT NULL AUTO_INCREMENT,
- listcatid int(11) NOT NULL DEFAULT '0',
+ catid int(11) NOT NULL DEFAULT '0',
  user_id mediumint(8) NOT NULL DEFAULT '0',
  addtime int(11) unsigned NOT NULL DEFAULT '0',
  edittime int(11) unsigned NOT NULL DEFAULT '0',
  status tinyint(4) NOT NULL DEFAULT '1',
- publtime int(11) unsigned NOT NULL DEFAULT '0',
- exptime int(11) unsigned NOT NULL DEFAULT '0',
- archive tinyint(1) unsigned NOT NULL DEFAULT '0',
- product_code varchar(255) NOT NULL DEFAULT '',
- product_number int(11) NOT NULL DEFAULT '0',
+ model varchar(255) NOT NULL DEFAULT '',
+ quantity int(11) NOT NULL DEFAULT '0',
  product_price float NOT NULL DEFAULT '0',
  money_unit char(3) NOT NULL,
  product_unit int(11) NOT NULL,
@@ -226,31 +199,13 @@ $sql_create_module[] = "CREATE TABLE IF NOT EXISTS " . $db_config['prefix'] . "_
  homeimgthumb tinyint(4) NOT NULL DEFAULT '0',
  homeimgalt varchar(255) NOT NULL,
  otherimage text NOT NULL,
- imgposition tinyint(1) NOT NULL DEFAULT '1',
- copyright tinyint(1) unsigned NOT NULL DEFAULT '0',
  inhome tinyint(1) unsigned NOT NULL DEFAULT '0',
- allowed_comm tinyint(1) unsigned NOT NULL DEFAULT '0',
- allowed_rating tinyint(1) unsigned NOT NULL DEFAULT '0',
- ratingdetail varchar(255) NOT NULL DEFAULT '',
- allowed_send tinyint(1) unsigned NOT NULL DEFAULT '0',
- allowed_print tinyint(1) unsigned NOT NULL DEFAULT '0',
- allowed_save tinyint(1) unsigned NOT NULL DEFAULT '0',
  hitstotal mediumint(8) unsigned NOT NULL DEFAULT '0',
- hitscm mediumint(8) unsigned NOT NULL DEFAULT '0',
- hitslm mediumint(8) unsigned NOT NULL DEFAULT '0',
  showprice tinyint(2) NOT NULL DEFAULT '0',
- custom text NOT NULL,   
- vat tinyint(1) unsigned NOT NULL DEFAULT '0',  
- typeproduct tinyint(1) unsigned NOT NULL DEFAULT '0',
- new_old tinyint(1) unsigned NOT NULL DEFAULT '1',
- percentnew tinyint(2) unsigned NOT NULL DEFAULT '90',
- adddefaul tinyint(1) unsigned NOT NULL DEFAULT '1', 
- 
  PRIMARY KEY (id),
- KEY listcatid (listcatid),
+ KEY catid (catid),
  KEY user_id (user_id),
- KEY publtime (publtime),
- KEY exptime (exptime)
+ KEY addtime (addtime)
 ) ENGINE=MyISAM";
 
 $sql_create_module[] = "ALTER TABLE " . $db_config['prefix'] . "_" . $module_data . "_rows ADD " . $lang . "_title VARCHAR( 255 ) NOT NULL DEFAULT '',
@@ -259,7 +214,6 @@ $sql_create_module[] = "ALTER TABLE " . $db_config['prefix'] . "_" . $module_dat
  ADD " . $lang . "_bodytext mediumtext NOT NULL,
  ADD " . $lang . "_warranty text NOT NULL,
  ADD " . $lang . "_promotional text NOT NULL, 
- ADD " . $lang . "_custom text NOT NULL,
  ADD " . $lang . "_address text NOT NULL";
 
 $sql_create_module[] = "CREATE TABLE IF NOT EXISTS " . $db_config['prefix'] . "_" . $module_data . "_block_cat (
@@ -419,7 +373,7 @@ $data['active_order_number'] = 0;
 $data['active_payment'] = 1;
 $data['active_tooltip'] = 1;
 $data['timecheckstatus'] = 0;
-$data['show_product_code'] = 1;
+$data['show_model'] = 1;
 $data['show_compare'] = 0;
 $data['show_displays'] = 0;
 $data['active_wishlist'] = 1;
@@ -510,14 +464,4 @@ $sql_create_module[] = "REPLACE INTO " . $db_config['prefix'] . "_" . $module_da
 $sql_create_module[] = "ALTER TABLE " . $db_config['prefix'] . "_" . $module_data . "_catalogs ADD UNIQUE (" . $lang . "_alias)";
 $sql_create_module[] = "ALTER TABLE " . $db_config['prefix'] . "_" . $module_data . "_group ADD UNIQUE (" . $lang . "_alias)";
 $sql_create_module[] = "ALTER TABLE " . $db_config['prefix'] . "_" . $module_data . "_block_cat ADD UNIQUE (" . $lang . "_alias)";
-
-// Comments
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'auto_postcomm', '1')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'allowed_comm', '-1')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'view_comm', '6')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'setcomm', '4')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'activecomm', '1')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'emailcomm', '0')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'adminscomm', '')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'sortcomm', '0')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'captcha', '1')";
+ 

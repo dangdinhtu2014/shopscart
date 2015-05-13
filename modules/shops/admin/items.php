@@ -39,12 +39,12 @@ if( $per_page_old != $per_page )
 }
 
 $q = nv_substr( $nv_Request->get_title( 'q', 'get', '' ), 0, NV_MAX_SEARCH_LENGTH );
-$ordername = $nv_Request->get_string( 'ordername', 'get', 'publtime' );
+$ordername = $nv_Request->get_string( 'ordername', 'get', 'addtime' );
 $order = $nv_Request->get_string( 'order', 'get' ) == 'asc' ? 'asc' : 'desc';
 
 $array_search = array(
 	'-' => '---',
-	'product_code' => $lang_module['search_product_code'],
+	'model' => $lang_module['search_model'],
 	'title' => $lang_module['search_title'],
 	'bodytext' => $lang_module['search_bodytext'],
 	'author' => $lang_module['search_author'],
@@ -52,7 +52,7 @@ $array_search = array(
 $array_in_rows = array( 'title', 'bodytext' );
 $array_in_ordername = array(
 	'title',
-	'publtime',
+	'addtime',
 	'exptime' );
 
 if( ! in_array( $stype, array_keys( $array_search ) ) )
@@ -73,9 +73,9 @@ $checkss = $nv_Request->get_string( 'checkss', 'get', '' );
 if( $checkss == md5( session_id() ) )
 {
 	// Tim theo tu khoa
-	if( $stype == 'product_code' )
+	if( $stype == 'model' )
 	{
-		$from .= " WHERE product_code LIKE '%" . $db->dblikeescape( $q ) . "%' ";
+		$from .= " WHERE model LIKE '%" . $db->dblikeescape( $q ) . "%' ";
 	}
 	elseif( in_array( $stype, $array_in_rows ) and ! empty( $q ) )
 	{
@@ -104,7 +104,7 @@ if( $checkss == md5( session_id() ) )
 		}
 
 		$arr_from = array();
-		$arr_from[] = "(product_code LIKE '%" . $db->dblikeescape( $q ) . "%')";
+		$arr_from[] = "(model LIKE '%" . $db->dblikeescape( $q ) . "%')";
 		foreach( $array_in_rows as $val )
 		{
 			$arr_from[] = "(" . NV_LANG_DATA . "_" . $val . " LIKE '%" . $db->dblikeescape( $q ) . "%')";
@@ -131,13 +131,13 @@ if( $checkss == md5( session_id() ) )
 
 		if( $global_array_cat[$catid]['numsubcat'] == 0 )
 		{
-			$from .= ' listcatid=' . $catid;
+			$from .= ' catid=' . $catid;
 		}
 		else
 		{
 			$array_cat = array();
 			$array_cat = GetCatidInParent( $catid );
-			$from .= ' listcatid IN (' . implode( ',', $array_cat ) . ')';
+			$from .= ' catid IN (' . implode( ',', $array_cat ) . ')';
 		}
 	}
 }
@@ -195,24 +195,25 @@ $xtpl->assign( 'NV_MAX_SEARCH_LENGTH', NV_MAX_SEARCH_LENGTH );
 
 $order2 = ( $order == 'asc' ) ? 'desc' : 'asc';
 $base_url_name = NV_BASE_ADMINURL . 'index.php?' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&per_page=' . $per_page . '&catid=' . $catid . '&stype=' . $stype . '&q=' . $q . '&checkss=' . $checkss . '&ordername=title&order=' . $order2 . '&page=' . $page;
-$base_url_publtime = NV_BASE_ADMINURL . 'index.php?' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&per_page=' . $per_page . '&catid=' . $catid . '&stype=' . $stype . '&q=' . $q . '&checkss=' . $checkss . '&ordername=publtime&order=' . $order2 . '&page=' . $page;
+$base_url_addtime = NV_BASE_ADMINURL . 'index.php?' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&per_page=' . $per_page . '&catid=' . $catid . '&stype=' . $stype . '&q=' . $q . '&checkss=' . $checkss . '&ordername=addtime&order=' . $order2 . '&page=' . $page;
 
 // Order
 $xtpl->assign( 'BASE_URL_NAME', $base_url_name );
-$xtpl->assign( 'BASE_URL_PUBLTIME', $base_url_publtime );
+$xtpl->assign( 'BASE_URL_PUBLTIME', $base_url_addtime );
 
 $base_url = NV_BASE_ADMINURL . 'index.php?' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;per_page=' . $per_page . '&amp;catid=' . $catid . '&amp;stype=' . $stype . '&amp;q=' . $q . '&amp;checkss=' . $checkss . '&amp;ordername=' . $ordername . '&amp;order=' . $order;
 $ord_sql = ( $ordername == 'title' ? NV_LANG_DATA . '_title' : $ordername ) . ' ' . $order;
-$db->sqlreset()->select( 'id, listcatid, user_id, homeimgfile, homeimgthumb, ' . NV_LANG_DATA . '_title, ' . NV_LANG_DATA . '_alias, status , edittime, publtime, exptime, product_number, product_price, money_unit, username' )->from( $from )->order( $ord_sql )->limit( $per_page )->offset( ( $page - 1 ) * $per_page );
+$db->sqlreset()->select( 'id, catid, user_id, homeimgfile, homeimgthumb, ' . NV_LANG_DATA . '_title, ' . NV_LANG_DATA . '_alias, status , addtime, edittime, quantity, product_price, money_unit, username' )->from( $from )->order( $ord_sql )->limit( $per_page )->offset( ( $page - 1 ) * $per_page );
 $result = $db->query( $db->sql() );
 
 $theme = $site_mods[$module_name]['theme'] ? $site_mods[$module_name]['theme'] : $global_config['site_theme'];
 $a = 0;
 
-while( list( $id, $listcatid, $admin_id, $homeimgfile, $homeimgthumb, $title, $alias, $status, $edittime, $publtime, $exptime, $product_number, $product_price, $money_unit, $username ) = $result->fetch( 3 ) )
+while( list( $id, $catid, $admin_id, $homeimgfile, $homeimgthumb, $title, $alias, $status, $addtime, $edittime, $quantity, $product_price, $money_unit, $username ) = $result->fetch( 3 ) )
 {
-	$publtime = nv_date( 'H:i d/m/y', $publtime );
+	 
 	$edittime = nv_date( 'H:i d/m/y', $edittime );
+	$addtime = nv_date( 'H:i d/m/y', $addtime );
 	$title = nv_clean60( $title );
 
 	$catid_i = 0;
@@ -222,7 +223,7 @@ while( list( $id, $listcatid, $admin_id, $homeimgfile, $homeimgthumb, $title, $a
 	}
 	else
 	{
-		$catid_i = $listcatid;
+		$catid_i = $catid;
 	}
 
 	// Xac dinh anh nho
@@ -252,11 +253,11 @@ while( list( $id, $listcatid, $admin_id, $homeimgfile, $homeimgthumb, $title, $a
 		'id' => $id,
 		'link' => NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_cat[$catid_i]['alias'] . '/' . $alias . '-' . $id . $global_config['rewrite_exturl'],
 		'title' => $title,
-		'publtime' => $publtime,
+		'addtime' => $addtime,
 		'edittime' => $edittime,
 		'status' => $lang_module['status_' . $status],
 		'admin_id' => ! empty( $username ) ? $username : '',
-		'product_number' => $product_number,
+		'quantity' => $quantity,
 		'product_price' => preg_replace( '/\.00$/', '', number_format( $product_price, 2, '.', ',' ) ),
 		'money_unit' => $money_unit,
 		'thumb' => $thumb,
@@ -270,8 +271,6 @@ while( list( $id, $listcatid, $admin_id, $homeimgfile, $homeimgthumb, $title, $a
 
 $array_list_action = array(
 	'delete' => $lang_global['delete'],
-	'publtime' => $lang_module['publtime'],
-	'exptime' => $lang_module['exptime'],
 	'addtoblock' => $lang_module['addtoblock'] );
 
 while( list( $catid_i, $title_i ) = each( $array_list_action ) )

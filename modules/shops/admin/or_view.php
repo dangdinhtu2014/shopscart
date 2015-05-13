@@ -57,21 +57,21 @@ $i = 0;
 
 foreach( $listid as $id )
 {
-	$sql = 'SELECT t1.id, t1.listcatid, t1.product_code, t1.publtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.product_price,t2.' . NV_LANG_DATA . '_title FROM ' . TABLE_SHOPS_NAME . '_units AS t2, ' . TABLE_SHOPS_NAME . '_rows AS t1 WHERE t1.product_unit = t2.id AND t1.id =' . $id . ' AND t1.status =1 AND t1.publtime < ' . NV_CURRENTTIME . ' AND (t1.exptime=0 OR t1.exptime>' . NV_CURRENTTIME . ')';
+	$sql = 'SELECT t1.id, t1.catid, t1.model, t1.addtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.quantity,t2.' . NV_LANG_DATA . '_title FROM ' . TABLE_SHOPS_NAME . '_units AS t2, ' . TABLE_SHOPS_NAME . '_rows AS t1 WHERE t1.product_unit = t2.id AND t1.id =' . $id . ' AND t1.status =1 AND t1.addtime < ' . NV_CURRENTTIME . ' AND (t1.exptime=0 OR t1.exptime>' . NV_CURRENTTIME . ')';
 
 	$result = $db->query( $sql );
 
-	list( $id, $_catid, $product_code, $publtime, $title, $alias, $product_price, $unit ) = $result->fetch( 3 );
+	list( $id, $_catid, $model, $addtime, $title, $alias, $quantity, $unit ) = $result->fetch( 3 );
 	$data_pro[] = array(
 		'id' => $id,
-		'publtime' => $publtime,
+		'addtime' => $addtime,
 		'title' => $title,
 		'alias' => $alias,
-		'product_price' => $listprice[$i],
-		'product_code' => $product_code,
+		'quantity' => $listprice[$i],
+		'model' => $model,
 		'product_unit' => $unit,
 		'link_pro' => $link . $global_array_cat[$_catid]['alias'] . '/' . $alias . '-' . $id,
-		'product_number' => $listnum[$i],
+		'quantity' => $listnum[$i],
 		'product_group' => isset( $listgroup[$i] ) ? $listgroup[$i] : '' );
 	++$i;
 }
@@ -86,10 +86,10 @@ $xtpl->assign( 'order_id', $data_content['order_id'] );
 $i = 0;
 foreach( $data_pro as $pdata )
 {
-	$xtpl->assign( 'product_code', $pdata['product_code'] );
+	$xtpl->assign( 'model', $pdata['model'] );
 	$xtpl->assign( 'product_name', $pdata['title'] );
-	$xtpl->assign( 'product_number', $pdata['product_number'] );
-	$xtpl->assign( 'product_price', nv_number_format( $pdata['product_price'], nv_get_decimals( $pro_config['money_unit'] ) ) );
+	$xtpl->assign( 'quantity', $pdata['quantity'] );
+	$xtpl->assign( 'quantity', nv_number_format( $pdata['quantity'], nv_get_decimals( $pro_config['money_unit'] ) ) );
 	$xtpl->assign( 'product_unit', $pdata['product_unit'] );
 	$xtpl->assign( 'link_pro', $pdata['link_pro'] );
 	$xtpl->assign( 'pro_no', $i + 1 );

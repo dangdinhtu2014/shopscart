@@ -32,12 +32,12 @@ if( ! function_exists( 'nv_others_product' ) )
 			$xtpl->assign( 'THEME_TEM', NV_BASE_SITEURL . 'themes/' . $module_info['template'] );
 			$xtpl->assign( 'WIDTH', $pro_config['blockwidth'] );
 
-			$db->sqlreset()->select( 'id, listcatid, ' . NV_LANG_DATA . '_title, ' . NV_LANG_DATA . '_alias ,addtime, homeimgfile, homeimgthumb, product_price, money_unit, discount_id, showprice' )->from( TABLE_SHOPS_NAME . '_rows' )->where( 'status =1 AND listcatid = ' . $catid . ' AND id < ' . $id )->order( 'id DESC' )->limit( 20 );
+			$db->sqlreset()->select( 'id, catid, ' . NV_LANG_DATA . '_title, ' . NV_LANG_DATA . '_alias ,addtime, homeimgfile, homeimgthumb, quantity, money_unit, discount_id, showprice' )->from( TABLE_SHOPS_NAME . '_rows' )->where( 'status =1 AND catid = ' . $catid . ' AND id < ' . $id )->order( 'id DESC' )->limit( 20 );
 
 			$result = $db->query( $db->sql() );
 
 			$i = 1;
-			while( list( $id_i, $listcatid_i, $title_i, $alias_i, $addtime_i, $homeimgfile_i, $homeimgthumb_i, $product_price_i, $money_unit_i, $discount_id_i, $showprice_i ) = $result->fetch( 3 ) )
+			while( list( $id_i, $catid_i, $title_i, $alias_i, $addtime_i, $homeimgfile_i, $homeimgthumb_i, $quantity_i, $money_unit_i, $discount_id_i, $showprice_i ) = $result->fetch( 3 ) )
 			{
 				if( $homeimgthumb_i == 1 ) //image thumb
 				{
@@ -56,14 +56,14 @@ if( ! function_exists( 'nv_others_product' ) )
 					$src_img = NV_BASE_SITEURL . 'themes/' . $global_config['site_theme'] . '/images/shops/no-image.jpg';
 				}
 
-				$xtpl->assign( 'link', NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_cat[$listcatid_i]['alias'] . '/' . $alias_i . $global_config['rewrite_exturl'] );
+				$xtpl->assign( 'link', NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_cat[$catid_i]['alias'] . '/' . $alias_i . $global_config['rewrite_exturl'] );
 				$xtpl->assign( 'title', $title_i );
 				$xtpl->assign( 'src_img', $src_img );
 				$xtpl->assign( 'time', nv_date( 'd-m-Y h:i:s A', $addtime_i ) );
 				if( $pro_config['active_price'] == '1' and $showprice_i == '1' )
 				{
-					$product_price = nv_currency_conversion( $product_price_i, $money_unit_i, $pro_config['money_unit'], $discount_id_i );
-					$xtpl->assign( 'PRICE', $product_price );
+					$quantity = nv_currency_conversion( $quantity_i, $money_unit_i, $pro_config['money_unit'], $discount_id_i );
+					$xtpl->assign( 'PRICE', $quantity );
 					$xtpl->parse( 'main.loop.price' );
 				}
 				$bg = ( $i % 2 == 0 ) ? 'bg' : '';

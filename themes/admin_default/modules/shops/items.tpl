@@ -53,9 +53,9 @@
 					</th>
 					<th style="width:40px">&nbsp;</th>
 					<th><a href="{BASE_URL_NAME}">{LANG.name}</a></th>
-					<th class="text-center"><a href="{BASE_URL_PUBLTIME}">{LANG.content_publ_date}</a></th>
+					<th class="text-center"><a href="{BASE_URL_PUBLTIME}">{LANG.content_addtime}</a></th>
 					<th class="text-center">{LANG.status}</th>
-					<th class="text-center">{LANG.order_product_price}</th>
+					<th class="text-center">{LANG.content_product_price}</th>
 					<th class="text-center">{LANG.content_product_number1}</th>
 					<th>&nbsp;</th>
 				</tr>
@@ -75,7 +75,7 @@
 						{LANG.order_update}: <span class="other">{ROW.edittime}</span> |
 						{LANG.content_admin}: <span class="other">{ROW.admin_id}</span>
 					</div></td>
-					<td class="text-center">{ROW.publtime}</td>
+					<td class="text-center">{ROW.addtime}</td>
 					<td class="text-center">{ROW.status}</td>
 					<td class="text-right">{ROW.product_price} {ROW.money_unit}</td>
 					<td class="text-center">{ROW.product_number}</td>

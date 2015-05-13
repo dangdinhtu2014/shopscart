@@ -156,10 +156,10 @@ if( ! empty( $arrayid ) )
 {
 	$templistid = implode( ',', $arrayid );
 
-	$sql = 'SELECT t1.id, t1.listcatid, t1.' . NV_LANG_DATA . '_title, t1.money_unit FROM ' . TABLE_SHOPS_NAME . '_rows AS t1 LEFT JOIN ' . TABLE_SHOPS_NAME . '_units AS t2 ON t1.product_unit = t2.id WHERE t1.id IN (' . $templistid . ') AND t1.status =1';
+	$sql = 'SELECT t1.id, t1.catid, t1.' . NV_LANG_DATA . '_title, t1.money_unit FROM ' . TABLE_SHOPS_NAME . '_rows AS t1 LEFT JOIN ' . TABLE_SHOPS_NAME . '_units AS t2 ON t1.product_unit = t2.id WHERE t1.id IN (' . $templistid . ') AND t1.status =1';
 
 	$result = $db->query( $sql );
-	while( list( $id, $listcatid, $title, $money_unit ) = $result->fetch( 3 ) )
+	while( list( $id, $catid, $title, $money_unit ) = $result->fetch( 3 ) )
 	{
 		$itemAmount = nv_currency_conversion( $temppro[$id]['price'], $money_unit, 'USD' );
 		$itemAmount = new BasicAmountType( $currencyCode, $itemAmount['sale'] );

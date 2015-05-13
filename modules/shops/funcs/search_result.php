@@ -90,27 +90,27 @@ if( ! empty( $groupid ) )
 
 if( $keyword != "" )
 {
-	$search .= " AND (t1." . NV_LANG_DATA . "_title LIKE '%" . $db->dblikeescape( $keyword ) . "%' OR product_code LIKE '%" . $db->dblikeescape( $keyword ) . "%')";
+	$search .= " AND (t1." . NV_LANG_DATA . "_title LIKE '%" . $db->dblikeescape( $keyword ) . "%' OR model LIKE '%" . $db->dblikeescape( $keyword ) . "%')";
 }
 
 if( ( $price1 >= 0 and $price2 > 0 ) )
 {
-	$search .= " AND product_price-(t1.product_discounts/100)*product_price BETWEEN " . $price1 . " AND " . $price2 . " ";
+	$search .= " AND quantity-(t1.product_discounts/100)*quantity BETWEEN " . $price1 . " AND " . $price2 . " ";
 }
 elseif( $price2 == -1 and $price1 >= 0 )
 {
-	$search .= " AND product_price-(t1.product_discounts/100)*product_price >= " . $price1 . " ";
+	$search .= " AND quantity-(t1.product_discounts/100)*quantity >= " . $price1 . " ";
 }
 elseif( $price1 == -1 and $price2 > 0 )
 {
-	$search .= " AND product_price-(t1.product_discounts/100)*product_price < " . $price2 . " ";
+	$search .= " AND quantity-(t1.product_discounts/100)*quantity < " . $price2 . " ";
 }
 
 if( ! empty( $typemoney ) )
 {
 	$search .= " AND money_unit = " . $db->quote( $typemoney );
 }
-$sql_i = ", if(t1.money_unit ='" . $pro_config['money_unit'] . "', t1.product_price , t1.product_price * t2.exchange ) AS product_saleproduct ";
+$sql_i = ", if(t1.money_unit ='" . $pro_config['money_unit'] . "', t1.quantity , t1.quantity * t2.exchange ) AS product_saleproduct ";
 $order_by = " product_saleproduct DESC ";
 
 if( ! empty( $typemoney ) )
@@ -120,7 +120,7 @@ if( ! empty( $typemoney ) )
 if( $cataid != 0 )
 {
 	$array_cat = GetCatidInParent( $cataid );
-	$search .= " AND listcatid IN (" . implode( ",", $array_cat ) . ") ";
+	$search .= " AND catid IN (" . implode( ",", $array_cat ) . ") ";
 }
 if( $sid != 0 )
 {
@@ -144,14 +144,14 @@ if( $pro_config['active_price'] )
 
 $table_search = "" . $db_config['prefix'] . "_" . $module_data . "_rows t1";
 $table_exchange = " LEFT JOIN " . $db_config['prefix'] . "_" . $module_data . "_money_" . NV_LANG_DATA . " t2 ON t1.money_unit=t2.code";
-$table_exchange1 = " INNER JOIN " . $db_config['prefix'] . "_" . $module_data . "_catalogs t3 ON t3.catid = t1.listcatid";
+$table_exchange1 = " INNER JOIN " . $db_config['prefix'] . "_" . $module_data . "_catalogs t3 ON t3.catid = t1.catid";
 $table_exchange2 = " LEFT JOIN " . $db_config['prefix'] . "_" . $module_data . "_items_group t4 ON t1.id=t4.pro_id";
 
 // Fetch Limit
 $db->sqlreset()->select( 'COUNT(*)' )->from( $table_search . " " . $table_exchange . " " . $table_exchange1 . " " . $table_exchange2 )->where( "t1.status =1 " . $search . " " . $show_price );
 $num_items = $db->query( $db->sql() )->fetchColumn();
 
-$db->select( "DISTINCT t1.id, t1.listcatid, t1.publtime, t1." . NV_LANG_DATA . "_title, t1." . NV_LANG_DATA . "_alias, t1." . NV_LANG_DATA . "_hometext, t1.homeimgalt, t1.homeimgfile, t1.homeimgthumb, t1.product_number, t1.product_price, t1.discount_id, t1.money_unit, t1.showprice, t3.newday, t2.exchange " . $sql_i )->order( $order_by )->limit( $per_page )->offset( ( $page - 1 ) * $per_page );
+$db->select( "DISTINCT t1.id, t1.catid, t1.addtime, t1." . NV_LANG_DATA . "_title, t1." . NV_LANG_DATA . "_alias, t1." . NV_LANG_DATA . "_hometext, t1.homeimgalt, t1.homeimgfile, t1.homeimgthumb, t1.quantity, t1.quantity, t1.discount_id, t1.money_unit, t1.showprice, t3.newday, t2.exchange " . $sql_i )->order( $order_by )->limit( $per_page )->offset( ( $page - 1 ) * $per_page );
 $result = $db->query( $db->sql() );
 
 $base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=search_result&keyword=" . $keyword . "&price1=" . $price1 . "&price2=" . $price2 . "&typemoney=" . $typemoney . "&cata=" . $cataid;
@@ -159,7 +159,7 @@ $html_pages = nv_generate_page( $base_url, $num_items, $per_page, $page );
 
 $link = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=";
 
-while( list( $id, $listcatid, $publtime, $title, $alias, $hometext, $homeimgalt, $homeimgfile, $homeimgthumb, $product_number, $product_price, $discount_id, $money_unit, $showprice, $newday ) = $result->fetch( 3 ) )
+while( list( $id, $catid, $addtime, $title, $alias, $hometext, $homeimgalt, $homeimgfile, $homeimgthumb, $quantity, $quantity, $discount_id, $money_unit, $showprice, $newday ) = $result->fetch( 3 ) )
 {
 	if( $homeimgthumb == 1 ) //image thumb
 	{
@@ -180,19 +180,19 @@ while( list( $id, $listcatid, $publtime, $title, $alias, $hometext, $homeimgalt,
 
 	$data_content[] = array(
 		"id" => $id,
-		"publtime" => $publtime,
+		"addtime" => $addtime,
 		"title" => $title,
 		"alias" => $alias,
 		"hometext" => $hometext,
 		"homeimgalt" => $homeimgalt,
 		"homeimgthumb" => $thumb,
-		'product_number' => $product_number,
-		"product_price" => $product_price,
+		'quantity' => $quantity,
+		"quantity" => $quantity,
 		"discount_id" => $discount_id,
 		"money_unit" => $money_unit,
 		"showprice" => $showprice,
 		"newday" => $newday,
-		"link_pro" => $link . $global_array_cat[$listcatid]['alias'] . "/" . $alias . $global_config['rewrite_exturl'],
+		"link_pro" => $link . $global_array_cat[$catid]['alias'] . "/" . $alias . $global_config['rewrite_exturl'],
 		"link_order" => $link . "setcart&amp;id=" . $id );
 }
 

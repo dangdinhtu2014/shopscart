@@ -15,7 +15,7 @@ $allow_func = array(
 	'alias',
 	'items',
 	'exptime',
-	'publtime',
+	'addtime',
 	'setting',
 	'content',
 	'custom_form',

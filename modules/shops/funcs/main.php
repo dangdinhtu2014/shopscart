@@ -50,11 +50,11 @@ if( empty( $contents ) )
 	}
 	elseif( $sorts == 1 )
 	{
-		$orderby = ' t1.product_price ASC, t1.id DESC ';
+		$orderby = ' t1.quantity ASC, t1.id DESC ';
 	}
 	else
 	{
-		$orderby = ' t1.product_price DESC, t1.id DESC ';
+		$orderby = ' t1.quantity DESC, t1.id DESC ';
 	}
 
 	if( $pro_config['home_view'] == 'view_home_all' )
@@ -63,12 +63,12 @@ if( empty( $contents ) )
 		$db->sqlreset()->select( 'COUNT(*)' )->from( TABLE_SHOPS_NAME . '_rows t1' )->where( 't1.inhome=1 AND t1.status =1 ' );
 
 		$num_items = $db->query( $db->sql() )->fetchColumn();
-
-		$db->select( 't1.id, t1.listcatid, t1.publtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.' . NV_LANG_DATA . '_hometext, t1.homeimgalt, t1.homeimgfile, t1.homeimgthumb, t1.product_code, t1.product_number, t1.product_price, t1.money_unit, t1.discount_id, t1.showprice,t1.' . NV_LANG_DATA . '_promotional, t2.newday' )->join( 'INNER JOIN ' . TABLE_SHOPS_NAME . '_catalogs t2 ON t2.catid = t1.listcatid' )->order( $orderby )->limit( $per_page )->offset( ( $page - 1 ) * $per_page );
+ 
+		$db->select( 't1.id, t1.catid, t1.addtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.' . NV_LANG_DATA . '_hometext, t1.homeimgfile, t1.homeimgthumb, t1.model, t1.quantity, t1.product_price, t1.money_unit, t1.discount_id, t1.showprice,t1.' . NV_LANG_DATA . '_promotional, t2.newday' )->join( 'INNER JOIN ' . TABLE_SHOPS_NAME . '_catalogs t2 ON t2.catid = t1.catid' )->order( $orderby )->limit( $per_page )->offset( ( $page - 1 ) * $per_page );
 
 		$result = $db->query( $db->sql() );
 
-		while( list( $id, $listcatid, $publtime, $title, $alias, $hometext, $homeimgalt, $homeimgfile, $homeimgthumb, $product_code, $product_number, $product_price, $money_unit, $discount_id, $showprice, $promotional, $newday ) = $result->fetch( 3 ) )
+		while( list( $id, $catid, $addtime, $title, $alias, $hometext, $homeimgfile, $homeimgthumb, $model, $quantity, $product_price, $money_unit, $discount_id, $showprice, $promotional, $newday ) = $result->fetch( 3 ) )
 		{
 			if( $homeimgthumb == 1 ) //image thumb
 			{
@@ -89,21 +89,21 @@ if( empty( $contents ) )
 
 			$data_content[] = array(
 				'id' => $id,
-				'publtime' => $publtime,
+				'addtime' => $addtime,
 				'title' => $title,
 				'alias' => $alias,
 				'hometext' => $hometext,
-				'homeimgalt' => $homeimgalt,
+				'homeimgfile' => $homeimgfile,
 				'homeimgthumb' => $thumb,
+				'quantity' => $quantity,
 				'product_price' => $product_price,
-				'product_number' => $product_number,
-				'product_code' => $product_code,
+				'model' => $model,
 				'discount_id' => $discount_id,
 				'money_unit' => $money_unit,
 				'showprice' => $showprice,
 				'newday' => $newday,
 				'promotional' => $promotional,
-				'link_pro' => NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_cat[$listcatid]['alias'] . '/' . $alias . $global_config['rewrite_exturl'],
+				'link_pro' => NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_cat[$catid]['alias'] . '/' . $alias . $global_config['rewrite_exturl'],
 				'link_order' => NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=setcart&amp;id=' . $id );
 		}
 
@@ -126,16 +126,16 @@ if( empty( $contents ) )
 				$array_cat = GetCatidInParent( $catid_i, true );
 
 				// Fetch Limit
-				$db->sqlreset()->select( 'COUNT(*)' )->from( TABLE_SHOPS_NAME . '_rows t1' )->where( 'listcatid IN (' . implode( ',', $array_cat ) . ') AND t1.inhome=1 AND t1.status =1' );
+				$db->sqlreset()->select( 'COUNT(*)' )->from( TABLE_SHOPS_NAME . '_rows t1' )->where( 't1.catid IN (' . implode( ',', $array_cat ) . ') AND t1.inhome=1 AND t1.status =1' );
 
 				$num_pro = $db->query( $db->sql() )->fetchColumn();
 
-				$db->select( 't1.id, t1.publtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.' . NV_LANG_DATA . '_hometext, t1.homeimgalt, t1.homeimgfile, t1.homeimgthumb, t1.product_code, t1.product_number, t1.product_price, t1.money_unit, t1.discount_id, t1.showprice, t2.newday' )->join( 'INNER JOIN ' . TABLE_SHOPS_NAME . '_catalogs t2 ON t2.catid = t1.listcatid' )->order( 't1.id DESC' )->limit( $array_info_i['numlinks'] );
-
+				$db->select( 't1.id, t1.addtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.' . NV_LANG_DATA . '_hometext, t1.homeimgfile, t1.homeimgthumb, t1.model, t1.quantity, t1.product_price, t1.money_unit, t1.discount_id, t1.showprice, t2.newday' )->join( 'INNER JOIN ' . TABLE_SHOPS_NAME . '_catalogs t2 ON t2.catid = t1.catid' )->order( 't1.id DESC' )->limit( $array_info_i['numlinks'] );
+ 
 				$result = $db->query( $db->sql() );
 				$data_pro = array();
 
-				while( list( $id, $publtime, $title, $alias, $hometext, $homeimgalt, $homeimgfile, $homeimgthumb, $product_code, $product_number, $product_price, $money_unit, $discount_id, $showprice, $newday ) = $result->fetch( 3 ) )
+				while( list( $id, $addtime, $title, $alias, $hometext, $homeimgfile, $homeimgthumb, $model, $quantity, $product_price, $money_unit, $discount_id, $showprice, $newday ) = $result->fetch( 3 ) )
 				{
 					if( $homeimgthumb == 1 ) //image thumb
 					{
@@ -156,14 +156,14 @@ if( empty( $contents ) )
 
 					$data_pro[] = array(
 						'id' => $id,
-						'publtime' => $publtime,
+						'addtime' => $addtime,
 						'title' => $title,
 						'alias' => $alias,
 						'hometext' => $hometext,
-						'homeimgalt' => $homeimgalt,
+						'homeimgfile' => $homeimgfile,
 						'homeimgthumb' => $thumb,
-						'product_code' => $product_code,
-						'product_number' => $product_number,
+						'model' => $model,
+						'quantity' => $quantity,
 						'product_price' => $product_price,
 						'discount_id' => $discount_id,
 						'money_unit' => $money_unit,
@@ -212,13 +212,13 @@ if( empty( $contents ) )
 
 				$num_pro = $db->query( $db->sql() )->rowCount();
 
-				$db->select( 'DISTINCT t1.id, t1.listcatid, t1.publtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.' . NV_LANG_DATA . '_hometext, t1.homeimgalt, t1.homeimgfile, t1.homeimgthumb, t1.product_code, t1.product_number, t1.product_price, t1.money_unit, t1.discount_id, t1.showprice, t2.newday' )->join( 'INNER JOIN ' . TABLE_SHOPS_NAME . '_catalogs t2 ON t2.catid = t1.listcatid INNER JOIN ' . TABLE_SHOPS_NAME . '_items_group t3 ON t3.pro_id = t1.id' )->order( 't1.id DESC' )->limit( $num_links );
+				$db->select( 'DISTINCT t1.id, t1.catid, t1.addtime, t1.' . NV_LANG_DATA . '_title, t1.' . NV_LANG_DATA . '_alias, t1.' . NV_LANG_DATA . '_hometext,  t1.homeimgfile, t1.homeimgthumb, t1.model, t1.quantity, t1.product_price, t1.money_unit, t1.discount_id, t1.showprice, t2.newday' )->join( 'INNER JOIN ' . TABLE_SHOPS_NAME . '_catalogs t2 ON t2.catid = t1.catid INNER JOIN ' . TABLE_SHOPS_NAME . '_items_group t3 ON t3.pro_id = t1.id' )->order( 't1.id DESC' )->limit( $num_links );
 
 				$result = $db->query( $db->sql() );
 
 				$data_pro = array();
 
-				while( list( $id, $listcatid, $publtime, $title, $alias, $hometext, $homeimgalt, $homeimgfile, $homeimgthumb, $product_code, $product_number, $product_price, $money_unit, $discount_id, $showprice, $newday ) = $result->fetch( 3 ) )
+				while( list( $id, $catid, $addtime, $title, $alias, $hometext, $homeimgfile, $homeimgthumb, $model, $quantity, $product_price, $money_unit, $discount_id, $showprice, $newday ) = $result->fetch( 3 ) )
 				{
 					if( $homeimgthumb == 1 ) //image thumb
 					{
@@ -239,20 +239,20 @@ if( empty( $contents ) )
 
 					$data_pro[] = array(
 						'id' => $id,
-						'publtime' => $publtime,
+						'addtime' => $addtime,
 						'title' => $title,
 						'alias' => $alias,
 						'hometext' => $hometext,
-						'homeimgalt' => $homeimgalt,
+						'homeimgfile' => $homeimgfile,
 						'homeimgthumb' => $thumb,
-						'product_code' => $product_code,
-						'product_number' => $product_number,
+						'model' => $model,
+						'quantity' => $quantity,
 						'product_price' => $product_price,
 						'discount_id' => $discount_id,
 						'money_unit' => $money_unit,
 						'showprice' => $showprice,
 						'newday' => $newday,
-						'link_pro' => NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_cat[$listcatid]['alias'] . '/' . $alias . $global_config['rewrite_exturl'],
+						'link_pro' => NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_cat[$catid]['alias'] . '/' . $alias . $global_config['rewrite_exturl'],
 						'link_order' => NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=setcart&amp;id=' . $id );
 				}
 

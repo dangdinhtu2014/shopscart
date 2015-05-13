@@ -26,7 +26,7 @@ if( $catid > 0 )
 	}
 	else // San pham trong chu de
 	{
-		$check_rows = $db->query( "SELECT count(*) FROM " . $db_config['prefix'] . "_" . $module_data . "_rows WHERE listcatid='" . $catid . "'" )->fetchColumn();
+		$check_rows = $db->query( "SELECT count(*) FROM " . $db_config['prefix'] . "_" . $module_data . "_rows WHERE catid='" . $catid . "'" )->fetchColumn();
 
 		if( intval( $check_rows ) > 0 )
 		{
@@ -85,7 +85,7 @@ if( $catid > 0 )
 				}
 				elseif( ! empty( $delcatandrows ) ) // Xoa loai san pham va san pham
 				{
-					$sql = $db->query( "SELECT id, listcatid FROM " . $db_config['prefix'] . "_" . $module_data . "_rows WHERE listcatid=" . $catid );
+					$sql = $db->query( "SELECT id, catid FROM " . $db_config['prefix'] . "_" . $module_data . "_rows WHERE catid=" . $catid );
 					while( $row = $sql->fetch() )
 					{
 						nv_del_content_module( $row['id'] );
@@ -104,10 +104,10 @@ if( $catid > 0 )
 
 					if( $catidnews > 0 )
 					{
-						$sql = $db->query( "SELECT id, listcatid FROM " . $db_config['prefix'] . "_" . $module_data . "_rows WHERE listcatid=" . $catid );
+						$sql = $db->query( "SELECT id, catid FROM " . $db_config['prefix'] . "_" . $module_data . "_rows WHERE catid=" . $catid );
 						while( $row = $sql->fetch() )
 						{
-							$db->query( "UPDATE " . $db_config['prefix'] . "_" . $module_data . "_rows SET listcatid=" . $catidnews . " WHERE id =" . $row['id'] );
+							$db->query( "UPDATE " . $db_config['prefix'] . "_" . $module_data . "_rows SET catid=" . $catidnews . " WHERE id =" . $row['id'] );
 						}
 						$db->query( "DELETE FROM " . $db_config['prefix'] . "_" . $module_data . "_catalogs WHERE catid=" . $catid );
 						nv_fix_cat_order();

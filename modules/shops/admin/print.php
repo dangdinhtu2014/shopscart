@@ -38,13 +38,13 @@ $listnum = explode( '|', $data['listnum'] );
 $i = 0;
 foreach( $listid as $id )
 {
-	$sql = 'SELECT id, ' . NV_LANG_DATA . '_title, product_price,money_unit FROM ' . TABLE_SHOPS_NAME . '_rows WHERE id = ' . $id . ' AND status =1 AND publtime < ' . NV_CURRENTTIME . ' AND (exptime=0 OR exptime>' . NV_CURRENTTIME . ')';
+	$sql = 'SELECT id, ' . NV_LANG_DATA . '_title, quantity,money_unit FROM ' . TABLE_SHOPS_NAME . '_rows WHERE id = ' . $id . ' AND status =1 AND addtime < ' . NV_CURRENTTIME . ' AND (exptime=0 OR exptime>' . NV_CURRENTTIME . ')';
 	$result = $db->query( $sql );
-	list( $id, $title, $product_price, $money_unit ) = $result->fetch( 3 );
+	list( $id, $title, $quantity, $money_unit ) = $result->fetch( 3 );
 
 	$xtpl->assign( 'product_name', $title );
-	$xtpl->assign( 'product_number', $listnum[$i] );
-	$xtpl->assign( 'product_price', nv_number_format( $product_price, nv_get_decimals( $pro_config['money_unit'] ) ) );
+	$xtpl->assign( 'quantity', $listnum[$i] );
+	$xtpl->assign( 'quantity', nv_number_format( $quantity, nv_get_decimals( $pro_config['money_unit'] ) ) );
 	$xtpl->assign( 'product_unit', $money_unit );
 	$xtpl->assign( 'tt', $i + 1 );
 

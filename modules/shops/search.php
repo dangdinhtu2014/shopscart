@@ -12,14 +12,14 @@ if( ! defined( 'NV_IS_MOD_SEARCH' ) ) die( 'Stop!!!' );
 
 // Fetch Limit
 $db->sqlreset()->select( 'COUNT(*)' )->from( $db_config['prefix'] . '_' . $m_values['module_data'] . '_rows' )->where( "(" . nv_like_logic( NV_LANG_DATA . '_title', $dbkeyword, $logic ) . "
-		OR " . nv_like_logic( 'product_code', $dbkeyword, $logic ) . "
+		OR " . nv_like_logic( 'model', $dbkeyword, $logic ) . "
 		OR " . nv_like_logic( NV_LANG_DATA . '_bodytext', $dbkeyword, $logic ) . "
 		OR " . nv_like_logic( NV_LANG_DATA . '_hometext', $dbkeyword, $logic ) . ")
-		AND ( publtime < " . NV_CURRENTTIME . " AND (exptime=0 OR exptime>" . NV_CURRENTTIME . ") )" );
+		AND ( addtime < " . NV_CURRENTTIME . " AND (exptime=0 OR exptime>" . NV_CURRENTTIME . ") )" );
 
 $num_items = $db->query( $db->sql() )->fetchColumn();
 
-$db->select( 'id, ' . NV_LANG_DATA . '_title,' . NV_LANG_DATA . '_alias, listcatid, ' . NV_LANG_DATA . '_hometext, ' . NV_LANG_DATA . '_bodytext' )->order( 'id DESC' )->limit( $limit )->offset( ( $page - 1 ) * $limit );
+$db->select( 'id, ' . NV_LANG_DATA . '_title,' . NV_LANG_DATA . '_alias, catid, ' . NV_LANG_DATA . '_hometext, ' . NV_LANG_DATA . '_bodytext' )->order( 'id DESC' )->limit( $limit )->offset( ( $page - 1 ) * $limit );
 
 $tmp_re = $db->query( $db->sql() );
 
@@ -33,10 +33,10 @@ if( $num_items )
 
 	$link = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $m_values['module_name'] . '&amp;' . NV_OP_VARIABLE . '=';
 
-	while( list( $id, $tilterow, $alias, $listcatid, $hometext, $bodytext ) = $tmp_re->fetch( 3 ) )
+	while( list( $id, $tilterow, $alias, $catid, $hometext, $bodytext ) = $tmp_re->fetch( 3 ) )
 	{
 		$content = $hometext . $bodytext;
-		$catid = explode( ',', $listcatid );
+		$catid = explode( ',', $catid );
 		$catid = end( $catid );
 
 		$url = $link . $array_cat_alias[$catid]['alias'] . '/' . $alias . '-' . $id . $global_config['rewrite_exturl'];

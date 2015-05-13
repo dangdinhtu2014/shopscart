@@ -95,9 +95,9 @@ if( ! empty( $array_id ) )
 {
 	foreach( $array_id as $array_id_i )
 	{
-		$sql = 'SELECT id, listcatid, publtime, ' . NV_LANG_DATA . '_title, ' . NV_LANG_DATA . '_alias, ' . NV_LANG_DATA . '_hometext, homeimgfile, homeimgalt, homeimgthumb, product_code, product_number, product_price, money_unit, discount_id, showprice, ' . NV_LANG_DATA . '_warranty,' . NV_LANG_DATA . '_promotional as promotional, ' . NV_LANG_DATA . '_bodytext, custom, ' . NV_LANG_DATA . '_custom FROM ' . TABLE_SHOPS_NAME . '_rows WHERE id = ' . $array_id_i;
+		$sql = 'SELECT id, catid, addtime, ' . NV_LANG_DATA . '_title, ' . NV_LANG_DATA . '_alias, ' . NV_LANG_DATA . '_hometext, homeimgfile, homeimgalt, homeimgthumb, model, quantity, quantity, money_unit, discount_id, showprice, ' . NV_LANG_DATA . '_warranty,' . NV_LANG_DATA . '_promotional as promotional, ' . NV_LANG_DATA . '_bodytext, custom, ' . NV_LANG_DATA . '_custom FROM ' . TABLE_SHOPS_NAME . '_rows WHERE id = ' . $array_id_i;
 		$result = $db->query( $sql );
-		while( list( $id, $listcatid, $publtime, $title, $alias, $hometext, $homeimgfile, $homeimgalt, $homeimgthumb, $product_code, $product_number, $product_price, $money_unit, $discount_id, $showprice, $warranty, $promotional, $bodytext, $custom, $custom_lang ) = $result->fetch( 3 ) )
+		while( list( $id, $catid, $addtime, $title, $alias, $hometext, $homeimgfile, $homeimgalt, $homeimgthumb, $model, $quantity, $quantity, $money_unit, $discount_id, $showprice, $warranty, $promotional, $bodytext, $custom, $custom_lang ) = $result->fetch( 3 ) )
 		{
 			// Xac dinh anh lon
 			$homeimgfiles1 = $homeimgfile;
@@ -121,19 +121,19 @@ if( ! empty( $array_id ) )
 
 			$data_pro[] = array(
 				'id' => $id,
-				'publtime' => $publtime,
+				'addtime' => $addtime,
 				'title' => $title,
 				'alias' => $alias,
 				'hometext' => $hometext,
 				'homeimgalt' => $homeimgalt,
 				'homeimgthumb' => $homeimgthumbs,
-				'product_code' => $product_code,
-				'product_number' => $product_number,
-				'product_price' => $product_price,
+				'model' => $model,
+				'quantity' => $quantity,
+				'quantity' => $quantity,
 				'discount_id' => $discount_id,
 				'money_unit' => $money_unit,
 				'showprice' => $showprice,
-				'link_pro' => $link . $global_array_cat[$listcatid]['alias'] . '/' . $alias . $global_config['rewrite_exturl'],
+				'link_pro' => $link . $global_array_cat[$catid]['alias'] . '/' . $alias . $global_config['rewrite_exturl'],
 				'link_order' => $link . 'setcart&amp;id=' . $id,
 				'warranty' => $warranty,
 				'promotional' => $promotional,

@@ -20,7 +20,7 @@ $lang_translator['langtype'] = 'lang_module';
 $lang_module['title_products'] = 'sản phẩm';
 $lang_module['product_host'] = 'Sản phẩm hot';
 $lang_module['product_page'] = 'Trang';
-$lang_module['product_code'] = 'Mã sản phẩm';
+$lang_module['model'] = 'Mã sản phẩm';
 $lang_module['title_eshop'] = 'Cho vào giỏ hàng';
 $lang_module['title_viewnum'] = 'Hiển thị';
 $lang_module['title_viewtype'] = 'Trình bày';
@@ -99,8 +99,8 @@ $lang_module['err_no_bodytext'] = 'Bạn chưa nhập phần chi tiết cho sả
 $lang_module['err_no_save'] = 'Dữ liệu không được cập nhật được. tiêu đề có thể bị trùng!';
 $lang_module['err_no_image'] = 'File bạn tải lên không phải là ảnh!';
 $lang_module['err_no_catalogs'] = 'Không có loại sản phẩm';
-$lang_module['err_no_product_number'] = 'Số lượng sản phẩm <= 0 hoặc không phải là số';
-$lang_module['err_no_product_price'] = 'Giá sản phẩm <= 0 hoặc không phải là số';
+$lang_module['err_no_quantity'] = 'Số lượng sản phẩm <= 0 hoặc không phải là số';
+$lang_module['err_no_quantity'] = 'Giá sản phẩm <= 0 hoặc không phải là số';
 $lang_module['product_post_title'] = 'Đăng sản phẩm';
 $lang_module['product_post_info'] = 'Thông tin có dấu * là bắt buộc!';
 $lang_module['product_info'] = 'Thông tin sản phẩm';
@@ -113,7 +113,7 @@ $lang_module['product_detail'] = 'Chi tiết sản phẩm';
 $lang_module['product_sale_info'] = 'Thông tin bán';
 $lang_module['product_unit_price'] = 'Đơn vị giá';
 $lang_module['product_unit'] = 'Đơn vị sản phẩm';
-$lang_module['product_number'] = 'Số lượng bán';
+$lang_module['quantity'] = 'Số lượng bán';
 $lang_module['product_status'] = 'Tình trạng sản phẩm';
 $lang_module['product_payment_form'] = 'Hình thức thanh toán';
 $lang_module['product_keywords'] = 'Từ khóa';
@@ -218,8 +218,8 @@ $lang_module['order_moment'] = 'lúc';
 $lang_module['order_no_products'] = 'STT';
 $lang_module['order_code'] = 'Mã đơn hàng';
 $lang_module['order_print'] = 'In đơn hàng';
-$lang_module['order_product_number'] = 'SL';
-$lang_module['order_product_price'] = 'Giá';
+$lang_module['order_quantity'] = 'SL';
+$lang_module['order_quantity'] = 'Giá';
 $lang_module['order_product_unit'] = 'Đơn vị';
 $lang_module['order_total'] = 'Tổng cộng';
 $lang_module['order_submit'] = 'Xử lý đơn này';
@@ -290,7 +290,7 @@ $lang_module['type_title'] = 'Lựa chọn kiểu tìm kiếm';
 $lang_module['finter_title'] = 'Thời gian';
 $lang_module['keywords'] = 'Từ khóa';
 $lang_module['search_reset'] = 'Xóa trắng';
-$lang_module['product_number_max'] = 'Sản phẩm: %1$s trong kho chỉ còn: %2$s';
+$lang_module['quantity_max'] = 'Sản phẩm: %1$s trong kho chỉ còn: %2$s';
 $lang_module['back_history'] = 'Quay lại trang lịch sử giao dịch';
 $lang_module['order_by_payment'] = 'Đơn hàng này bạn đang thực hiện quá trình thanh toán trên <a href="%1$s">%2$s</a>, Bạn cần thực hiện tiếp quá trình thanh toán này để hoàn tất đơn hàng.';
 $lang_module['update_order'] = 'Thông báo: Hệ thống đã cập nhật lại thông tin giao dịch các đơn hàng: %1$s';
@@ -369,7 +369,7 @@ $lang_module['1star'] = '1 sao';
 $lang_module['custom'] = 'Mở rộng';
 
 $lang_module['product_empty'] = 'Hết hàng';
-$lang_module['product_number'] = 'còn lại';
+$lang_module['quantity'] = 'Số lượng';
 
 //them truong tuy bien
 
